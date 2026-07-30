@@ -1,0 +1,21 @@
+{
+  "event_type": "price_change",
+  "market": "0xsynthetic-polymarket-market",
+  "price_changes": [
+    {
+      "asset_id": "synthetic-polymarket-yes-token",
+      "price": "0.50",
+      "size": "7.000",
+      "side": "BUY",
+      "hash": "synthetic-polymarket-change-hash-buy"
+    },
+    {
+      "asset_id": "synthetic-polymarket-yes-token",
+      "price": "0.55",
+      "size": "0",
+      "side": "SELL",
+      "hash": "synthetic-polymarket-change-hash-sell"
+    }
+  ],
+  "timestamp": "1700000001000"
+}

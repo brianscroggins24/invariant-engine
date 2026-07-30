@@ -1,0 +1,17 @@
+{
+  "type": "orderbook_snapshot",
+  "sid": 7,
+  "seq": 10,
+  "msg": {
+    "market_ticker": "SYNTHETIC-EVENT-MARKET",
+    "market_id": "synthetic-kalshi-market-id",
+    "yes_dollars_fp": [
+      ["0.20", "10.000"],
+      ["0.25", "3.000"]
+    ],
+    "no_dollars_fp": [
+      ["0.35", "4.000"],
+      ["0.40", "6.000"]
+    ]
+  }
+}

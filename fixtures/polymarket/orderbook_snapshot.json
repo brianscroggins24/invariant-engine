@@ -1,0 +1,20 @@
+{
+  "event_type": "book",
+  "asset_id": "synthetic-polymarket-yes-token",
+  "market": "0xsynthetic-polymarket-market",
+  "bids": [
+    {"price": "0.50", "size": "10.000"},
+    {"price": "0.50", "size": "2.000"},
+    {"price": "0.45", "size": "0"}
+  ],
+  "asks": [
+    {"price": "0.55", "size": "4.000"},
+    {"price": "0.60", "size": "8.000"}
+  ],
+  "timestamp": "1700000000000",
+  "hash": "synthetic-polymarket-book-hash",
+  "min_order_size": "1.000",
+  "tick_size": "0.010",
+  "neg_risk": false,
+  "last_trade_price": "0.52"
+}
