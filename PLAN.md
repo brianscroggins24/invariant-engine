@@ -2,44 +2,53 @@
 
 ## Product objective
 
-Build an automated prediction-market trading system that discovers logically or economically inconsistent prices, validates the underlying market relationships, determines whether opportunities remain profitable after depth, fees, latency, fill risk, and multi-leg exposure, and eventually executes viable opportunities behind deterministic risk controls.
+Build an automated prediction-market system whose primary objective is relationship-based arbitrage. The eventual system should:
 
-Analytics, replay, provenance, and monitoring are supporting capabilities. They exist to create a trustworthy path toward profitable automated relationship-based arbitrage.
+1. Discover related propositions.
+2. Validate implication, equivalence, complement, exclusivity, subset, exhaustive, and partition relationships.
+3. Compile validated relationships into deterministic price constraints.
+4. Detect quote violations.
+5. Evaluate depth, fees, latency, fill risk, and multi-leg exposure.
+6. Historically validate strategies.
+7. Simulate execution.
+8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue opportunities and cross-venue opportunities between Polymarket and Kalshi. The current stage is fully read-only; diagnostic candidates are non-actionable.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The current work is fully read-only, local, fixture-driven, and diagnostic.
 
 ## Central system thesis
 
-The primary strategy is relationship-based arbitrage:
+The trust and analytical lifecycle is ordered:
 
-1. Identify related propositions.
-2. Validate their logical and economic relationships.
-3. Compile validated relationships into deterministic pricing constraints.
-4. Detect violations using market data.
-5. Evaluate executable prices and depth.
-6. Account for fees, latency, fill risk, and multi-leg exposure.
-7. Calculate supported size and expected net edge.
-8. Historically validate the strategy.
-9. Simulate execution.
-10. Eventually execute qualified opportunities through deterministic risk controls.
-11. Reconcile fills, positions, fees, exposure, and PnL.
+`relationship candidate` → `relationship certificate draft` → `explicit semantic review` → `deterministic truth/payoff validation` → `validated relationship certificate` → `deterministic pricing constraint` → `non-actionable constraint evaluation` → later economic and execution analysis
+
+The following distinctions are mandatory:
+
+- A relationship candidate is not a validated relationship.
+- A validated relationship is not a constraint violation.
+- A constraint violation is not an opportunity.
+- An opportunity is not an authorized trade.
+- No LLM may authorize trades or bypass deterministic validation.
+
+No earlier object may impersonate a later one. The current and planned Milestone 2 outputs remain non-actionable.
 
 ## Governing architecture principles
 
-- Candidate relationship discovery is separate from relationship validation.
-- Relationship validation is separate from price-violation detection.
-- Diagnostic opportunities are separate from execution authorization.
-- Polymarket and Kalshi require venue-native models.
-- Cross-venue relationships connect venue-native contracts without erasing their differences.
-- A quoted or midpoint price is not an executable price.
+- Candidate discovery is separate from semantic review and deterministic relationship validation.
+- Relationship validation is separate from price-constraint compilation and quote evaluation.
+- Diagnostic findings are separate from execution authorization.
+- Polymarket and Kalshi retain venue-native models and identifiers.
+- Cross-venue relationships connect venue-native claims without erasing their differences.
+- Quoted or midpoint prices are not executable prices.
 - Depth, fees, latency, slippage, fill probability, and residual exposure are evaluated separately.
 - Multi-leg strategy execution must not be assumed atomic.
-- Missing and uncertain data remain explicit.
-- Money, prices, probabilities, quantities, and fees use `Decimal`-based arithmetic.
-- Important domain objects retain raw provenance.
+- Raw provenance is preserved on important domain objects and references are ordered and traceable.
+- Missing and uncertain data remain explicit, as do unsupported and unavailable states; missing venue behavior is never fabricated.
+- Financial and payout values use `Decimal`-based arithmetic.
+- Serialization and deterministic validation must be stable across repeated runs.
 - Mutable venue behavior is time-scoped.
-- Risk controls are independent of strategies and models.
-- No LLM may validate a relationship by itself, authorize a trade, size a live position, or bypass risk controls.
+- Risk controls remain independent of strategies and models.
+- Any future execution code must remain behind an independent deterministic risk gateway.
+- No LLM may validate a relationship by itself, create a certificate, compile a constraint, create an opportunity, authorize a trade, or bypass deterministic checks.
 
 ## Target architecture
 
@@ -52,7 +61,7 @@ The eventual pipeline is:
 5. Proposition and relationship graph.
 6. Relationship validation and certification.
 7. Deterministic constraint compiler.
-8. Price-violation detector.
+8. Quote-violation detector.
 9. Depth, fee, latency, and fill-risk analysis.
 10. Diagnostic opportunity candidates.
 11. Historical replay and strategy validation.
@@ -62,93 +71,72 @@ The eventual pipeline is:
 15. Fill, position, fee, exposure, and PnL reconciliation.
 16. Operational monitoring and kill switches.
 
-## Relationship model
+The current approved work ends before live ingestion, economic opportunity analysis, simulation, risk authorization, and execution.
 
-The relationship model will support:
+## Milestone 0 — Governance and architecture — completed
 
-- implication;
-- equivalence;
-- complement;
-- mutual exclusivity;
-- subset/superset;
-- exhaustive outcome sets;
-- exclusive and exhaustive partitions;
-- conditional relationships.
+The governance documents and approved architecture roadmap were established in Milestone 0. Later work remains subject to the active milestone, explicit scope gates, provenance requirements, venue-native semantics, deterministic validation, and no-execution boundaries in this plan.
 
-The corresponding coherent-price constraints are:
+## Accepted foundation: Milestone 1
 
-- Complement: `P(A) + P(not A) = 1`.
-- Implication: if `A → B`, then `P(A) ≤ P(B)`.
-- Equivalence: if `A ↔ B`, then `P(A) = P(B)`.
-- Subset: if `A ⊆ B`, then `P(A) ≤ P(B)`.
-- Mutually exclusive set: `ΣP(Aᵢ) ≤ 1`.
-- Exhaustive set: `ΣP(Aᵢ) ≥ 1`.
-- Exclusive and exhaustive partition: `ΣP(Aᵢ) = 1`.
+### Milestone 1 — Replayable market foundation — completed and accepted
 
-These are theoretical coherence constraints. Executable arbitrage must be evaluated from actual bid/ask ladders, depth, fees, and payout states.
+Milestone 1 delivered and accepted the local replayable market foundation. Its accepted capabilities are:
 
-## Relationship validation
+- immutable raw envelopes and raw provenance;
+- venue-aware typed identifiers;
+- `Decimal`-based financial values;
+- venue-native Polymarket and Kalshi order books;
+- explicit schema versions;
+- explicit Kalshi price conventions;
+- neutral Kalshi native sides;
+- deterministic snapshot/delta replay;
+- strict and audit replay validity;
+- ordered raw-reference lineage;
+- stable serialization;
+- synthetic fixtures;
+- determinism, precision, provenance, venue-separation, and no-network tests.
 
-A relationship must not be accepted merely because market titles appear similar.
+Milestone 1 is not live market ingestion. Its foundation must not regress while later milestones are developed.
 
-Each relationship certificate should preserve:
+The venue-native semantics remain explicit:
 
-- participating propositions;
-- venue-native market and contract references;
-- relationship type;
-- validation status;
-- supporting market rules;
-- event scope;
-- thresholds and units;
-- observation period;
-- closing and resolution times;
-- resolution source;
-- cancellation and void rules;
-- payout structure;
-- edge cases;
-- assumptions;
-- uncertainties;
-- validation method;
-- raw provenance references.
-
-An LLM may eventually propose candidate relationships or extract possible terms. Deterministic checks or explicit review must validate them.
+- Polymarket preserves markets, conditions, outcome tokens, directly published bid/ask ladders, snapshots, incremental changes, off-chain matching, on-chain settlement, oracle resolution, token redemption, and mutable venue behavior.
+- Kalshi preserves the series → event → market hierarchy, venue-local tickers, binary and scalar market types, fixed-point prices and quantities, YES and NO books, complementary derived asks, snapshots, deltas, sequence metadata, lifecycle states, exchange-managed settlement, and explicit price conventions. Kalshi contracts are not collapsed into Polymarket token models.
 
 ## Opportunity lifecycle
 
-Use explicit states resembling:
+The Milestone 2 trust pipeline is the detailed beginning of the longer analytical and execution lifecycle:
 
 `discovered` → `relationship pending` → `relationship validated` → `constraint violated` → `economics validated` → `historically supported` → `simulation supported` → `risk authorized` → `submitted` → `reconciled`
 
-`rejected` may be reached from any applicable non-terminal analytical state.
-
-The current read-only stage must not permit candidates to enter `risk authorized`, `submitted`, or other execution states.
+`rejected` may be reached from any applicable non-terminal analytical state. Milestone 2 remains read-only; no candidate, draft, certificate, constraint evaluation, or other diagnostic output may enter `risk authorized`, `submitted`, or another execution state.
 
 ## Domain model direction
 
-Plan these initial objects:
+The long-term domain model should include:
 
 - `RawEnvelope`;
-- typed venue and entity IDs;
+- typed venue and entity identifiers;
 - `Venue`;
 - venue-native market references;
-- venue-native contract/token references;
+- venue-native contract and token references;
 - `OrderBookSnapshot`;
 - `PriceLevel`;
 - `BookSide`;
 - `Proposition`;
-- `MarketRelationship`;
-- `RelationshipCertificate`;
+- relationship candidates and certificates;
 - `ConstraintEvaluation`;
-- `OpportunityCandidate`;
+- `OpportunityCandidate` as a later analytical finding;
 - provenance references such as `raw_ref`;
 - warning and uncertainty fields;
-- replay-oriented serialization.
+- replay-oriented stable serialization.
 
-`OpportunityCandidate` is an analytical finding, not a proposed order. It must not contain executable order instructions, routing, time-in-force, live sizing, or capital allocation.
+An `OpportunityCandidate` is non-actionable and is not a proposed order. It must not contain executable order instructions, routing, time-in-force, live sizing, or capital allocation.
 
 ## Provenance plan
 
-Preserve the following for captured and normalized data:
+Preserve the following for captured, normalized, and derived data:
 
 - original payload;
 - venue;
@@ -170,12 +158,14 @@ Warnings should cover:
 - derived values;
 - ambiguous lifecycle;
 - detector assumptions;
-- uncertain relationship;
-- sequence gap;
-- unavailable venue field;
-- uncertain account or wallet identity.
+- uncertain relationships;
+- sequence gaps;
+- unavailable venue fields;
+- uncertain identity, including account or wallet identity where such historical data exists.
 
-Never fabricate missing venue data.
+Milestone 2 additionally preserves provenance for proposition evidence, venue-claim bindings, candidate generation, semantic review, truth/payoff states, certificate validation, future LLM prompt/model/input/output records, and the compiled constraints and evaluations planned for 2.3. Provenance must retain enough raw and ordered references to distinguish supplied evidence, review, deterministic validation, and later diagnostic derivation.
+
+Never fabricate missing data.
 
 ## Venue-native modeling
 
@@ -185,49 +175,178 @@ Preserve:
 
 - events and markets;
 - conditions;
-- YES/NO outcome tokens;
+- outcome tokens;
 - directly published bids and asks;
 - CLOB snapshots and incremental changes;
-- offchain matching;
-- onchain settlement;
+- off-chain matching;
+- on-chain settlement;
 - oracle-based resolution;
 - token redemption;
-- mutable fees and rate limits.
+- mutable fees and limits.
 
-Do not generalize individual matched-trade atomicity to multi-leg strategies.
+Do not generalize individual matched-trade settlement or atomicity to multi-leg strategies.
 
 ### Kalshi
 
 Preserve:
 
 - series → event → market hierarchy;
-- venue-local tickers;
+- venue-local tickers and market identity;
 - binary and scalar market types;
 - fixed-point prices and quantities;
-- YES and NO bid books;
-- complementary derived asks;
-- snapshots, deltas, and sequence metadata;
-- determined, disputed, amended, and finalized states;
+- native YES and NO sides;
+- explicit price conventions;
+- convention-aware interpreted ladders;
+- snapshots, deltas, and sequence/session metadata;
+- distinct lifecycle states;
 - exchange-managed settlement;
-- mutable fees, fee rounding, historical routing, and rate limits.
+- mutable fees, migrations, routing, and limits.
 
-Do not collapse Kalshi contracts into Polymarket’s token model.
+Do not collapse Kalshi contracts into Polymarket's token model. Milestone 2.1 supports only binary unit-payout claim bindings, even though the long-term venue model preserves the existence of scalar markets.
 
 ## Recommended implementation direction
 
-The initial system should be a modular Python application using:
+The system should remain a modular Python application using:
 
 - a currently supported Python version;
-- explicit typed domain objects;
+- explicit typed immutable domain objects;
 - `decimal.Decimal`;
 - standard-library serialization where practical;
 - pytest for tests;
-- a conventional `pyproject.toml` when implementation begins;
-- a formatter/linter such as Ruff.
+- a conventional `pyproject.toml`;
+- Ruff for formatting and linting;
+- strict type checking.
 
-Start as a modular monolith, not microservices.
+Start as a modular monolith rather than microservices. The full future package map is recorded below, but package creation remains governed by the active milestone and subphase gates.
 
-Future structure is expected to be similar to:
+## Milestone 2 — Relationship trust and diagnostic constraint foundation
+
+Milestone 2 remains fully read-only and fixture-driven. It establishes a deterministic relationship trust pipeline and, in later subphases, diagnostic pricing constraints. It does not authorize actions.
+
+### Milestone 2 trust pipeline
+
+The ordered trust boundary is:
+
+```text
+RelationshipCandidate
+    → RelationshipCertificateDraft
+    → explicit semantic review
+    → deterministic truth/payoff validation
+    → RelationshipCertificate
+    → deterministic pricing constraint
+    → non-actionable ConstraintEvaluation
+```
+
+An LLM may produce only untrusted candidates and drafts. It may never produce or mark a validated certificate directly. In 2.1, candidate discovery is manual/synthetic only; any future model-assisted source is deferred to 2.2.
+
+### Milestone 2.1 — Deterministic relationship foundation — active
+
+This is the only active implementation subphase. Its scope is:
+
+1. Typed relationship-domain identifiers.
+2. Proposition models representing truth-bearing statements independently of venue instruments.
+3. Venue-native claim bindings connecting propositions to exact Polymarket market and outcome-token references, and to exact Kalshi market identity and native YES or NO side.
+4. `RelationshipCandidate` as an explicitly untrusted hypothesis.
+5. `RelationshipCertificateDraft` containing:
+   - participating propositions;
+   - exact venue claim bindings;
+   - proposed relationship type;
+   - supporting market-rule evidence;
+   - event scope;
+   - thresholds and units;
+   - observation period;
+   - close and resolution times;
+   - resolution sources;
+   - cancellation, void, and refund behavior;
+   - payout structure;
+   - edge cases;
+   - assumptions;
+   - uncertainties;
+   - evidence provenance;
+   - validation method;
+   - explicit semantic-review attestation;
+   - declared state-space completeness.
+6. Explicit feasible truth and payoff states.
+7. Deterministic validation for implication, equivalence, complement, subset/superset, mutually exclusive sets, exhaustive sets, and exclusive-and-exhaustive partitions.
+8. `RelationshipCertificate` as the successful result of validation, never as a user-assigned status flag.
+9. Deterministic serialization and tests.
+
+Milestone 2.1 supports only binary unit-payout claims. A complete feasible-state model must be supplied explicitly. The deterministic validator verifies the supplied model's structure, payout consistency, and claimed relationship; it does not claim to understand or prove external natural-language market rules by itself.
+
+Synthetic fixtures must be clearly marked synthetic. Their review attestations must not pretend to represent production authority. Conditional relationships and scalar markets must be represented as unsupported/deferred rather than approximated.
+
+2.1 must not create the constraint compiler, quote evaluator, LLM pipeline, opportunity models, or later-stage packages.
+
+#### Milestone 2.1 acceptance criteria
+
+- Candidates cannot be compiled or treated as certificates.
+- Certificate drafts cannot assign themselves validated status.
+- Incomplete state spaces fail closed.
+- Missing semantic review fails closed.
+- Each supported relationship validates against explicit truth states.
+- Invalid truth states reject the relationship.
+- Payout inconsistencies reject certification.
+- Cancellation, void, and refund states participate when present.
+- Scalar and conditional inputs are rejected as unsupported.
+- Venue-native claim identity is preserved.
+- Cross-venue drafts retain each venue's distinct references and provenance.
+- All financial and payout values use `Decimal`.
+- Serialization is deterministic.
+- Validation is deterministic.
+- No network or later-milestone behavior exists.
+- Tests cover provenance, precision, type-state boundaries, venue separation, and repeated-run determinism.
+
+### Milestone 2.2 — LLM-assisted relationship discovery — planned, not active
+
+2.2 adds an optional, untrusted semantic-discovery source only after the deterministic trust boundary exists. The initial implementation remains fixture-driven and network-free. It may consume recorded model output or a provider-neutral interface, but it must not require secrets or a live LLM API.
+
+Plan for:
+
+- deterministic topic, entity, date, threshold, and unit prefilters;
+- optional embedding/similarity candidate prefiltering;
+- strict structured model output;
+- proposition proposals;
+- venue-claim-binding proposals;
+- proposed relationship types;
+- evidence-span extraction from supplied market rules;
+- assumptions, uncertainties, edge cases, and abstention;
+- `RelationshipCandidate` output;
+- `RelationshipCertificateDraft` output;
+- prompt, model, parameter, input, output, and source provenance;
+- bounded attempts and malformed-output rejection;
+- recorded model inputs and responses for deterministic tests;
+- a labeled evaluation fixture set;
+- precision, recall, false-positive, abstention, malformed-output, consistency, reviewer-acceptance, cost, and latency measurements.
+
+An LLM in 2.2 may never validate its own candidate, attest state-space completeness, invent missing market rules, silently resolve conflicting evidence, create a `RelationshipCertificate` directly, compile a pricing constraint, create an opportunity or trade instruction, or authorize execution. The discovery component must be replaceable and disableable without affecting deterministic certificates or constraints.
+
+### Milestone 2.3 — Constraint compilation and diagnostic evaluation — planned, not active
+
+2.3 plans a `Decimal`-based linear pricing-constraint model compiled only from validated `RelationshipCertificate` objects.
+
+Supported theoretical constraints for binary unit-payout claims are:
+
+- Complement: `P(A) + P(B) = 1`.
+- Implication: `P(A) - P(B) <= 0`.
+- Equivalence: `P(A) - P(B) = 0`.
+- Subset: `P(A) - P(B) <= 0`.
+- Mutually exclusive set: `sum(P(A_i)) <= 1`.
+- Exhaustive set: `sum(P(A_i)) >= 1`.
+- Exclusive-and-exhaustive partition: `sum(P(A_i)) = 1`.
+
+The compiler must verify each generated constraint against every certified payoff state rather than trusting only the relationship label.
+
+Quote observations are planned as intervals `[best bid, best ask]`; midpoint is not the implementation authority. Polymarket observations use directly published bid and ask ladders. Kalshi observations use the convention-aware interpreted ladders created in Milestone 1.
+
+Planned evaluation statuses are `SATISFIED`, `VIOLATED`, `INDETERMINATE`, and `UNAVAILABLE`.
+
+`VIOLATED` means only that no price vector inside the observed intervals satisfies the certified relationship. It is not an opportunity, profit estimate, order plan, or execution authorization.
+
+Evaluation must fail closed for invalid replay state, missing required book sides, missing provenance, unknown payout mappings, incompatible claim bindings, unsupported relationship types, unsupported scalar payouts, and unavailable temporal synchronization. Initial fixtures should use exactly synchronized observations; real timestamp-skew policy remains deferred.
+
+## Milestone 2 package boundaries
+
+The expected future structure may resemble:
 
 ```text
 src/invariant_engine/domain/
@@ -235,50 +354,68 @@ src/invariant_engine/provenance/
 src/invariant_engine/venues/polymarket/
 src/invariant_engine/venues/kalshi/
 src/invariant_engine/relationships/
+    ids.py
+    propositions.py
+    claims.py
+    candidates.py
+    evidence.py
+    states.py
+    certificates.py
+    validation.py
+
 src/invariant_engine/constraints/
+    models.py
+    compiler.py
+    observations.py
+    evaluator.py
+
 src/invariant_engine/replay/
 src/invariant_engine/diagnostics/
 src/invariant_engine/simulation/
 src/invariant_engine/risk/
 src/invariant_engine/execution/
 src/invariant_engine/reconciliation/
+
 fixtures/
+fixtures/relationships/
 tests/
+tests/relationships/
+tests/constraints/
 ```
 
-The `simulation`, `risk`, `execution`, and `reconciliation` packages are future architecture only. Do not create or implement them now.
+During active 2.1, only packages required by 2.1 may be created. `constraints/` must not be created until 2.3. LLM discovery modules must not be created until 2.2. Opportunity, simulation, risk, execution, reconciliation, and other future-milestone packages remain prohibited.
 
-## Milestone roadmap
+## Milestone 2 non-goals
 
-### Milestone 0 — Governance and architecture
+All of Milestone 2 prohibits:
 
-Create `PLAN.md` and `AGENTS.md`.
+- live venue connections;
+- authenticated venue APIs;
+- live LLM calls in the initial 2.2 implementation;
+- secrets;
+- wallets;
+- signing;
+- orders;
+- cancellations;
+- routing;
+- order sizing;
+- executable-size calculation;
+- fee-adjusted profit;
+- depth consumption;
+- live positions;
+- capital allocation;
+- paper trading;
+- portfolio/risk engine;
+- execution simulation;
+- fill reconciliation;
+- legal or compliance determinations;
+- LLM-authorized relationships, constraints, opportunities, or trades.
 
-### Milestone 1 — Replayable market foundation
+Also deferred are general natural-language proof, general SAT or integer-programming solvers, marginal-polytope projection, conditional-relationship compilation, scalar-market constraints, opportunity candidates, and historical opportunity economics.
 
-Implement later:
+Milestone 3 remains responsible for historical depth, executable prices, fees, counterfactual supported size, gross and net edge, and residual multi-leg exposure.
 
-- raw envelopes;
-- typed IDs;
-- Decimal policy;
-- venue-native fixture models;
-- order-book snapshots and updates;
-- deterministic replay;
-- provenance;
-- warnings;
-- stable serialization;
-- tests for determinism and venue separation.
-
-### Milestone 2 — Relationship and constraint engine
-
-Implement later:
-
-- propositions;
-- relationship candidates;
-- relationship certificates;
-- payoff-state validation;
-- deterministic pricing constraints;
-- non-actionable constraint violations.
+## Later milestone roadmap
 
 ### Milestone 3 — Historical opportunity economics
 
@@ -289,25 +426,14 @@ Implement later:
 - fee treatment;
 - counterfactual supported size;
 - gross and net edge;
-- multi-leg residual exposure;
+- residual multi-leg exposure;
 - incomplete-data rejection.
 
 All outputs remain diagnostic.
 
 ### Milestone 4 — Strategy validation
 
-Measure:
-
-- opportunity frequency;
-- persistence;
-- depth;
-- fee-adjusted edge;
-- latency sensitivity;
-- fill assumptions;
-- false relationships;
-- capital usage;
-- drawdowns;
-- data-quality failures.
+Measure opportunity frequency, persistence, depth, fee-adjusted edge, latency sensitivity, fill assumptions, false relationships, capital usage, drawdowns, and data-quality failures.
 
 ### Milestone 5 — Live read-only scanner
 
@@ -329,32 +455,19 @@ Enable one venue and one validated strategy class with tightly limited capital t
 
 Add cross-venue execution only after venue-local execution and reconciliation are reliable.
 
-## Current-stage non-goals
-
-The current stage explicitly prohibits:
-
-- live venue connections;
-- authenticated APIs;
-- secrets;
-- wallets;
-- signing;
-- order submission;
-- cancellation;
-- routing;
-- live sizing;
-- live positions;
-- capital allocation;
-- paper trading;
-- portfolio/risk-engine implementation;
-- fill reconciliation;
-- legal or compliance determinations;
-- LLM-authorized trades.
-
 ## Open evidence questions
 
 Do not invent answers to these questions:
 
-- How can natural-language proposition relationships be validated deterministically?
+- How can natural-language relationship meaning eventually be validated beyond explicit review?
+- How should state-space completeness be established for real market rules?
+- How should conflicting or changing resolution rules invalidate certificates?
+- How should certificate versions respond to amended venue rules?
+- What labeled benchmark should evaluate LLM-assisted discovery?
+- What precision and reviewer-load thresholds should govern whether LLM discovery is useful?
+- How should conditional relationships be represented?
+- How should scalar payouts be represented?
+- How should asynchronous cross-venue observations be evaluated safely?
 - How should websocket gap recovery work?
 - What are the complete fill-history semantics?
 - What are the current venue schemas and fee schedules?
@@ -363,10 +476,23 @@ Do not invent answers to these questions:
 - What are the economics of partial fills?
 - How do cross-venue settlement processes differ?
 - What capital-transfer constraints apply?
-- How should scalar-market settlement be represented?
 - What constitutes economic finality and cash availability?
 
-## First implementation milestone
+## First implementation task
 
-The next coding task is bounded to Milestone 1: implement only the local, replayable market foundation and its tests. That work may cover raw envelopes, typed IDs, the Decimal policy, venue-native fixture models, order-book snapshots and updates, deterministic replay, provenance, warnings, stable serialization, and determinism/venue-separation tests. It must remain fixture-driven and read-only; it must not add live connections, authentication, trading, execution, risk authorization, or any later-milestone package.
+The next implementation task is explicitly bounded to active Milestone 2.1 only:
 
+- relationship IDs;
+- propositions;
+- venue-native claim bindings;
+- untrusted candidates;
+- evidence;
+- feasible truth/payoff states;
+- certificate drafts;
+- explicit review attestations;
+- deterministic validation;
+- validated certificates;
+- deterministic serialization;
+- tests.
+
+This task must remain local, read-only, deterministic, fixture-driven, and network-free. It explicitly excludes Milestone 2.2, Milestone 2.3, all later work, the constraint compiler, quote evaluation, LLM discovery packages or integrations, opportunity models, execution instructions, and any live-system behavior.
