@@ -237,11 +237,15 @@ RelationshipCandidate
     → non-actionable ConstraintEvaluation
 ```
 
-An LLM may produce only untrusted candidates and drafts. It may never produce or mark a validated certificate directly. In 2.1, candidate discovery is manual/synthetic only; any future model-assisted source is deferred to 2.2.
+An LLM may produce only untrusted candidates and drafts. It may never produce
+or mark a validated certificate directly. In completed 2.1, candidate
+discovery was manual/synthetic only. Active 2.2 discovery is limited to
+recorded, provider-neutral outputs behind the same deterministic trust
+boundary.
 
-### Milestone 2.1 — Deterministic relationship foundation — active
+### Milestone 2.1 — Deterministic relationship foundation — completed and accepted
 
-This is the only active implementation subphase. Its scope is:
+This completed implementation subphase delivered:
 
 1. Typed relationship-domain identifiers.
 2. Proposition models representing truth-bearing statements independently of venue instruments.
@@ -296,29 +300,107 @@ Synthetic fixtures must be clearly marked synthetic. Their review attestations m
 - No network or later-milestone behavior exists.
 - Tests cover provenance, precision, type-state boundaries, venue separation, and repeated-run determinism.
 
-### Milestone 2.2 — LLM-assisted relationship discovery — planned, not active
+#### Milestone 2.1 acceptance record
 
-2.2 adds an optional, untrusted semantic-discovery source only after the deterministic trust boundary exists. The initial implementation remains fixture-driven and network-free. It may consume recorded model output or a provider-neutral interface, but it must not require secrets or a live LLM API.
+Milestone 2.1 was accepted on 2026-08-09 at implementation commit `fdf6f5e`.
+The accepted baseline is:
+
+- 104 pytest tests passed;
+- Ruff check passed;
+- Ruff format check passed for 40 files;
+- strict mypy passed for 29 source files;
+- Python 3.11 compilation passed;
+- `git diff --check` passed;
+- independent trust-boundary and provenance review passed;
+- Milestone 1 did not regress;
+- no prohibited or later-milestone package was created.
+
+This acceptance records the delivered deterministic relationship foundation;
+its trust boundaries, provenance rules, and type-state distinctions remain
+mandatory for all later discovery work.
+
+### Milestone 2.2 — LLM-assisted relationship discovery — active
+
+This is the only active implementation subphase. It adds an optional,
+untrusted semantic-discovery source after the deterministic 2.1 trust boundary
+exists. The initial implementation remains local, read-only, deterministic
+outside the recorded model boundary, fixture-driven, network-free,
+provider-neutral, replaceable, and disableable. It consumes recorded model
+inputs and outputs and requires no secrets, live model credentials, live LLM
+API, embedding service, external network, or provider SDK dependency.
+
+The discovery layer's allowed software output shapes are still explicitly
+untrusted domain objects. “Trusted outputs” here means only that these shapes
+are permitted at the software boundary; it does not mean validated semantic
+truth. Allowed shapes include:
+
+- `RelationshipCandidate`;
+- `RelationshipCertificateDraft`;
+- proposition proposals;
+- venue-claim-binding proposals;
+- proposed relationship types;
+- bounded evidence spans from supplied market rules;
+- assumptions;
+- uncertainties;
+- edge cases;
+- abstention reasons;
+- rejection reasons;
+- malformed-output records;
+- prompt, model, parameter, input, output, and source provenance.
+
+The provider-neutral boundary must consume recorded fixture responses. It must
+not call a live LLM, live embedding model, or external network.
 
 Plan for:
 
 - deterministic topic, entity, date, threshold, and unit prefilters;
-- optional embedding/similarity candidate prefiltering;
-- strict structured model output;
+- optional similarity metadata from recorded fixtures;
+- strict structured-output parsing;
+- explicit input and output schema versions;
 - proposition proposals;
 - venue-claim-binding proposals;
 - proposed relationship types;
-- evidence-span extraction from supplied market rules;
-- assumptions, uncertainties, edge cases, and abstention;
-- `RelationshipCandidate` output;
-- `RelationshipCertificateDraft` output;
-- prompt, model, parameter, input, output, and source provenance;
+- evidence-span extraction only from supplied market-rule text;
+- assumptions, uncertainties, edge cases, abstention, and rejection reasons;
 - bounded attempts and malformed-output rejection;
+- deterministic retry exhaustion;
+- no repair that invents missing semantic content;
 - recorded model inputs and responses for deterministic tests;
+- stable serialization and ordered provenance;
 - a labeled evaluation fixture set;
 - precision, recall, false-positive, abstention, malformed-output, consistency, reviewer-acceptance, cost, and latency measurements.
 
-An LLM in 2.2 may never validate its own candidate, attest state-space completeness, invent missing market rules, silently resolve conflicting evidence, create a `RelationshipCertificate` directly, compile a pricing constraint, create an opportunity or trade instruction, or authorize execution. The discovery component must be replaceable and disableable without affecting deterministic certificates or constraints.
+An LLM or discovery provider in 2.2 may never:
+
+- validate its own candidate;
+- perform semantic-review attestation;
+- declare state-space completeness;
+- invent missing market rules;
+- silently resolve conflicting rules;
+- create a `RelationshipCertificate` directly;
+- call or bypass deterministic certification;
+- compile a pricing constraint;
+- evaluate quotes;
+- create an opportunity, order, or execution instruction;
+- authorize a trade.
+
+All candidates and drafts remain explicitly untrusted even when their
+structured output parses successfully. The discovery component must be
+replaceable and disableable without affecting deterministic certificates or
+constraints.
+
+Recorded-output tests must cover valid proposals, malformed JSON or equivalent
+malformed structure, missing required fields, unsupported schema versions,
+unknown relationship types, conditional and scalar proposals, ambiguous
+wording, conflicting evidence, abstention, duplicate proposals, deterministic
+retry exhaustion, provenance preservation, cross-venue identity preservation,
+repeated-run determinism, no-network behavior, and inability to construct
+certificates.
+
+Evaluation planning may measure precision, recall, false-positive rate,
+abstention rate, malformed-output rate, repeated-run consistency, reviewer
+acceptance, cost metadata, and latency metadata. No minimum precision,
+acceptable reviewer workload, cost target, or latency target is approved yet.
 
 ### Milestone 2.3 — Constraint compilation and diagnostic evaluation — planned, not active
 
@@ -363,6 +445,8 @@ src/invariant_engine/relationships/
     certificates.py
     validation.py
 
+src/invariant_engine/discovery/
+
 src/invariant_engine/constraints/
     models.py
     compiler.py
@@ -383,7 +467,12 @@ tests/relationships/
 tests/constraints/
 ```
 
-During active 2.1, only packages required by 2.1 may be created. `constraints/` must not be created until 2.3. LLM discovery modules must not be created until 2.2. Opportunity, simulation, risk, execution, reconciliation, and other future-milestone packages remain prohibited.
+During active 2.2, only packages required by bounded recorded-response
+discovery may be created. The accepted 2.1 relationship foundation must not
+regress. `constraints/` must not be created until 2.3. Quote evaluation,
+opportunity models, diagnostics unrelated to bounded discovery evaluation,
+simulation, risk, execution, reconciliation, and other future-milestone
+packages remain prohibited. No live provider or model integration is allowed.
 
 ## Milestone 2 non-goals
 
@@ -391,7 +480,7 @@ All of Milestone 2 prohibits:
 
 - live venue connections;
 - authenticated venue APIs;
-- live LLM calls in the initial 2.2 implementation;
+- live LLM calls or live embedding calls in the initial 2.2 implementation;
 - secrets;
 - wallets;
 - signing;
@@ -480,19 +569,23 @@ Do not invent answers to these questions:
 
 ## First implementation task
 
-The next implementation task is explicitly bounded to active Milestone 2.1 only:
+The next implementation task is explicitly bounded to active Milestone 2.2
+only:
 
-- relationship IDs;
-- propositions;
-- venue-native claim bindings;
-- untrusted candidates;
-- evidence;
-- feasible truth/payoff states;
-- certificate drafts;
-- explicit review attestations;
-- deterministic validation;
-- validated certificates;
-- deterministic serialization;
+- provider-neutral recorded-response interface;
+- versioned discovery input and output schemas;
+- deterministic topic, entity, date, threshold, and unit prefilters;
+- strict structured-output parser;
+- candidate and draft proposal mapping;
+- abstention and rejection handling;
+- prompt/model/parameter/input/output provenance;
+- recorded synthetic fixtures;
+- evaluation fixture labels and metrics;
 - tests.
 
-This task must remain local, read-only, deterministic, fixture-driven, and network-free. It explicitly excludes Milestone 2.2, Milestone 2.3, all later work, the constraint compiler, quote evaluation, LLM discovery packages or integrations, opportunity models, execution instructions, and any live-system behavior.
+This task must remain local, read-only, deterministic outside the recorded
+model boundary, fixture-driven, provider-neutral, replaceable, disableable,
+and network-free. It explicitly excludes live providers, live embeddings,
+certificate creation, changes to deterministic validation, Milestone 2.3, all
+later work, the constraint compiler, quotes, opportunities, execution
+instructions, and any live-system behavior.

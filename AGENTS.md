@@ -2,21 +2,24 @@
 
 - `PLAN.md` defines the current approved roadmap; work only within its active scope.
 - Milestone 1 is completed and accepted. Its replayable market foundation must not regress.
-- The active work is Milestone 2.1 only: the local, read-only, deterministic, fixture-driven relationship foundation.
+- Milestone 2.1 is completed and accepted. Its deterministic relationship foundation must not regress.
+- The active work is Milestone 2.2 only: optional, local, read-only, fixture-driven, provider-neutral relationship discovery.
 - Preserve venue-native semantics and raw provenance.
 - Use `Decimal` for all financial and payout values; never fabricate missing fields or venue behavior.
-- Candidate discovery in 2.1 is manual/synthetic only. A `RelationshipCandidate` is never a validated relationship.
+- Discovery in 2.2 is optional, recorded-response, untrusted, local, fixture-driven, provider-neutral, and network-free. Recorded model responses are test data, not semantic authority.
+- Successful structured parsing does not establish truth. A `RelationshipCandidate` is never a validated relationship.
 - A `RelationshipCertificateDraft` is never a validated certificate. Only deterministic validation after explicit semantic review may produce a `RelationshipCertificate`.
 - A validated relationship is not an executable opportunity; opportunity candidates, if introduced in a later milestone, remain non-actionable.
 - The validator checks supplied feasible truth/payoff evidence and does not claim natural-language omniscience.
-- Binary unit-payout claims are the only supported claim class in 2.1. Conditional and scalar relationships are deferred or rejected as unsupported.
-- No constraint compiler or quote evaluator may be added during 2.1.
-- No LLM package or model integration may be added during 2.1. No LLM may validate a relationship or bypass deterministic checks.
+- Binary unit-payout claims are the only supported claim class in 2.1. Conditional and scalar proposals remain deferred or rejected as unsupported.
+- The existing deterministic validator remains the sole certificate-producing path. No discovery provider may review itself, attest completeness, certify, compile a constraint, evaluate quotes, create an opportunity, or authorize action.
+- No constraint compiler or quote evaluator may be added during 2.2.
+- No live model APIs, embedding services, provider SDK dependencies, secrets, authentication, or external network access are authorized during 2.2. No LLM may validate a relationship or bypass deterministic checks.
 - No opportunity object or execution instruction may be added.
-- Only packages required by 2.1 may be created. Do not create `constraints/` until 2.3, LLM discovery modules until 2.2, or any other future-milestone package prematurely.
+- Only packages required by 2.2 discovery may be created. Do not create `constraints/` until 2.3, or any other future-milestone package prematurely.
 - Provenance, `Decimal` precision, stable serialization, venue separation, and deterministic tests are mandatory.
-- Tests must cover determinism, provenance, precision, type-state boundaries, venue separation, and no-network behavior.
+- Tests must cover determinism, provenance, precision, type-state boundaries, venue separation, recorded malformed outputs, and no-network behavior.
 - No live connections, authentication, secrets, wallets, signing, orders, cancellations, routing, sizing, positions, capital allocation, paper trading, risk engine, reconciliation, or execution behavior is allowed in Milestone 2.
 - Future execution code must remain behind a deterministic risk gateway.
-- Stop and report missing evidence rather than inventing market rules.
-- Scope expansion requires an approved `PLAN.md` update.
+- Missing or conflicting evidence requires abstention or rejection, never invention. Stop and report missing evidence rather than inventing market rules.
+- Scope expansion requires another approved `PLAN.md` transition.
