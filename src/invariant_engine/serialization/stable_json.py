@@ -1,5 +1,6 @@
 """Canonical JSON serialization with Decimal values represented as strings."""
 
+import base64
 import json
 from dataclasses import fields, is_dataclass
 from datetime import UTC, date, datetime
@@ -15,6 +16,8 @@ def _timestamp(value: datetime) -> str:
 
 
 def to_primitive(value: Any) -> Any:
+    if isinstance(value, bytes):
+        return {"encoding": "base64", "value": base64.b64encode(value).decode("ascii")}
     if isinstance(value, Decimal):
         return str(value)
     if isinstance(value, datetime):

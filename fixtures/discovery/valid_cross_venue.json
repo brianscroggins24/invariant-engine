@@ -1,0 +1,32 @@
+{
+  "schema_version": "discovery-fixture-v1",
+  "fixture_id": "discovery/valid_cross_venue.json",
+  "attempts": [
+    {
+      "attempt_index": 0,
+      "provider_label": "recorded-synthetic",
+      "model_label": "recorded-model",
+      "model_version": "fixture-v1",
+      "prompt_id": "relationship-discovery",
+      "prompt_version": "v1",
+      "recorded_prompt": "Return strict discovery JSON.",
+      "prompt_digest": null,
+      "parameters": [
+        {"name": "temperature", "value": "0"},
+        {"name": "response_format", "value": "json"}
+      ],
+      "input_text": "{\"schema_version\":\"discovery-input-v1\",\"inputs\":[{\"input_id\":\"poly-1\",\"venue\":\"polymarket\",\"venue_identity\":{\"market_reference\":\"0xpoly-market\",\"outcome_token_reference\":\"poly-token\",\"native_outcome_side\":\"yes\"},\"claim_classification\":\"binary_unit\",\"question\":\"Synthetic event occurs.\",\"market_rules\":[{\"rule_input_id\":\"poly-rule\",\"rule_text\":\"Synthetic rule A.\",\"raw_refs\":[{\"value\":\"poly-discovery-raw\",\"venue\":\"polymarket\"}]}],\"raw_refs\":[{\"value\":\"poly-discovery-raw\",\"venue\":\"polymarket\"}],\"topics\":[\"Event\"],\"entities\":[\"Issuer\"],\"end_date\":\"2025-01-01\",\"thresholds\":[{\"name\":\"amount\",\"comparator\":\">=\",\"value\":\"10.00\",\"unit\":\"units\"}],\"unit\":\"units\",\"similarity\":{\"value\":\"0.91\",\"label\":\"recorded\",\"provider\":\"synthetic\",\"version\":\"v1\"}},{\"input_id\":\"kalshi-1\",\"venue\":\"kalshi\",\"venue_identity\":{\"market_ticker\":\"SYN-EVENT\",\"market_id\":\"kalshi-market-id\",\"native_side\":\"no\"},\"claim_classification\":\"binary_unit\",\"question\":\"Synthetic event does not occur.\",\"market_rules\":[{\"rule_input_id\":\"kalshi-rule\",\"rule_text\":\"Synthetic rule B.\",\"raw_refs\":[{\"value\":\"kalshi-discovery-raw\",\"venue\":\"kalshi\"}]}],\"raw_refs\":[{\"value\":\"kalshi-discovery-raw\",\"venue\":\"kalshi\"}],\"topics\":[\"event\"],\"entities\":[\"issuer\"],\"end_date\":\"2025-01-01\",\"thresholds\":[{\"name\":\"amount\",\"comparator\":\">=\",\"value\":\"10.00\",\"unit\":\"units\"}],\"unit\":\"UNITS\",\"similarity\":{\"value\":\"0.12\",\"label\":\"recorded\",\"provider\":\"synthetic\",\"version\":\"v1\"}}]}",
+      "output_text": "{\"schema_version\":\"discovery-output-v1\",\"outcome\":\"proposals\",\"proposals\":[{\"proposal_id\":\"model-p-1\",\"relationship_type\":\"complement\",\"propositions\":[{\"proposal_proposition_id\":\"m-a\",\"input_id\":\"poly-1\",\"binding_ref\":\"poly-1\"},{\"proposal_proposition_id\":\"m-b\",\"input_id\":\"kalshi-1\",\"binding_ref\":\"kalshi-1\"}],\"claim_classification\":\"binary_unit\",\"evidence_spans\":[{\"rule_input_id\":\"poly-rule\",\"start\":0,\"end\":17,\"text\":\"Synthetic rule A.\",\"raw_refs\":[{\"value\":\"poly-discovery-raw\",\"venue\":\"polymarket\"}]},{\"rule_input_id\":\"kalshi-rule\",\"start\":0,\"end\":17,\"text\":\"Synthetic rule B.\",\"raw_refs\":[{\"value\":\"kalshi-discovery-raw\",\"venue\":\"kalshi\"}]}],\"assumptions\":[\"Recorded proposal only.\"],\"uncertainties\":[\"Semantic review is required.\"],\"edge_cases\":[\"Cancellation behavior was not supplied.\"],\"event_scope\":\"synthetic-event\"}]}",
+      "source_raw_refs": [
+        {"value": "poly-discovery-raw", "venue": "polymarket"},
+        {"value": "kalshi-discovery-raw", "venue": "kalshi"}
+      ],
+      "cost": {"amount": "0.0125", "unit": "USD", "currency": "USD"},
+      "latency": {"value": "125", "unit": "ms"},
+      "input_schema_version": "discovery-input-v1",
+      "output_schema_version": "discovery-output-v1",
+      "fixture_schema_version": "discovery-fixture-v1",
+      "warnings": ["Synthetic fixture; no provider authority."]
+    }
+  ]
+}

@@ -37,6 +37,7 @@ from invariant_engine.relationships import (
     ValidationFailureCode,
     validate_draft,
 )
+from invariant_engine.relationships.certificates import reviewable_fingerprint
 from invariant_engine.serialization import stable_json_bytes
 from invariant_engine.venues.kalshi import KalshiMarketIdentity, KalshiNativeSideKind
 
@@ -621,6 +622,15 @@ def test_naive_review_time_and_float_payout_are_rejected() -> None:
             {PropositionId("p"): True},
             {ClaimBindingId("b"): 1.0},
         )
+
+
+def test_legacy_threshold_serialization_and_review_fingerprint_are_unchanged() -> None:
+    assert stable_json_bytes(Threshold("threshold", Decimal("10"), "units")) == (
+        b'{"name":"threshold","unit":"units","value":"10"}'
+    )
+    assert reviewable_fingerprint(_draft(RelationshipType.IMPLICATION)) == (
+        "5f0bcc7170f1dc44f490587d29da75d7c4020db2fedfaa04da618d3470eb3683"
+    )
 
 
 def test_only_milestone_2_1_packages_exist() -> None:

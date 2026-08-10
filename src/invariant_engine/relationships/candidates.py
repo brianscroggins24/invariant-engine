@@ -97,8 +97,10 @@ class RelationshipCandidate:
             raise DomainError("candidate raw_refs must contain RawReference values")
         if not isinstance(self.source, str) or not self.source.strip():
             raise DomainError("candidate source must be non-empty")
-        if self.source not in {"manual", "synthetic", "fixture"}:
-            raise DomainError("Milestone 2.1 candidate source must be manual or synthetic")
+        if self.source not in {"manual", "synthetic", "fixture", "recorded_discovery"}:
+            raise DomainError(
+                "candidate source must be manual, synthetic, fixture, or recorded_discovery"
+            )
 
 
 @dataclass(frozen=True, slots=True)
