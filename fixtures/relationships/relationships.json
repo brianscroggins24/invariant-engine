@@ -1,0 +1,48 @@
+{
+  "schema_version": "relationship-fixture-v1",
+  "synthetic": true,
+  "examples": {
+    "polymarket": {
+      "market": "0xsynthetic-polymarket-market",
+      "outcome_token": "synthetic-polymarket-yes-token",
+      "relationship": "implication"
+    },
+    "kalshi": {
+      "market_ticker": "SYNTHETIC-EVENT-MARKET",
+      "market_id": "synthetic-kalshi-market-id",
+      "native_side": "yes",
+      "relationship": "equivalence"
+    },
+    "cross_venue": {
+      "polymarket_market": "0xsynthetic-polymarket-market",
+      "polymarket_outcome_token": "synthetic-polymarket-yes-token",
+      "kalshi_market_ticker": "SYNTHETIC-EVENT-MARKET",
+      "kalshi_market_id": "synthetic-kalshi-market-id",
+      "kalshi_native_side": "no",
+      "relationship": "complement"
+    }
+  },
+  "supported_relationship_types": [
+    "implication",
+    "equivalence",
+    "complement",
+    "subset",
+    "superset",
+    "mutually_exclusive_set",
+    "exhaustive_set",
+    "exclusive_and_exhaustive_partition"
+  ],
+  "negative_cases": [
+    "counterexample",
+    "incomplete_state_space",
+    "missing_review",
+    "rejected_review",
+    "stale_review",
+    "payout_inconsistency",
+    "cancellation",
+    "void",
+    "refund",
+    "conditional",
+    "scalar_kalshi"
+  ]
+}
