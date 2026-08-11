@@ -239,9 +239,9 @@ RelationshipCandidate
 
 An LLM may produce only untrusted candidates and drafts. It may never produce
 or mark a validated certificate directly. In completed 2.1, candidate
-discovery was manual/synthetic only. Active 2.2 discovery is limited to
+discovery was manual/synthetic only. Completed 2.2 discovery is limited to
 recorded, provider-neutral outputs behind the same deterministic trust
-boundary.
+boundary, and those limits remain permanent.
 
 ### Milestone 2.1 — Deterministic relationship foundation — completed and accepted
 
@@ -319,112 +319,181 @@ This acceptance records the delivered deterministic relationship foundation;
 its trust boundaries, provenance rules, and type-state distinctions remain
 mandatory for all later discovery work.
 
-### Milestone 2.2 — LLM-assisted relationship discovery — active
+### Milestone 2.2 — LLM-assisted relationship discovery — completed and accepted
 
-This is the only active implementation subphase. It adds an optional,
-untrusted semantic-discovery source after the deterministic 2.1 trust boundary
-exists. The initial implementation remains local, read-only, deterministic
-outside the recorded model boundary, fixture-driven, network-free,
-provider-neutral, replaceable, and disableable. It consumes recorded model
-inputs and outputs and requires no secrets, live model credentials, live LLM
-API, embedding service, external network, or provider SDK dependency.
+Milestone 2.2 was completed and accepted on 2026-08-09 at implementation
+commit `d7a6dc5aec6a7fb9c24400a269aae4231bbf8572`.
 
-The discovery layer's allowed software output shapes are still explicitly
-untrusted domain objects. “Trusted outputs” here means only that these shapes
-are permitted at the software boundary; it does not mean validated semantic
-truth. Allowed shapes include:
+The accepted delivery provides:
 
-- `RelationshipCandidate`;
-- `RelationshipCertificateDraft`;
-- proposition proposals;
-- venue-claim-binding proposals;
-- proposed relationship types;
-- bounded evidence spans from supplied market rules;
-- assumptions;
-- uncertainties;
-- edge cases;
-- abstention reasons;
-- rejection reasons;
-- malformed-output records;
-- prompt, model, parameter, input, output, and source provenance.
-
-The provider-neutral boundary must consume recorded fixture responses. It must
-not call a live LLM, live embedding model, or external network.
-
-Plan for:
-
+- optional, local, read-only, fixture-driven discovery;
+- a provider-neutral recorded-response boundary;
+- immutable, versioned input and output schemas;
+- strict UTF-8 JSON parsing;
+- duplicate-key rejection at every depth;
+- rejection of non-standard constants and invalid framing whitespace;
+- rejection of unpaired Unicode surrogates;
 - deterministic topic, entity, date, threshold, and unit prefilters;
-- optional similarity metadata from recorded fixtures;
-- strict structured-output parsing;
-- explicit input and output schema versions;
-- proposition proposals;
-- venue-claim-binding proposals;
-- proposed relationship types;
-- evidence-span extraction only from supplied market-rule text;
-- assumptions, uncertainties, edge cases, abstention, and rejection reasons;
-- bounded attempts and malformed-output rejection;
-- deterministic retry exhaustion;
-- no repair that invents missing semantic content;
-- recorded model inputs and responses for deterministic tests;
-- stable serialization and ordered provenance;
-- a labeled evaluation fixture set;
-- precision, recall, false-positive, abstention, malformed-output, consistency, reviewer-acceptance, cost, and latency measurements.
+- optional non-authoritative recorded similarity metadata;
+- untrusted candidate and certificate-draft proposal mapping;
+- evidence spans closed exactly against supplied participating rule text;
+- exact ordered request, rule, attempt, candidate, draft, binding, evidence, and completeness provenance;
+- bounded attempts and deterministic retry exhaustion;
+- explicit abstention, rejection, malformed-attempt, and duplicate records;
+- preservation of cross-venue Polymarket and Kalshi identities;
+- stable serialization;
+- labeled synthetic evaluation fixtures and deterministic metrics;
+- disableable discovery;
+- no network access or provider SDK dependencies;
+- no validator invocation, certificate construction, semantic-review attestation, or completeness attestation.
 
-An LLM or discovery provider in 2.2 may never:
+The discovery boundaries above are permanent. Successful parsing remains
+untrusted and does not establish semantic truth, review, certification,
+state-space completeness, a constraint, an opportunity, or authorization.
+Discovery may not certify, attest semantic review or completeness, compile
+constraints, or evaluate quotes.
 
-- validate its own candidate;
-- perform semantic-review attestation;
-- declare state-space completeness;
-- invent missing market rules;
-- silently resolve conflicting rules;
-- create a `RelationshipCertificate` directly;
-- call or bypass deterministic certification;
-- compile a pricing constraint;
-- evaluate quotes;
-- create an opportunity, order, or execution instruction;
-- authorize a trade.
+#### Milestone 2.2 acceptance record
 
-All candidates and drafts remain explicitly untrusted even when their
-structured output parses successfully. The discovery component must be
-replaceable and disableable without affecting deterministic certificates or
-constraints.
+The accepted validation baseline was:
 
-Recorded-output tests must cover valid proposals, malformed JSON or equivalent
-malformed structure, missing required fields, unsupported schema versions,
-unknown relationship types, conditional and scalar proposals, ambiguous
-wording, conflicting evidence, abstention, duplicate proposals, deterministic
-retry exhaustion, provenance preservation, cross-venue identity preservation,
-repeated-run determinism, no-network behavior, and inability to construct
-certificates.
+- 149 pytest tests passed;
+- 105 Milestone 1 and 2.1 regression tests passed;
+- Ruff check passed;
+- Ruff formatting passed for 50 files;
+- strict mypy passed for 37 source files;
+- Python 3.11 compilation passed;
+- `git diff --check` passed;
+- independent parser, provenance, cross-venue identity, certificate-boundary, determinism, and no-network review passed;
+- Milestones 1 and 2.1 did not regress;
+- no prohibited later-milestone package was added.
 
-Evaluation planning may measure precision, recall, false-positive rate,
-abstention rate, malformed-output rate, repeated-run consistency, reviewer
-acceptance, cost metadata, and latency metadata. No minimum precision,
-acceptable reviewer workload, cost target, or latency target is approved yet.
+The synthetic fixture measurements are recorded separately from acceptance
+criteria:
 
-### Milestone 2.3 — Constraint compilation and diagnostic evaluation — planned, not active
+- TP / FP / FN / TN: `4 / 8 / 1 / 24`;
+- precision: `0.3333333333333333333333333333`;
+- recall: `0.8`;
+- false-positive rate: `0.25`;
+- abstention rate: `0.05128205128205128205128205128`;
+- malformed-output rate: `0.6052631578947368421052631579`;
+- repeated-run consistency: `1`;
+- reviewer acceptance: `0.3076923076923076923076923077`;
+- one recorded cost observation: total/mean `0.0125 USD`;
+- one recorded latency observation: total/mean `125 ms`.
 
-2.3 plans a `Decimal`-based linear pricing-constraint model compiled only from validated `RelationshipCertificate` objects.
+These are synthetic, non-authoritative measurements. They are not a
+production benchmark, acceptance threshold, provider decision, cost target,
+or latency target.
 
-Supported theoretical constraints for binary unit-payout claims are:
+### Milestone 2.3 — Constraint compilation and diagnostic evaluation — active
 
-- Complement: `P(A) + P(B) = 1`.
-- Implication: `P(A) - P(B) <= 0`.
-- Equivalence: `P(A) - P(B) = 0`.
-- Subset: `P(A) - P(B) <= 0`.
-- Mutually exclusive set: `sum(P(A_i)) <= 1`.
-- Exhaustive set: `sum(P(A_i)) >= 1`.
+Milestone 2.3 is the only active implementation subphase. Its bounded purpose
+is local, read-only, fixture-driven, deterministic, and network-free
+constraint compilation and diagnostic evaluation. It permits only:
+
+- deterministic `Decimal`-based pricing-constraint models;
+- compilation only from validator-produced `RelationshipCertificate` objects;
+- deterministic verification of every compiled constraint against every certified feasible payoff state;
+- venue-native, provenance-bearing quote-interval observations;
+- non-actionable constraint evaluation;
+- local, read-only, fixture-driven, network-free tests.
+
+The lifecycle remains:
+
+```text
+RelationshipCandidate
+    → RelationshipCertificateDraft
+    → explicit semantic review
+    → deterministic truth/payoff validation
+    → RelationshipCertificate
+    → deterministic pricing constraint
+    → non-actionable ConstraintEvaluation
+    → later opportunity economics
+    → later deterministic risk authorization
+```
+
+Only validator-produced `RelationshipCertificate` objects may be compiled.
+The compiler must reject candidates, drafts, invalid objects, unsupported
+certificate types, and certificates that cannot be represented without
+assumptions.
+
+#### Supported binary unit-payout constraints
+
+Using ordered propositions A and B, the approved constraints are:
+
+- Complement: `P(A) + P(B) = 1`;
+- Implication: `P(A) - P(B) <= 0`;
+- Equivalence: `P(A) - P(B) = 0`;
+- Subset: `P(A) - P(B) <= 0`;
+- Superset: `P(A) - P(B) >= 0`;
+- Mutually exclusive set: `sum(P(A_i)) <= 1`;
+- Exhaustive set: `sum(P(A_i)) >= 1`;
 - Exclusive-and-exhaustive partition: `sum(P(A_i)) = 1`.
 
-The compiler must verify each generated constraint against every certified payoff state rather than trusting only the relationship label.
+The superset direction matches the accepted Milestone 2.1 ordering: for
+`SUPERSET(A, B)`, B implies A.
 
-Quote observations are planned as intervals `[best bid, best ask]`; midpoint is not the implementation authority. Polymarket observations use directly published bid and ask ladders. Kalshi observations use the convention-aware interpreted ladders created in Milestone 1.
+Do not add conditional relationships, scalar payouts, generalized solvers,
+integer programming, or marginal-polytope projection.
 
-Planned evaluation statuses are `SATISFIED`, `VIOLATED`, `INDETERMINATE`, and `UNAVAILABLE`.
+#### Constraint verification
 
-`VIOLATED` means only that no price vector inside the observed intervals satisfies the certified relationship. It is not an opportunity, profit estimate, order plan, or execution authorization.
+The eventual compiler must verify generated coefficients, relation, and bound
+against every payoff vector in the certified feasible-state set. It must not
+trust the relationship label alone.
 
-Evaluation must fail closed for invalid replay state, missing required book sides, missing provenance, unknown payout mappings, incompatible claim bindings, unsupported relationship types, unsupported scalar payouts, and unavailable temporal synchronization. Initial fixtures should use exactly synchronized observations; real timestamp-skew policy remains deferred.
+This verification does not establish natural-language truth or real-world
+state-space completeness. Those remain responsibilities of explicit review
+and deterministic certification upstream.
+
+#### Quote observations
+
+Retain interval observations `[best bid, best ask]`. Midpoint is not
+authoritative. Polymarket uses directly published venue-native bid and ask
+ladders. Kalshi uses the accepted convention-aware unified-YES interpretation
+derived from native YES/NO books. Observation provenance and timestamps must
+remain ordered and explicit.
+
+Milestone 2.3 v1 requires every participating observation to represent exactly
+the same timestamp instant, whether observations are intra-venue or
+cross-venue. No timestamp tolerance or freshness duration is approved. Unequal
+timestamps produce `UNAVAILABLE`. Explicit replay invalidity or staleness also
+produces `UNAVAILABLE`; no staleness threshold may be invented. Initial
+cross-venue fixtures must therefore be exactly synchronized. Asynchronous
+cross-venue safety policy remains deferred and must not be invented.
+
+#### Evaluation statuses
+
+Retain `SATISFIED`, `VIOLATED`, `INDETERMINATE`, and `UNAVAILABLE`.
+
+- `SATISFIED` means every price vector in the Cartesian product of the closed quote intervals satisfies the compiled certified constraint.
+- `VIOLATED` means no price vector in that interval product satisfies the compiled certified constraint.
+- `INDETERMINATE` means the interval product contains both satisfying and violating price vectors.
+- `UNAVAILABLE` means inputs are missing, invalid, unsupported, stale, unsynchronized, or otherwise cannot be evaluated.
+- `VIOLATED` is not an arbitrage opportunity, profit estimate, executable price, order plan, or authorization.
+- Missing quote sides are `UNAVAILABLE`, not `INDETERMINATE`.
+
+#### Fail-closed cases
+
+The implementation must fail closed for:
+
+- non-certificate input;
+- missing or inconsistent certificate provenance;
+- unsupported relationship type;
+- unsupported conditional or scalar claims;
+- coefficient or payoff-state verification failure;
+- incompatible or duplicate claim bindings;
+- missing required quote sides, which produce `UNAVAILABLE`;
+- crossed or otherwise invalid intervals;
+- invalid replay state, which produces `UNAVAILABLE`;
+- missing quote provenance;
+- unknown payout mapping;
+- stale or unsynchronized observations, which produce `UNAVAILABLE`;
+- unavailable temporal synchronization.
+
+Exactly synchronized synthetic fixtures are permitted. No general
+timestamp-skew tolerance or freshness duration may be invented.
 
 ## Milestone 2 package boundaries
 
@@ -467,12 +536,19 @@ tests/relationships/
 tests/constraints/
 ```
 
-During active 2.2, only packages required by bounded recorded-response
-discovery may be created. The accepted 2.1 relationship foundation must not
-regress. `constraints/` must not be created until 2.3. Quote evaluation,
-opportunity models, diagnostics unrelated to bounded discovery evaluation,
-simulation, risk, execution, reconciliation, and other future-milestone
-packages remain prohibited. No live provider or model integration is allowed.
+During active 2.3, only the following new packages may be created:
+
+- `src/invariant_engine/constraints/`;
+- `tests/constraints/`;
+- narrowly necessary synthetic constraint fixtures.
+
+The accepted Milestones 1, 2.1, and 2.2 foundations must not regress. No
+unrelated diagnostics package or later-milestone package may be created.
+Opportunity models, executable prices, depth consumption, fees, profit or edge
+calculations, sizing, historical strategy evaluation, live venue or model
+connections, simulation, risk, execution, reconciliation, wallets, signing,
+orders, cancellation, and routing remain prohibited. No live provider or model
+integration is allowed.
 
 ## Milestone 2 non-goals
 
@@ -480,7 +556,7 @@ All of Milestone 2 prohibits:
 
 - live venue connections;
 - authenticated venue APIs;
-- live LLM calls or live embedding calls in the initial 2.2 implementation;
+- live LLM calls or live embedding calls in the accepted 2.2 discovery implementation;
 - secrets;
 - wallets;
 - signing;
@@ -567,25 +643,26 @@ Do not invent answers to these questions:
 - What capital-transfer constraints apply?
 - What constitutes economic finality and cash availability?
 
-## First implementation task
+## Next implementation task
 
-The next implementation task is explicitly bounded to active Milestone 2.2
+The next implementation task is explicitly bounded to active Milestone 2.3
 only:
 
-- provider-neutral recorded-response interface;
-- versioned discovery input and output schemas;
-- deterministic topic, entity, date, threshold, and unit prefilters;
-- strict structured-output parser;
-- candidate and draft proposal mapping;
-- abstention and rejection handling;
-- prompt/model/parameter/input/output provenance;
-- recorded synthetic fixtures;
-- evaluation fixture labels and metrics;
-- tests.
+- immutable, versioned constraint types;
+- a deterministic certificate-only compiler;
+- deterministic payoff-state verification;
+- venue-native interval observations;
+- a deterministic non-actionable evaluator;
+- explicit evaluation statuses and structured failure reasons;
+- ordered provenance;
+- stable serialization;
+- synthetic fixtures;
+- network-free deterministic tests;
+- Milestone 1, 2.1, and 2.2 regression protection.
 
-This task must remain local, read-only, deterministic outside the recorded
-model boundary, fixture-driven, provider-neutral, replaceable, disableable,
-and network-free. It explicitly excludes live providers, live embeddings,
-certificate creation, changes to deterministic validation, Milestone 2.3, all
-later work, the constraint compiler, quotes, opportunities, execution
-instructions, and any live-system behavior.
+The compiler may consume only validator-produced
+`RelationshipCertificate` objects. Candidates and drafts must be rejected.
+This task must not add opportunity models, executable prices, depth
+consumption, fees, profit or edge calculations, sizing, simulation, risk,
+execution, reconciliation, live data, authentication, network integration, or
+any other later-milestone behavior.
