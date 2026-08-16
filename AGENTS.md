@@ -5,8 +5,8 @@
 - Milestone 2.1 is completed and accepted. Its deterministic relationship foundation must not regress.
 - Milestone 2.2 is completed and accepted at implementation commit `d7a6dc5aec6a7fb9c24400a269aae4231bbf8572`.
 - The discovery boundaries delivered by Milestone 2.2 are permanent: discovery is optional, local, read-only, fixture-driven, provider-neutral, recorded-response, untrusted, deterministic outside recorded bytes, replaceable, disableable, strictly parsed, fail-closed, provenance-rich, and network-free.
-- Milestone 2.3 is the only active implementation subphase.
-- Milestone 2.3 permits only deterministic `Decimal`-based constraint compilation and non-actionable diagnostic constraint evaluation.
+- Milestone 2.3 was completed and accepted on 2026-08-15 at implementation commit `2bdcd2dc6124f8e794ac6e5252f90e3bbb57e22c`.
+- The accepted Milestone 2.3 delivery is limited to deterministic `Decimal`-based constraint compilation and non-actionable diagnostic constraint evaluation.
 - Only validator-produced `RelationshipCertificate` objects may be compiled. `RelationshipCandidate` and `RelationshipCertificateDraft` objects cannot be compiled.
 - Discovery remains unable to certify, attest semantic review or state-space completeness, compile constraints, or evaluate quotes.
 - The existing deterministic validator remains the sole certificate-producing path. No discovery provider may review itself, attest completeness, certify, compile a constraint, evaluate quotes, create an opportunity, or authorize action.
@@ -18,7 +18,9 @@
 - No conditional relationships, scalar payouts, generalized solvers, integer programming, marginal-polytope projection, or production similarity threshold may be introduced without approved scope.
 - No economic opportunity modeling, executable-price calculation, depth consumption, fee/profit calculation, sizing, simulation, risk, execution, reconciliation, live data, authentication, or network integration is authorized.
 - No live model APIs, embedding services, provider SDK dependencies, secrets, wallets, signing, orders, cancellations, routing, positions, capital allocation, or paper trading are authorized.
-- Only packages explicitly permitted by the active 2.3 section of `PLAN.md` may be created. Unrelated diagnostics and later-milestone packages remain prohibited.
-- Tests must preserve Milestones 1, 2.1, and 2.2 behavior, including determinism, provenance, precision, venue separation, type-state boundaries, no-network behavior, and certificate-boundary protection.
+- No new packages or implementation work are authorized while no milestone is active. Accepted packages may change only under explicitly approved maintenance or remediation scope, and all accepted trust boundaries must remain preserved. Unrelated diagnostics and later-milestone packages remain prohibited.
+- The accepted Milestone 2.3 trust boundaries and fail-closed guarantees are permanent regression requirements.
+- Tests must preserve Milestones 1, 2.1, 2.2, and 2.3 behavior, including determinism, provenance, precision, venue separation, type-state boundaries, no-network behavior, and certificate-boundary protection.
 - Future execution code must remain behind an independent deterministic risk gateway.
+- No implementation milestone is currently active. Milestone 3 must be defined and explicitly activated by a future `PLAN.md` transition before implementation begins.
 - Scope expansion requires another explicit `PLAN.md` transition.

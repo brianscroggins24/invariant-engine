@@ -386,11 +386,12 @@ These are synthetic, non-authoritative measurements. They are not a
 production benchmark, acceptance threshold, provider decision, cost target,
 or latency target.
 
-### Milestone 2.3 — Constraint compilation and diagnostic evaluation — active
+### Milestone 2.3 — Constraint compilation and diagnostic evaluation — completed and accepted
 
-Milestone 2.3 is the only active implementation subphase. Its bounded purpose
-is local, read-only, fixture-driven, deterministic, and network-free
-constraint compilation and diagnostic evaluation. It permits only:
+Milestone 2.3 was completed and accepted on 2026-08-15 at implementation commit
+`2bdcd2dc6124f8e794ac6e5252f90e3bbb57e22c`. Its bounded purpose was local,
+read-only, fixture-driven, deterministic, and network-free
+constraint compilation and diagnostic evaluation. The accepted delivery contains only:
 
 - deterministic `Decimal`-based pricing-constraint models;
 - compilation only from validator-produced `RelationshipCertificate` objects;
@@ -495,6 +496,38 @@ The implementation must fail closed for:
 Exactly synchronized synthetic fixtures are permitted. No general
 timestamp-skew tolerance or freshness duration may be invented.
 
+#### Milestone 2.3 acceptance record
+
+The accepted validation baseline was:
+
+- 215 full pytest tests passed;
+- 66 constraint tests passed;
+- 149 non-constraint regression tests passed;
+- Ruff check and format passed;
+- strict mypy passed for 42 source files;
+- Python compilation and `git diff --check` passed;
+- no prohibited dependencies or later-stage behavior was introduced.
+
+Independent probes additionally verified:
+
+- recomputed IDs cannot restore trust after mutation;
+- nested mutations fail closed;
+- malformed trusted content fails closed;
+- copied, deep-copied, pickled, or reconstructed objects are untrusted;
+- 512 released constraints and observations self-prune from their weak registries.
+
+The Milestone 2.3 trust boundaries are permanent regression requirements:
+only validator-produced `RelationshipCertificate` objects may be compiled;
+discovery remains untrusted and cannot certify, attest review or completeness,
+compile constraints, evaluate quotes, create opportunities, or authorize
+action; trusted compiler and observation producer boundaries remain enforced;
+constraint evaluation remains non-actionable; venue-native semantics, exact
+ordered provenance, `Decimal` precision, stable serialization, explicit schema
+versions, deterministic behavior, and fail-closed handling remain mandatory.
+Missing evidence, unsupported semantics, invalid objects, unavailable
+observations, and inconsistent state must produce explicit unavailable,
+indeterminate, or failure results rather than invented behavior.
+
 ## Milestone 2 package boundaries
 
 The expected future structure may resemble:
@@ -536,14 +569,16 @@ tests/relationships/
 tests/constraints/
 ```
 
-During active 2.3, only the following new packages may be created:
+The following package list records the packages delivered during Milestone 2.3
+implementation. It is historical and does not authorize further package
+creation or implementation work:
 
 - `src/invariant_engine/constraints/`;
 - `tests/constraints/`;
 - narrowly necessary synthetic constraint fixtures.
 
-The accepted Milestones 1, 2.1, and 2.2 foundations must not regress. No
-unrelated diagnostics package or later-milestone package may be created.
+The accepted Milestones 1, 2.1, 2.2, and 2.3 foundations must not regress. No
+unrelated diagnostics package or later-milestone package is authorized.
 Opportunity models, executable prices, depth consumption, fees, profit or edge
 calculations, sizing, historical strategy evaluation, live venue or model
 connections, simulation, risk, execution, reconciliation, wallets, signing,
@@ -643,26 +678,9 @@ Do not invent answers to these questions:
 - What capital-transfer constraints apply?
 - What constitutes economic finality and cash availability?
 
-## Next implementation task
+## Governance for the next implementation milestone
 
-The next implementation task is explicitly bounded to active Milestone 2.3
-only:
-
-- immutable, versioned constraint types;
-- a deterministic certificate-only compiler;
-- deterministic payoff-state verification;
-- venue-native interval observations;
-- a deterministic non-actionable evaluator;
-- explicit evaluation statuses and structured failure reasons;
-- ordered provenance;
-- stable serialization;
-- synthetic fixtures;
-- network-free deterministic tests;
-- Milestone 1, 2.1, and 2.2 regression protection.
-
-The compiler may consume only validator-produced
-`RelationshipCertificate` objects. Candidates and drafts must be rejected.
-This task must not add opportunity models, executable prices, depth
-consumption, fees, profit or edge calculations, sizing, simulation, risk,
-execution, reconciliation, live data, authentication, network integration, or
-any other later-milestone behavior.
+No implementation milestone is currently active. Milestone 3 must be
+defined and explicitly activated by a future `PLAN.md` transition before
+implementation begins. This acceptance transition does not itself define
+or activate Milestone 3.
