@@ -13,23 +13,37 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The current work is fully read-only, local, fixture-driven, and diagnostic.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The active Milestone 3 work is fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable.
 
 ## Central system thesis
 
 The trust and analytical lifecycle is ordered:
 
-`relationship candidate` → `relationship certificate draft` → `explicit semantic review` → `deterministic truth/payoff validation` → `validated relationship certificate` → `deterministic pricing constraint` → `non-actionable constraint evaluation` → later economic and execution analysis
+```text
+RelationshipCandidate
+    → RelationshipCertificateDraft
+    → explicit semantic review
+    → deterministic truth/payoff validation
+    → RelationshipCertificate
+    → deterministic pricing constraint
+    → non-actionable ConstraintEvaluation
+    → historical opportunity economics
+    → non-actionable OpportunityCandidate
+    → later strategy validation
+    → later execution simulation
+    → later deterministic risk authorization
+```
 
 The following distinctions are mandatory:
 
 - A relationship candidate is not a validated relationship.
 - A validated relationship is not a constraint violation.
 - A constraint violation is not an opportunity.
-- An opportunity is not an authorized trade.
+- An `OpportunityCandidate` is not historically supported, executable, an order, a recommendation, or an authorization.
+- Aggregate strategy validation remains Milestone 4 work.
 - No LLM may authorize trades or bypass deterministic validation.
 
-No earlier object may impersonate a later one. The current and planned Milestone 2 outputs remain non-actionable.
+No earlier object may impersonate a later one. Milestone 2 outputs and the active Milestone 3 outputs remain non-actionable.
 
 ## Governing architecture principles
 
@@ -48,7 +62,7 @@ No earlier object may impersonate a later one. The current and planned Milestone
 - Mutable venue behavior is time-scoped.
 - Risk controls remain independent of strategies and models.
 - Any future execution code must remain behind an independent deterministic risk gateway.
-- No LLM may validate a relationship by itself, create a certificate, compile a constraint, create an opportunity, authorize a trade, or bypass deterministic checks.
+- No LLM or discovery provider may validate a relationship by itself, create a certificate, compile or evaluate a constraint, create an opportunity, authorize a trade, or bypass deterministic checks. Only the deterministic Milestone 3 evaluator may produce a non-actionable `OpportunityCandidate` after all required trust checks pass.
 
 ## Target architecture
 
@@ -71,7 +85,7 @@ The eventual pipeline is:
 15. Fill, position, fee, exposure, and PnL reconciliation.
 16. Operational monitoring and kill switches.
 
-The current approved work ends before live ingestion, economic opportunity analysis, simulation, risk authorization, and execution.
+The current approved work includes bounded historical opportunity economics for one synchronized historical constraint violation at a time and ends before aggregate strategy validation, live ingestion, execution simulation, risk authorization, and execution.
 
 ## Milestone 0 — Governance and architecture — completed
 
@@ -110,7 +124,7 @@ The Milestone 2 trust pipeline is the detailed beginning of the longer analytica
 
 `discovered` → `relationship pending` → `relationship validated` → `constraint violated` → `economics validated` → `historically supported` → `simulation supported` → `risk authorized` → `submitted` → `reconciled`
 
-`rejected` may be reached from any applicable non-terminal analytical state. Milestone 2 remains read-only; no candidate, draft, certificate, constraint evaluation, or other diagnostic output may enter `risk authorized`, `submitted`, or another execution state.
+`rejected` may be reached from any applicable non-terminal analytical state. Completed Milestone 2 and active Milestone 3 remain read-only; no candidate, draft, certificate, constraint evaluation, opportunity evaluation, `OpportunityCandidate`, or other diagnostic output may enter `historically supported`, `simulation supported`, `risk authorized`, `submitted`, or another execution state.
 
 ## Domain model direction
 
@@ -127,7 +141,7 @@ The long-term domain model should include:
 - `Proposition`;
 - relationship candidates and certificates;
 - `ConstraintEvaluation`;
-- `OpportunityCandidate` as a later analytical finding;
+- `OpportunityEconomicsEvaluation` and non-actionable `OpportunityCandidate` as bounded Milestone 3 analytical findings;
 - provenance references such as `raw_ref`;
 - warning and uncertainty fields;
 - replay-oriented stable serialization.
@@ -528,7 +542,7 @@ Missing evidence, unsupported semantics, invalid objects, unavailable
 observations, and inconsistent state must produce explicit unavailable,
 indeterminate, or failure results rather than invented behavior.
 
-## Milestone 2 package boundaries
+## Package boundaries
 
 The expected future structure may resemble:
 
@@ -570,20 +584,30 @@ tests/constraints/
 ```
 
 The following package list records the packages delivered during Milestone 2.3
-implementation. It is historical and does not authorize further package
-creation or implementation work:
+implementation. It is historical and does not authorize further changes to
+those packages:
 
 - `src/invariant_engine/constraints/`;
 - `tests/constraints/`;
 - narrowly necessary synthetic constraint fixtures.
 
+Milestone 3 implementation is authorized only within:
+
+- `src/invariant_engine/opportunities/`;
+- `tests/opportunities/`;
+- `fixtures/opportunities/`.
+
+A narrow change may be made in
+`tests/relationships/test_relationships.py` only to recognize the active
+opportunities package while retaining every later-package prohibition. Any
+required implementation change outside these paths must stop and request a
+governance decision.
+
 The accepted Milestones 1, 2.1, 2.2, and 2.3 foundations must not regress. No
 unrelated diagnostics package or later-milestone package is authorized.
-Opportunity models, executable prices, depth consumption, fees, profit or edge
-calculations, sizing, historical strategy evaluation, live venue or model
-connections, simulation, risk, execution, reconciliation, wallets, signing,
-orders, cancellation, and routing remain prohibited. No live provider or model
-integration is allowed.
+Historical strategy evaluation, live venue or model connections, simulation,
+risk, execution, reconciliation, wallets, signing, orders, cancellation, and
+routing remain prohibited. No live provider or model integration is allowed.
 
 ## Milestone 2 non-goals
 
@@ -613,23 +637,189 @@ All of Milestone 2 prohibits:
 
 Also deferred are general natural-language proof, general SAT or integer-programming solvers, marginal-polytope projection, conditional-relationship compilation, scalar-market constraints, opportunity candidates, and historical opportunity economics.
 
-Milestone 3 remains responsible for historical depth, executable prices, fees, counterfactual supported size, gross and net edge, and residual multi-leg exposure.
+Milestone 3 is now active for the bounded historical depth, executable-price,
+fee, counterfactual-quantity, gross- and net-edge, and residual-exposure work
+defined below.
+
+## Milestone 3 — Historical opportunity economics — active
+
+Milestone 3 is the only active implementation milestone. This governance
+transition authorizes implementation; it does not claim that Milestone 3 has
+been implemented, tested, reviewed, accepted, committed, or pushed.
+
+Its purpose is deterministic evaluation of the economics of one synchronized
+historical constraint violation at a time. All work remains local, historical,
+read-only, fixture-driven, deterministic, network-free, and non-actionable.
+
+The ordered trust lifecycle is:
+
+```text
+RelationshipCandidate
+    → RelationshipCertificateDraft
+    → explicit semantic review
+    → deterministic truth/payoff validation
+    → RelationshipCertificate
+    → deterministic pricing constraint
+    → non-actionable ConstraintEvaluation
+    → historical opportunity economics
+    → non-actionable OpportunityCandidate
+    → later strategy validation
+    → later execution simulation
+    → later deterministic risk authorization
+```
+
+A constraint violation is not an opportunity. An `OpportunityCandidate` is
+not historically supported, executable, an order, a recommendation, or an
+authorization. Aggregate strategy validation remains Milestone 4 work.
+
+Economics evaluation must begin with all of the following:
+
+- a validator-produced `RelationshipCertificate`;
+- its corresponding trusted compiler-produced constraint;
+- exact venue-native historical snapshots;
+- an explicit positive counterfactual quantity;
+- an immutable, versioned, time-scoped fee policy with complete semantics and
+  ordered provenance.
+
+A supplied `ConstraintEvaluation` is not sufficient authority. The economics
+evaluator must independently:
+
+1. validate certificate integrity;
+2. reconstruct the expected constraint;
+3. verify exact constraint identity and material content;
+4. construct fresh trusted observations from the supplied snapshots;
+5. rerun the accepted Milestone 2.3 evaluator;
+6. continue only for a genuine `VIOLATED` result.
+
+`SATISFIED`, `INDETERMINATE`, `UNAVAILABLE`, malformed, or untrusted upstream
+inputs must never produce a candidate.
+
+Only the following buy-only underpricing portfolios may produce candidates:
+
+- complement below its equality bound;
+- exhaustive set below its lower bound;
+- exclusive-and-exhaustive partition below its equality bound.
+
+The evaluator must return a structured `UNSUPPORTED_TRADE_DIRECTION` result
+for implication violations, equivalence violations, subset or superset
+violations, mutually-exclusive overpricing, above-bound partition violations,
+mixed buy/sell portfolios, and any behavior requiring selling, shorting,
+inventory, collateral, borrowing, or complement conversion.
+
+For the caller-supplied positive quantity, the evaluator must:
+
+- consume ordered asks deterministically;
+- use direct Polymarket asks;
+- derive Kalshi asks through the accepted venue-native YES/NO conventions;
+- retain venue-native identifiers;
+- use exact `Decimal` arithmetic;
+- calculate required quantity, ordered depth slices, cost, and VWAP for every
+  required leg;
+- require complete observed depth for every leg;
+- preserve ordered provenance;
+- retain exact Milestone 2.3 timestamp synchronization.
+
+Supplied depth must not be described as complete market capacity. Maximum
+observed capacity may be reported only as a diagnostic fact. Milestone 3 does
+not optimize size or recommend capital. Missing, malformed, crossed, stale,
+unsynchronized, replay-invalid, or insufficient data must fail closed.
+
+Fee behavior must be explicit immutable data, not executable callbacks,
+current configuration, or inferred venue defaults. A fee policy must specify
+at least:
+
+- venue;
+- policy/version ID;
+- effective interval;
+- role or side;
+- formula parameters;
+- calculation scope;
+- rounding scope;
+- currency;
+- rounding quantum;
+- ordered provenance.
+
+The implementation must not infer current venue fees, hardcode mutable
+category, market, series, or event configuration, silently assume zero fees,
+apply a policy outside its effective interval, or invent missing rounding or
+fill-grouping semantics. Incomplete or unsupported policies must fail closed.
+The evaluation reports gross edge, fees or defensible fee bounds, and a
+net-edge interval. A candidate may exist only when worst-case net edge is
+strictly positive.
+
+Residual-exposure evaluation is limited to deterministic single-leg
+complete-failure stress: all other required buy legs fill, one required leg
+receives zero fill, and payoff and PnL ranges are calculated across every
+certified feasible payoff state. This milestone does not authorize fill
+probability, queue position, latency models, partial-fill simulation,
+cancellation behavior, multi-failure simulation, or order sequencing.
+
+`OpportunityEconomicsEvaluation` statuses include:
+
+- `VALIDATED`;
+- `NO_NET_EDGE`;
+- `INSUFFICIENT_DEPTH`;
+- `UNSUPPORTED_TRADE_DIRECTION`;
+- `UNAVAILABLE`.
+
+Only `VALIDATED` may produce an `OpportunityCandidate`. An
+`OpportunityCandidate` must be evaluator-produced, bind every material input
+and result, have deterministic identity, ordering, and serialization, preserve
+ordered provenance, fail trust validation after material mutation, and state
+explicitly that it is non-actionable. Process-local trust must not transfer
+through copy, reconstruction, pickle, or JSON, and runtime trust state must
+remain outside stable serialization.
+
+Milestone 3 must not add:
+
+- live ingestion;
+- network calls;
+- authentication or credentials;
+- wallets or signing;
+- orders, routes, submissions, or cancellations;
+- risk authorization;
+- capital allocation;
+- recommended sizing;
+- aggregate opportunity frequency or persistence statistics;
+- portfolio performance or drawdown analysis;
+- fill probability;
+- queue models;
+- latency simulation;
+- execution simulation;
+- partial-fill economics;
+- current fee discovery;
+- new relationship-discovery behavior;
+- changes to certificate, relationship, constraint, or Milestone 2.3
+  evaluation semantics.
+
+Milestone 3 acceptance requires:
+
+- genuine certificates and compiler-produced constraints;
+- independent reconstruction of Milestone 2.3 evaluation;
+- genuine supported relationship construction;
+- all three supported buy-only classes;
+- multi-level depth walking;
+- direct Polymarket and derived Kalshi asks;
+- exact `Decimal` calculations;
+- insufficient-depth rejection;
+- unsupported-direction rejection;
+- malformed, stale, crossed, unsynchronized, replay-invalid, and unavailable
+  data rejection;
+- fee-policy completeness, provenance, rounding, and temporal validation;
+- gross-positive but worst-case-net-nonpositive rejection;
+- single-leg failure across every certified payoff state;
+- deterministic IDs, serialization, ordering, and hash-seed behavior;
+- mutation, copy, reconstruction, pickle, JSON, and malformed-object probes;
+- no candidate from `SATISFIED`, `INDETERMINATE`, or `UNAVAILABLE`;
+- full regression, Ruff check, Ruff format, strict mypy, Python compilation,
+  whitespace, package-boundary, and no-network checks.
+
+The next authorized implementation task is to implement this complete bounded
+Milestone 3 contract only in the authorized paths, preserve all accepted
+Milestone 1–2.3 guarantees, and produce its required acceptance evidence. No
+Milestone 4 or later work may begin.
 
 ## Later milestone roadmap
-
-### Milestone 3 — Historical opportunity economics
-
-Implement later:
-
-- historical depth analysis;
-- executable-price calculations;
-- fee treatment;
-- counterfactual supported size;
-- gross and net edge;
-- residual multi-leg exposure;
-- incomplete-data rejection.
-
-All outputs remain diagnostic.
 
 ### Milestone 4 — Strategy validation
 
@@ -670,17 +860,23 @@ Do not invent answers to these questions:
 - How should asynchronous cross-venue observations be evaluated safely?
 - How should websocket gap recovery work?
 - What are the complete fill-history semantics?
-- What are the current venue schemas and fee schedules?
+- What are the current venue schemas?
+- What are the current venue fee schedules?
+- What are the inventory and collateral requirements?
+- What borrowing and short-sale mechanics apply?
+- What complement-conversion mechanics apply?
 - What are the relevant latency distributions?
 - How should queue position and fill probability be determined?
 - What are the economics of partial fills?
+- What execution sequencing is safe?
 - How do cross-venue settlement processes differ?
 - What capital-transfer constraints apply?
 - What constitutes economic finality and cash availability?
 
 ## Governance for the next implementation milestone
 
-No implementation milestone is currently active. Milestone 3 must be
-defined and explicitly activated by a future `PLAN.md` transition before
-implementation begins. This acceptance transition does not itself define
-or activate Milestone 3.
+Milestone 3 — Historical opportunity economics is the only active
+implementation milestone. Its implementation is authorized only within the
+paths and boundaries stated above. Milestone 4 and every later milestone remain
+inactive. Activating another milestone or expanding Milestone 3 scope requires
+a future explicit `PLAN.md` governance transition.
