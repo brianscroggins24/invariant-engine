@@ -1,0 +1,63 @@
+{
+  "schema_version": "constraint-fixture-v1",
+  "synthetic": true,
+  "authoritative": false,
+  "cases": {
+    "supported_relationships": [
+      {"label": "complement", "relationship": "complement", "count": 2, "relation": "=", "bound": "1", "coefficients": ["1", "1"]},
+      {"label": "implication", "relationship": "implication", "count": 2, "relation": "<=", "bound": "0", "coefficients": ["1", "-1"]},
+      {"label": "equivalence", "relationship": "equivalence", "count": 2, "relation": "=", "bound": "0", "coefficients": ["1", "-1"]},
+      {"label": "subset", "relationship": "subset", "count": 2, "relation": "<=", "bound": "0", "coefficients": ["1", "-1"]},
+      {"label": "superset-direction", "relationship": "superset", "count": 2, "relation": ">=", "bound": "0", "coefficients": ["1", "-1"]},
+      {"label": "mutually-exclusive-set", "relationship": "mutually_exclusive_set", "count": 3, "relation": "<=", "bound": "1", "coefficients": ["1", "1", "1"]},
+      {"label": "exhaustive-set", "relationship": "exhaustive_set", "count": 3, "relation": ">=", "bound": "1", "coefficients": ["1", "1", "1"]},
+      {"label": "exclusive-exhaustive-partition", "relationship": "exclusive_and_exhaustive_partition", "count": 3, "relation": "=", "bound": "1", "coefficients": ["1", "1", "1"]}
+    ],
+    "evaluation_statuses": [
+      {"label": "less-than-satisfied", "relation": "<=", "minimum_lhs": "-0.40", "maximum_lhs": "-0.40", "bound": "0", "status": "satisfied"},
+      {"label": "less-than-boundary-satisfied", "relation": "<=", "minimum_lhs": "-0.40", "maximum_lhs": "0.00", "bound": "0", "status": "satisfied"},
+      {"label": "less-than-violated", "relation": "<=", "minimum_lhs": "0.70", "maximum_lhs": "0.70", "bound": "0", "status": "violated"},
+      {"label": "less-than-indeterminate", "relation": "<=", "minimum_lhs": "-0.20", "maximum_lhs": "0.20", "bound": "0", "status": "indeterminate"},
+      {"label": "greater-than-satisfied", "relation": ">=", "minimum_lhs": "0.70", "maximum_lhs": "0.70", "bound": "0", "status": "satisfied"},
+      {"label": "greater-than-boundary-satisfied", "relation": ">=", "minimum_lhs": "0.00", "maximum_lhs": "0.40", "bound": "0", "status": "satisfied"},
+      {"label": "greater-than-violated", "relation": ">=", "minimum_lhs": "-0.70", "maximum_lhs": "-0.70", "bound": "0", "status": "violated"},
+      {"label": "greater-than-indeterminate", "relation": ">=", "minimum_lhs": "-0.20", "maximum_lhs": "0.20", "bound": "0", "status": "indeterminate"},
+      {"label": "equal-satisfied", "relation": "=", "minimum_lhs": "1.00", "maximum_lhs": "1.00", "bound": "1", "status": "satisfied"},
+      {"label": "equal-zero-width-boundary-satisfied", "relation": "=", "minimum_lhs": "1.00", "maximum_lhs": "1.00", "bound": "1", "status": "satisfied"},
+      {"label": "equal-violated", "relation": "=", "minimum_lhs": "1.60", "maximum_lhs": "1.60", "bound": "1", "status": "violated"},
+      {"label": "equal-indeterminate", "relation": "=", "minimum_lhs": "0.80", "maximum_lhs": "1.20", "bound": "1", "status": "indeterminate"},
+      {"label": "equal-one-endpoint-boundary-indeterminate", "relation": "=", "minimum_lhs": "1.00", "maximum_lhs": "1.20", "bound": "1", "status": "indeterminate"}
+    ],
+    "failure_labels": {
+      "tampered_certificate": "invalid_certificate",
+      "incomplete_constraint": "unknown_binding",
+      "reordered_certificate": "compiles",
+      "unexpected_observations": "unexpected_observation",
+      "unavailable_bounds": "none",
+      "missing_observation": "missing_observation",
+      "duplicate_observation": "duplicate_observation",
+      "identity_mismatch": "observation_identity_mismatch",
+      "invalid_observation": "invalid_observation",
+      "missing_provenance": "missing_observation_provenance",
+      "unsynchronized": "unsynchronized_observations"
+    },
+    "terminal_state_kinds": [
+      "normal",
+      "cancellation",
+      "void",
+      "refund"
+    ],
+    "observation_failure_labels": {
+      "missing_bid": "missing_bid_side",
+      "missing_ask": "missing_ask_side",
+      "crossed": "crossed_interval",
+      "invalid_state": "invalid_replay_state",
+      "stale": "stale_snapshot",
+      "provenance": "missing_ordered_provenance",
+      "timestamp_fallback": "unavailable_timestamp",
+      "market_mismatch": "market_identity_mismatch",
+      "token_mismatch": "contract_or_token_identity_mismatch"
+    }
+  },
+  "non_authoritative_notice": "Synthetic local test expectations only; not semantic review, production venue rules, executable opportunities, provider benchmarks, or trading authorization."
+}

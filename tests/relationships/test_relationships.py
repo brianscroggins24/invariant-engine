@@ -633,10 +633,9 @@ def test_legacy_threshold_serialization_and_review_fingerprint_are_unchanged() -
     )
 
 
-def test_only_milestone_2_1_packages_exist() -> None:
+def test_only_approved_milestone_2_packages_exist() -> None:
     root = Path(__file__).resolve().parents[2] / "src" / "invariant_engine"
     for prohibited in (
-        "constraints",
         "diagnostics",
         "simulation",
         "risk",
