@@ -1,4 +1,5 @@
 import gc
+import hashlib
 import json
 import os
 import socket
@@ -27,6 +28,7 @@ from invariant_engine.constraints import (
     verify_constraint,
 )
 from invariant_engine.constraints import models as constraint_models
+from invariant_engine.constraints.compiler import constraint_identity_matches
 from invariant_engine.domain.ids import (
     ContractReference,
     FixtureReference,
@@ -462,6 +464,43 @@ def test_trusted_registries_cleanup_after_produced_objects_are_collected() -> No
     assert len(constraint_models._TRUSTED_OBSERVATIONS) == observation_baseline
 
 
+def test_256_trusted_objects_return_registries_to_baseline_after_collection() -> None:
+    certificate = validate_draft(_draft(RelationshipType.IMPLICATION)).certificate
+    assert certificate is not None
+    poly, _ = _snapshots()
+    gc.collect()
+    constraint_baseline = len(constraint_models._TRUSTED_CONSTRAINTS)
+    observation_baseline = len(constraint_models._TRUSTED_OBSERVATIONS)
+
+    def produce_trusted_values():
+        return tuple(
+            (
+                compile_certificate(certificate).constraint,
+                observe_polymarket(certificate.bindings[0], poly).observation,
+            )
+            for _ in range(256)
+        )
+
+    produced = produce_trusted_values()
+    assert all(
+        constraint is not None and observation is not None for constraint, observation in produced
+    )
+    assert len(constraint_models._TRUSTED_CONSTRAINTS) == constraint_baseline + 256
+    assert len(constraint_models._TRUSTED_OBSERVATIONS) == observation_baseline + 256
+    references = tuple(
+        (weakref.ref(constraint), weakref.ref(observation)) for constraint, observation in produced
+    )
+    del produced
+    gc.collect()
+
+    assert all(
+        constraint_ref() is None and observation_ref() is None
+        for constraint_ref, observation_ref in references
+    )
+    assert len(constraint_models._TRUSTED_CONSTRAINTS) == constraint_baseline
+    assert len(constraint_models._TRUSTED_OBSERVATIONS) == observation_baseline
+
+
 def test_stale_trust_cleanup_cannot_remove_a_replacement_entry() -> None:
     class WeakReferenceable:
         pass
@@ -863,6 +902,77 @@ def test_altered_compiled_constraint_is_not_evaluable() -> None:
     assert result.status is ConstraintEvaluationStatus.UNAVAILABLE
     assert result.evaluation is None
     assert result.failures[0].code is EvaluationFailureCode.INVALID_CONSTRAINT
+
+
+def test_recomputed_id_cannot_restore_trust_after_in_place_constraint_mutation() -> None:
+    certificate = validate_draft(_draft(RelationshipType.IMPLICATION)).certificate
+    assert certificate is not None
+    constraint = compile_certificate(certificate).constraint
+    assert constraint is not None
+    poly, _ = _snapshots()
+    observations = tuple(
+        observe_polymarket(
+            binding,
+            _polymarket_quote_snapshot(
+                poly,
+                Decimal("0.80") if index == 0 else Decimal("0.10"),
+                Decimal("0.80") if index == 0 else Decimal("0.10"),
+            ),
+        ).observation
+        for index, binding in enumerate(certificate.bindings)
+    )
+    assert all(observation is not None for observation in observations)
+    before_tampering = evaluate_constraint(constraint, observations)
+    assert before_tampering.status is ConstraintEvaluationStatus.VIOLATED
+
+    object.__setattr__(constraint, "relation", ConstraintRelation.GREATER_THAN_OR_EQUAL)
+    recomputed = (
+        "constraint:"
+        + hashlib.sha256(
+            stable_json_bytes(constraint_models.constraint_identity_content(constraint))
+        ).hexdigest()
+    )
+    object.__setattr__(constraint, "constraint_id", type(constraint.constraint_id)(recomputed))
+
+    assert constraint_identity_matches(constraint)
+    assert not is_trusted_constraint(constraint)
+    after_tampering = evaluate_constraint(constraint, observations)
+    assert after_tampering.status is ConstraintEvaluationStatus.UNAVAILABLE
+    assert after_tampering.evaluation is None
+    assert after_tampering.failures[0].code is EvaluationFailureCode.INVALID_CONSTRAINT
+
+
+def test_recomputed_id_cannot_restore_trust_after_in_place_observation_mutation() -> None:
+    certificate = validate_draft(_draft(RelationshipType.IMPLICATION)).certificate
+    assert certificate is not None
+    constraint = compile_certificate(certificate).constraint
+    assert constraint is not None
+    poly, _ = _snapshots()
+    first = observe_polymarket(
+        certificate.bindings[0], _polymarket_quote_snapshot(poly, Decimal("0.10"), Decimal("0.10"))
+    ).observation
+    second = observe_polymarket(
+        certificate.bindings[1], _polymarket_quote_snapshot(poly, Decimal("0.10"), Decimal("0.10"))
+    ).observation
+    assert first is not None and second is not None
+    before_tampering = evaluate_constraint(constraint, (first, second))
+    assert before_tampering.status is ConstraintEvaluationStatus.SATISFIED
+
+    object.__setattr__(first, "best_bid", Decimal("0.90"))
+    object.__setattr__(first, "best_ask", Decimal("0.90"))
+    recomputed = (
+        "observation:"
+        + hashlib.sha256(
+            stable_json_bytes(constraint_models.observation_identity_content(first))
+        ).hexdigest()
+    )
+    object.__setattr__(first, "observation_id", recomputed)
+
+    assert not is_trusted_observation(first)
+    after_tampering = evaluate_constraint(constraint, (first, second))
+    assert after_tampering.status is ConstraintEvaluationStatus.UNAVAILABLE
+    assert after_tampering.evaluation is not None
+    assert after_tampering.evaluation.failures[0].code is EvaluationFailureCode.INVALID_OBSERVATION
 
 
 def test_altered_observation_with_original_id_is_not_evaluable() -> None:

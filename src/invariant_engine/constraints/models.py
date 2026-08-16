@@ -5,11 +5,13 @@ The records deliberately describe quote intervals and mathematical results;
 they do not describe economic actions or authorization.
 """
 
+import hashlib
 import weakref
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 from enum import StrEnum
+from typing import cast
 
 from invariant_engine.domain.decimal_policy import parse_decimal, parse_price
 from invariant_engine.domain.errors import DomainError
@@ -23,6 +25,7 @@ from invariant_engine.relationships.ids import (
     ClaimBindingId,
     PropositionId,
 )
+from invariant_engine.serialization import stable_json_bytes
 
 CONSTRAINT_SCHEMA_VERSION = "constraint-v1"
 OBSERVATION_SCHEMA_VERSION = "quote-observation-v1"
@@ -33,31 +36,51 @@ EVALUATION_SCHEMA_VERSION = "constraint-evaluation-v1"
 # token; ordinary construction remains an untrusted proposal.
 _CONSTRAINT_TRUST_TOKEN = object()
 _OBSERVATION_TRUST_TOKEN = object()
-_TRUSTED_CONSTRAINTS: dict[int, weakref.ReferenceType[object]] = {}
-_TRUSTED_OBSERVATIONS: dict[int, weakref.ReferenceType[object]] = {}
+
+
+@dataclass(frozen=True, slots=True)
+class _TrustEntry:
+    reference: weakref.ReferenceType[object]
+    commitment: str
+
+
+_TRUSTED_CONSTRAINTS: dict[int, _TrustEntry] = {}
+_TRUSTED_OBSERVATIONS: dict[int, _TrustEntry] = {}
 
 
 def _remove_trust(
-    registry: dict[int, weakref.ReferenceType[object]],
+    registry: dict[int, _TrustEntry],
     key: int,
     reference: weakref.ReferenceType[object],
 ) -> None:
-    if registry.get(key) is reference:
+    raw_entry: object = registry.get(key)
+    current_reference = (
+        raw_entry.reference
+        if isinstance(raw_entry, _TrustEntry)
+        else cast(weakref.ReferenceType[object] | None, raw_entry)
+    )
+    if current_reference is reference:
         registry.pop(key, None)
 
 
-def _record_trust(registry: dict[int, weakref.ReferenceType[object]], value: object) -> None:
+def _record_trust(registry: dict[int, _TrustEntry], value: object, commitment: str) -> None:
     key = id(value)
 
     def cleanup(reference: weakref.ReferenceType[object]) -> None:
         _remove_trust(registry, key, reference)
 
-    registry[key] = weakref.ref(value, cleanup)
+    registry[key] = _TrustEntry(weakref.ref(value, cleanup), commitment)
 
 
-def _has_identity_trust(registry: dict[int, weakref.ReferenceType[object]], value: object) -> bool:
-    reference = registry.get(id(value))
-    return reference is not None and reference() is value
+def _registry_entry(registry: dict[int, _TrustEntry], value: object) -> _TrustEntry | None:
+    entry = registry.get(id(value))
+    if entry is None or entry.reference() is not value:
+        return None
+    return entry
+
+
+def _content_commitment(content: dict[str, object]) -> str:
+    return hashlib.sha256(stable_json_bytes(content)).hexdigest()
 
 
 @dataclass(frozen=True, slots=True)
@@ -235,14 +258,46 @@ class TrustedCompiledPricingConstraint(CompiledPricingConstraint):
             certificate_provenance=proposal.certificate_provenance,
             binding_identities=proposal.binding_identities,
         )
-        _record_trust(_TRUSTED_CONSTRAINTS, trusted)
+        _record_trust(
+            _TRUSTED_CONSTRAINTS,
+            trusted,
+            _content_commitment(constraint_identity_content(trusted)),
+        )
         return trusted
 
 
+def constraint_identity_content(constraint: CompiledPricingConstraint) -> dict[str, object]:
+    """Return every material constraint field except its derived public ID."""
+
+    return {
+        "schema_version": constraint.schema_version,
+        "certificate_id": constraint.certificate_id,
+        "certificate_schema_version": constraint.certificate_schema_version,
+        "certificate_validation_fingerprint": constraint.certificate_validation_fingerprint,
+        "relationship_type": constraint.relationship_type,
+        "terms": constraint.terms,
+        "relation": constraint.relation,
+        "bound": constraint.bound,
+        "certificate_provenance": constraint.certificate_provenance,
+        "binding_identities": constraint.binding_identities,
+    }
+
+
 def is_trusted_constraint(value: object) -> bool:
-    return type(value) is TrustedCompiledPricingConstraint and _has_identity_trust(
-        _TRUSTED_CONSTRAINTS, value
-    )
+    if type(value) is not TrustedCompiledPricingConstraint:
+        return False
+    constraint = value
+    entry = _registry_entry(_TRUSTED_CONSTRAINTS, constraint)
+    if entry is None:
+        return False
+    try:
+        commitment = _content_commitment(constraint_identity_content(constraint))
+        return (
+            commitment == entry.commitment
+            and constraint.constraint_id.value == f"constraint:{commitment}"
+        )
+    except Exception:
+        return False
 
 
 class CompilationFailureCode(StrEnum):
@@ -427,7 +482,11 @@ class TrustedQuoteObservation(QuoteObservation):
             raw_refs=observation.raw_refs,
             warnings=observation.warnings,
         )
-        _record_trust(_TRUSTED_OBSERVATIONS, trusted)
+        _record_trust(
+            _TRUSTED_OBSERVATIONS,
+            trusted,
+            _content_commitment(observation_identity_content(trusted)),
+        )
         return trusted
 
 
@@ -453,9 +512,20 @@ def observation_identity_content(observation: QuoteObservation) -> dict[str, obj
 
 
 def is_trusted_observation(value: object) -> bool:
-    return type(value) is TrustedQuoteObservation and _has_identity_trust(
-        _TRUSTED_OBSERVATIONS, value
-    )
+    if type(value) is not TrustedQuoteObservation:
+        return False
+    observation = value
+    entry = _registry_entry(_TRUSTED_OBSERVATIONS, observation)
+    if entry is None:
+        return False
+    try:
+        commitment = _content_commitment(observation_identity_content(observation))
+        return (
+            commitment == entry.commitment
+            and observation.observation_id == f"observation:{commitment}"
+        )
+    except Exception:
+        return False
 
 
 @dataclass(frozen=True, slots=True)

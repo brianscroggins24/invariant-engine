@@ -19,6 +19,7 @@ from invariant_engine.constraints.models import (
     VerificationFailure,
     VerificationFailureCode,
     VerificationResult,
+    constraint_identity_content,
 )
 from invariant_engine.domain.decimal_policy import ONE, ZERO, parse_decimal
 from invariant_engine.domain.errors import DomainError
@@ -459,31 +460,14 @@ def _certificate_shape(certificate: RelationshipCertificate) -> CompilationFailu
     return None
 
 
-def _constraint_identity_content(constraint: CompiledPricingConstraint) -> dict[str, object]:
-    return {
-        "schema_version": constraint.schema_version,
-        "certificate_id": constraint.certificate_id,
-        "certificate_schema_version": constraint.certificate_schema_version,
-        "certificate_validation_fingerprint": constraint.certificate_validation_fingerprint,
-        "relationship_type": constraint.relationship_type,
-        "terms": constraint.terms,
-        "relation": constraint.relation,
-        "bound": constraint.bound,
-        "certificate_provenance": constraint.certificate_provenance,
-        "binding_identities": constraint.binding_identities,
-    }
-
-
 def constraint_identity_matches(constraint: CompiledPricingConstraint) -> bool:
     try:
         expected = (
             "constraint:"
-            + hashlib.sha256(
-                stable_json_bytes(_constraint_identity_content(constraint))
-            ).hexdigest()
+            + hashlib.sha256(stable_json_bytes(constraint_identity_content(constraint))).hexdigest()
         )
         return constraint.constraint_id.value == expected
-    except (AttributeError, DomainError, TypeError, ValueError):
+    except Exception:
         return False
 
 
