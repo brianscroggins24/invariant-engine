@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The active Milestone 3 work is fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 delivery is fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. No implementation milestone is currently active.
 
 ## Central system thesis
 
@@ -43,7 +43,7 @@ The following distinctions are mandatory:
 - Aggregate strategy validation remains Milestone 4 work.
 - No LLM may authorize trades or bypass deterministic validation.
 
-No earlier object may impersonate a later one. Milestone 2 outputs and the active Milestone 3 outputs remain non-actionable.
+No earlier object may impersonate a later one. Milestone 2 and Milestone 3 outputs remain non-actionable.
 
 ## Governing architecture principles
 
@@ -85,11 +85,11 @@ The eventual pipeline is:
 15. Fill, position, fee, exposure, and PnL reconciliation.
 16. Operational monitoring and kill switches.
 
-The current approved work includes bounded historical opportunity economics for one synchronized historical constraint violation at a time and ends before aggregate strategy validation, live ingestion, execution simulation, risk authorization, and execution.
+The accepted Milestone 3 work includes bounded historical opportunity economics for one synchronized historical constraint violation at a time and ends before aggregate strategy validation, live ingestion, execution simulation, risk authorization, and execution. That description records the accepted boundary and does not authorize further implementation.
 
 ## Milestone 0 — Governance and architecture — completed
 
-The governance documents and approved architecture roadmap were established in Milestone 0. Later work remains subject to the active milestone, explicit scope gates, provenance requirements, venue-native semantics, deterministic validation, and no-execution boundaries in this plan.
+The governance documents and approved architecture roadmap were established in Milestone 0. Later work remains subject to a future explicit governance transition, explicit scope gates, provenance requirements, venue-native semantics, deterministic validation, and no-execution boundaries in this plan.
 
 ## Accepted foundation: Milestone 1
 
@@ -124,7 +124,7 @@ The Milestone 2 trust pipeline is the detailed beginning of the longer analytica
 
 `discovered` → `relationship pending` → `relationship validated` → `constraint violated` → `economics validated` → `historically supported` → `simulation supported` → `risk authorized` → `submitted` → `reconciled`
 
-`rejected` may be reached from any applicable non-terminal analytical state. Completed Milestone 2 and active Milestone 3 remain read-only; no candidate, draft, certificate, constraint evaluation, opportunity evaluation, `OpportunityCandidate`, or other diagnostic output may enter `historically supported`, `simulation supported`, `risk authorized`, `submitted`, or another execution state.
+`rejected` may be reached from any applicable non-terminal analytical state. Completed Milestone 2 and Milestone 3 remain read-only; no candidate, draft, certificate, constraint evaluation, opportunity evaluation, `OpportunityCandidate`, or other diagnostic output may enter `historically supported`, `simulation supported`, `risk authorized`, `submitted`, or another execution state.
 
 ## Domain model direction
 
@@ -231,7 +231,7 @@ The system should remain a modular Python application using:
 - Ruff for formatting and linting;
 - strict type checking.
 
-Start as a modular monolith rather than microservices. The full future package map is recorded below, but package creation remains governed by the active milestone and subphase gates.
+Start as a modular monolith rather than microservices. The full future package map is recorded below, but package creation requires a future explicit governance transition because no implementation milestone is active.
 
 ## Milestone 2 — Relationship trust and diagnostic constraint foundation
 
@@ -591,17 +591,18 @@ those packages:
 - `tests/constraints/`;
 - narrowly necessary synthetic constraint fixtures.
 
-Milestone 3 implementation is authorized only within:
+The following paths record the accepted Milestone 3 delivery:
 
 - `src/invariant_engine/opportunities/`;
 - `tests/opportunities/`;
 - `fixtures/opportunities/`.
 
-A narrow change may be made in
-`tests/relationships/test_relationships.py` only to recognize the active
-opportunities package while retaining every later-package prohibition. Any
-required implementation change outside these paths must stop and request a
-governance decision.
+The corresponding narrow recognition change in
+`tests/relationships/test_relationships.py` is also part of the historical
+delivery. These delivered paths and that former exception do not confer
+current implementation authority. Any further engine implementation,
+including changes within those paths, Milestone 3 remediation, or Milestone 4
+work, requires a future explicit governance transition.
 
 The accepted Milestones 1, 2.1, 2.2, and 2.3 foundations must not regress. No
 unrelated diagnostics package or later-milestone package is authorized.
@@ -637,15 +638,21 @@ All of Milestone 2 prohibits:
 
 Also deferred are general natural-language proof, general SAT or integer-programming solvers, marginal-polytope projection, conditional-relationship compilation, scalar-market constraints, opportunity candidates, and historical opportunity economics.
 
-Milestone 3 is now active for the bounded historical depth, executable-price,
-fee, counterfactual-quantity, gross- and net-edge, and residual-exposure work
-defined below.
+Milestone 3 subsequently delivered the bounded historical depth,
+executable-price, fee, counterfactual-quantity, gross- and net-edge, and
+residual-exposure work recorded below. This is historical scope documentation,
+not continuing implementation authority.
 
-## Milestone 3 — Historical opportunity economics — active
+## Milestone 3 — Historical opportunity economics — completed and accepted
 
-Milestone 3 is the only active implementation milestone. This governance
-transition authorizes implementation; it does not claim that Milestone 3 has
-been implemented, tested, reviewed, accepted, committed, or pushed.
+Milestone 3 was independently reviewed and accepted on 2026-08-16 at
+implementation commit `ecab60460ca0139beea4e289d0511af3e80aa1a9`.
+The accepted implementation has parent
+`489b5453f0c5b0e325d4cf70638090db299947d6`, tree
+`161461d075e93ae8b4ba649b3c7050700abd8cc6`, and content-manifest SHA-256
+`847e68a13d66ca20e144daca582ec6992eada2323778de0b60c79ed7a909a6fb`.
+No implementation milestone is currently active. Milestone 4 and every later
+milestone remain explicitly inactive.
 
 Its purpose is deterministic evaluation of the economics of one synchronized
 historical constraint violation at a time. All work remains local, historical,
@@ -708,6 +715,7 @@ inventory, collateral, borrowing, or complement conversion.
 
 For the caller-supplied positive quantity, the evaluator must:
 
+- canonically validate both native sides of every supplied order book in full;
 - consume ordered asks deterministically;
 - use direct Polymarket asks;
 - derive Kalshi asks through the accepted venue-native YES/NO conventions;
@@ -770,7 +778,7 @@ explicitly that it is non-actionable. Process-local trust must not transfer
 through copy, reconstruction, pickle, or JSON, and runtime trust state must
 remain outside stable serialization.
 
-Milestone 3 must not add:
+The accepted Milestone 3 boundary permanently excludes:
 
 - live ingestion;
 - network calls;
@@ -792,7 +800,8 @@ Milestone 3 must not add:
 - changes to certificate, relationship, constraint, or Milestone 2.3
   evaluation semantics.
 
-Milestone 3 acceptance requires:
+The accepted Milestone 3 implementation and all future regression checks must
+preserve:
 
 - genuine certificates and compiler-produced constraints;
 - independent reconstruction of Milestone 2.3 evaluation;
@@ -814,10 +823,11 @@ Milestone 3 acceptance requires:
 - full regression, Ruff check, Ruff format, strict mypy, Python compilation,
   whitespace, package-boundary, and no-network checks.
 
-The next authorized implementation task is to implement this complete bounded
-Milestone 3 contract only in the authorized paths, preserve all accepted
-Milestone 1–2.3 guarantees, and produce its required acceptance evidence. No
-Milestone 4 or later work may begin.
+These accepted guarantees are permanent regression requirements. Milestone 3
+implementation authority is deactivated, and no next implementation milestone
+is active. Any further engine implementation—including Milestone 3 remediation
+or Milestone 4 work—requires a future explicit governance transition. No
+Milestone 4 or later work may begin under this closure transition.
 
 ## Later milestone roadmap
 
@@ -873,10 +883,13 @@ Do not invent answers to these questions:
 - What capital-transfer constraints apply?
 - What constitutes economic finality and cash availability?
 
-## Governance for the next implementation milestone
+## Governance after Milestone 3 acceptance
 
-Milestone 3 — Historical opportunity economics is the only active
-implementation milestone. Its implementation is authorized only within the
-paths and boundaries stated above. Milestone 4 and every later milestone remain
-inactive. Activating another milestone or expanding Milestone 3 scope requires
-a future explicit `PLAN.md` governance transition.
+Milestone 3 — Historical opportunity economics is completed and accepted at
+implementation commit `ecab60460ca0139beea4e289d0511af3e80aa1a9`, with an
+implementation acceptance date of 2026-08-16. Its accepted guarantees are
+permanent regressions, its implementation authority is deactivated, and its
+delivered paths grant no continuing authority. No implementation milestone is
+currently active. Milestone 4 and every later milestone remain explicitly
+inactive. Any further engine implementation—including Milestone 3 remediation
+or Milestone 4 work—requires a future explicit `PLAN.md` governance transition.
