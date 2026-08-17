@@ -1,0 +1,267 @@
+{
+  "schema_version": "opportunity-fixtures-v2",
+  "synthetic": true,
+  "authoritative": false,
+  "notice": "Synthetic, non-authoritative counterfactual test data; depth is observed fixture input, not complete market capacity, and fee policies are not venue configuration.",
+  "fixture_artifact": "opportunities/cases.json",
+  "cases": [
+    {
+      "case_id": "complement-polymarket-direct",
+      "relationship": "complement",
+      "venue": "polymarket",
+      "timestamp": "2023-11-14T22:13:20+00:00",
+      "quantity": "2",
+      "event_scope": "synthetic complement event",
+      "propositions": [
+        {"id": "fixture-comp-p0", "text": "Synthetic complement proposition A"},
+        {"id": "fixture-comp-p1", "text": "Synthetic complement proposition B"}
+      ],
+      "bindings": [
+        {
+          "proposition_id": "fixture-comp-p0",
+          "binding_id": "fixture-comp-b0",
+          "market_id": "fixture-comp-market",
+          "outcome_token_id": "fixture-comp-token-a",
+          "native_side": "yes",
+          "raw_reference": "fixture-comp-raw-a"
+        },
+        {
+          "proposition_id": "fixture-comp-p1",
+          "binding_id": "fixture-comp-b1",
+          "market_id": "fixture-comp-market",
+          "outcome_token_id": "fixture-comp-token-b",
+          "native_side": "yes",
+          "raw_reference": "fixture-comp-raw-b"
+        }
+      ],
+      "states": [
+        {
+          "state_id": "fixture-comp-state-a",
+          "terminal_kind": "normal",
+          "truth": {"fixture-comp-p0": true, "fixture-comp-p1": false},
+          "payouts": {"fixture-comp-b0": "1", "fixture-comp-b1": "0"},
+          "evidence_ids": ["complement-polymarket-direct-rule"],
+          "raw_references": ["fixture-comp-raw-a", "fixture-comp-raw-b"]
+        },
+        {
+          "state_id": "fixture-comp-state-b",
+          "terminal_kind": "normal",
+          "truth": {"fixture-comp-p0": false, "fixture-comp-p1": true},
+          "payouts": {"fixture-comp-b0": "0", "fixture-comp-b1": "1"},
+          "evidence_ids": ["complement-polymarket-direct-rule"],
+          "raw_references": ["fixture-comp-raw-a", "fixture-comp-raw-b"]
+        }
+      ],
+      "snapshots": [
+        {
+          "binding_id": "fixture-comp-b0",
+          "fixture_reference": "opportunities/cases.json",
+          "raw_reference": "fixture-comp-raw-a",
+          "market_id": "fixture-comp-market",
+          "asset_id": "fixture-comp-token-a",
+          "bids": [["0.10", "10"]],
+          "asks": [["0.30", "1"], ["0.40", "3"]],
+          "timestamp_ms": "1700000000000"
+        },
+        {
+          "binding_id": "fixture-comp-b1",
+          "fixture_reference": "opportunities/cases.json",
+          "raw_reference": "fixture-comp-raw-b",
+          "market_id": "fixture-comp-market",
+          "asset_id": "fixture-comp-token-b",
+          "bids": [["0.10", "10"]],
+          "asks": [["0.30", "1"], ["0.40", "3"]],
+          "timestamp_ms": "1700000000000"
+        }
+      ],
+      "fee_policies": [
+        {
+          "binding_id": "fixture-comp-b0",
+          "schema_version": "fee-policy-v1",
+          "policy_id": "fixture-comp-fee-a",
+          "venue": "polymarket",
+          "effective_start": "2023-01-01T00:00:00+00:00",
+          "effective_end": "2024-01-01T00:00:00+00:00",
+          "start_inclusive": true,
+          "end_inclusive": true,
+          "role": "taker",
+          "trade_side": "buy",
+          "formula_kind": "zero",
+          "formula_parameters": [],
+          "calculation_scope": "per_depth_slice",
+          "rounding_scope": "each_calculation_component",
+          "rounding_mode": "ROUND_HALF_UP",
+          "currency": "USD",
+          "rounding_quantum": "0.01",
+          "provenance": ["fixture-comp-fee-raw-a"]
+        },
+        {
+          "binding_id": "fixture-comp-b1",
+          "schema_version": "fee-policy-v1",
+          "policy_id": "fixture-comp-fee-b",
+          "venue": "polymarket",
+          "effective_start": "2023-01-01T00:00:00+00:00",
+          "effective_end": "2024-01-01T00:00:00+00:00",
+          "start_inclusive": true,
+          "end_inclusive": true,
+          "role": "taker",
+          "trade_side": "buy",
+          "formula_kind": "zero",
+          "formula_parameters": [],
+          "calculation_scope": "per_depth_slice",
+          "rounding_scope": "each_calculation_component",
+          "rounding_mode": "ROUND_HALF_UP",
+          "currency": "USD",
+          "rounding_quantum": "0.01",
+          "provenance": ["fixture-comp-fee-raw-b"]
+        }
+      ],
+      "expected": {
+        "status": "validated",
+        "candidate": true,
+        "legs": [
+          {
+            "binding_id": "fixture-comp-b0",
+            "market_id": "fixture-comp-market",
+            "outcome_token_id": "fixture-comp-token-a",
+            "native_side": "yes",
+            "snapshot_asset_id": "fixture-comp-token-a",
+            "depth_slices": [
+              {"index": 0, "quantity": "1", "price": "0.30", "cost": "0.30"},
+              {"index": 1, "quantity": "1", "price": "0.40", "cost": "0.40"}
+            ],
+            "observed_ask_capacity": "4",
+            "total_purchase_cost": "0.70",
+            "vwap": "0.35",
+            "fee_interval": ["0.00", "0.00"]
+          },
+          {
+            "binding_id": "fixture-comp-b1",
+            "market_id": "fixture-comp-market",
+            "outcome_token_id": "fixture-comp-token-b",
+            "native_side": "yes",
+            "snapshot_asset_id": "fixture-comp-token-b",
+            "depth_slices": [
+              {"index": 0, "quantity": "1", "price": "0.30", "cost": "0.30"},
+              {"index": 1, "quantity": "1", "price": "0.40", "cost": "0.40"}
+            ],
+            "observed_ask_capacity": "4",
+            "total_purchase_cost": "0.70",
+            "vwap": "0.35",
+            "fee_interval": ["0.00", "0.00"]
+          }
+        ],
+        "total_purchase_cost": "1.40",
+        "total_fee_interval": ["0.00", "0.00"],
+        "state_results": [
+          {"state_id": "fixture-comp-state-a", "gross_payoff": "2", "gross_edge": "0.60", "net_edge_lower": "0.60", "net_edge_upper": "0.60"},
+          {"state_id": "fixture-comp-state-b", "gross_payoff": "2", "gross_edge": "0.60", "net_edge_lower": "0.60", "net_edge_upper": "0.60"}
+        ],
+        "aggregate_gross_edge": ["0.60", "0.60"],
+        "aggregate_net_edge": ["0.60", "0.60"]
+      }
+    },
+    {
+      "case_id": "exhaustive-set-polymarket-direct",
+      "relationship": "exhaustive_set",
+      "venue": "polymarket",
+      "timestamp": "2023-11-14T22:13:20+00:00",
+      "quantity": "1",
+      "event_scope": "synthetic exhaustive set event",
+      "propositions": [
+        {"id": "fixture-set-p0", "text": "Synthetic exhaustive proposition A"},
+        {"id": "fixture-set-p1", "text": "Synthetic exhaustive proposition B"},
+        {"id": "fixture-set-p2", "text": "Synthetic exhaustive proposition C"}
+      ],
+      "bindings": [
+        {"proposition_id": "fixture-set-p0", "binding_id": "fixture-set-b0", "market_id": "fixture-set-market", "outcome_token_id": "fixture-set-token-a", "native_side": "yes", "raw_reference": "fixture-set-raw-a"},
+        {"proposition_id": "fixture-set-p1", "binding_id": "fixture-set-b1", "market_id": "fixture-set-market", "outcome_token_id": "fixture-set-token-b", "native_side": "yes", "raw_reference": "fixture-set-raw-b"},
+        {"proposition_id": "fixture-set-p2", "binding_id": "fixture-set-b2", "market_id": "fixture-set-market", "outcome_token_id": "fixture-set-token-c", "native_side": "yes", "raw_reference": "fixture-set-raw-c"}
+      ],
+      "states": [
+        {"state_id": "fixture-set-state-a", "terminal_kind": "normal", "truth": {"fixture-set-p0": true, "fixture-set-p1": false, "fixture-set-p2": false}, "payouts": {"fixture-set-b0": "1", "fixture-set-b1": "0", "fixture-set-b2": "0"}, "evidence_ids": ["exhaustive-set-polymarket-direct-rule"], "raw_references": ["fixture-set-raw-a", "fixture-set-raw-b", "fixture-set-raw-c"]},
+        {"state_id": "fixture-set-state-b", "terminal_kind": "normal", "truth": {"fixture-set-p0": false, "fixture-set-p1": true, "fixture-set-p2": false}, "payouts": {"fixture-set-b0": "0", "fixture-set-b1": "1", "fixture-set-b2": "0"}, "evidence_ids": ["exhaustive-set-polymarket-direct-rule"], "raw_references": ["fixture-set-raw-a", "fixture-set-raw-b", "fixture-set-raw-c"]},
+        {"state_id": "fixture-set-state-c", "terminal_kind": "normal", "truth": {"fixture-set-p0": false, "fixture-set-p1": false, "fixture-set-p2": true}, "payouts": {"fixture-set-b0": "0", "fixture-set-b1": "0", "fixture-set-b2": "1"}, "evidence_ids": ["exhaustive-set-polymarket-direct-rule"], "raw_references": ["fixture-set-raw-a", "fixture-set-raw-b", "fixture-set-raw-c"]}
+      ],
+      "snapshots": [
+        {"binding_id": "fixture-set-b0", "fixture_reference": "opportunities/cases.json", "raw_reference": "fixture-set-raw-a", "market_id": "fixture-set-market", "asset_id": "fixture-set-token-a", "bids": [["0.05", "10"]], "asks": [["0.20", "1"], ["0.30", "2"]], "timestamp_ms": "1700000000000"},
+        {"binding_id": "fixture-set-b1", "fixture_reference": "opportunities/cases.json", "raw_reference": "fixture-set-raw-b", "market_id": "fixture-set-market", "asset_id": "fixture-set-token-b", "bids": [["0.05", "10"]], "asks": [["0.20", "1"], ["0.30", "2"]], "timestamp_ms": "1700000000000"},
+        {"binding_id": "fixture-set-b2", "fixture_reference": "opportunities/cases.json", "raw_reference": "fixture-set-raw-c", "market_id": "fixture-set-market", "asset_id": "fixture-set-token-c", "bids": [["0.05", "10"]], "asks": [["0.20", "1"], ["0.30", "2"]], "timestamp_ms": "1700000000000"}
+      ],
+      "fee_policies": [
+        {"binding_id": "fixture-set-b0", "schema_version": "fee-policy-v1", "policy_id": "fixture-set-fee-a", "venue": "polymarket", "effective_start": "2023-01-01T00:00:00+00:00", "effective_end": "2024-01-01T00:00:00+00:00", "start_inclusive": true, "end_inclusive": true, "role": "taker", "trade_side": "buy", "formula_kind": "zero", "formula_parameters": [], "calculation_scope": "per_depth_slice", "rounding_scope": "each_calculation_component", "rounding_mode": "ROUND_HALF_UP", "currency": "USD", "rounding_quantum": "0.01", "provenance": ["fixture-set-fee-raw-a"]},
+        {"binding_id": "fixture-set-b1", "schema_version": "fee-policy-v1", "policy_id": "fixture-set-fee-b", "venue": "polymarket", "effective_start": "2023-01-01T00:00:00+00:00", "effective_end": "2024-01-01T00:00:00+00:00", "start_inclusive": true, "end_inclusive": true, "role": "taker", "trade_side": "buy", "formula_kind": "zero", "formula_parameters": [], "calculation_scope": "per_depth_slice", "rounding_scope": "each_calculation_component", "rounding_mode": "ROUND_HALF_UP", "currency": "USD", "rounding_quantum": "0.01", "provenance": ["fixture-set-fee-raw-b"]},
+        {"binding_id": "fixture-set-b2", "schema_version": "fee-policy-v1", "policy_id": "fixture-set-fee-c", "venue": "polymarket", "effective_start": "2023-01-01T00:00:00+00:00", "effective_end": "2024-01-01T00:00:00+00:00", "start_inclusive": true, "end_inclusive": true, "role": "taker", "trade_side": "buy", "formula_kind": "zero", "formula_parameters": [], "calculation_scope": "per_depth_slice", "rounding_scope": "each_calculation_component", "rounding_mode": "ROUND_HALF_UP", "currency": "USD", "rounding_quantum": "0.01", "provenance": ["fixture-set-fee-raw-c"]}
+      ],
+      "expected": {
+        "status": "validated",
+        "candidate": true,
+        "legs": [
+          {"binding_id": "fixture-set-b0", "market_id": "fixture-set-market", "outcome_token_id": "fixture-set-token-a", "native_side": "yes", "snapshot_asset_id": "fixture-set-token-a", "depth_slices": [{"index": 0, "quantity": "1", "price": "0.20", "cost": "0.20"}], "observed_ask_capacity": "3", "total_purchase_cost": "0.20", "vwap": "0.20", "fee_interval": ["0.00", "0.00"]},
+          {"binding_id": "fixture-set-b1", "market_id": "fixture-set-market", "outcome_token_id": "fixture-set-token-b", "native_side": "yes", "snapshot_asset_id": "fixture-set-token-b", "depth_slices": [{"index": 0, "quantity": "1", "price": "0.20", "cost": "0.20"}], "observed_ask_capacity": "3", "total_purchase_cost": "0.20", "vwap": "0.20", "fee_interval": ["0.00", "0.00"]},
+          {"binding_id": "fixture-set-b2", "market_id": "fixture-set-market", "outcome_token_id": "fixture-set-token-c", "native_side": "yes", "snapshot_asset_id": "fixture-set-token-c", "depth_slices": [{"index": 0, "quantity": "1", "price": "0.20", "cost": "0.20"}], "observed_ask_capacity": "3", "total_purchase_cost": "0.20", "vwap": "0.20", "fee_interval": ["0.00", "0.00"]}
+        ],
+        "total_purchase_cost": "0.60",
+        "total_fee_interval": ["0.00", "0.00"],
+        "state_results": [
+          {"state_id": "fixture-set-state-a", "gross_payoff": "1", "gross_edge": "0.40", "net_edge_lower": "0.40", "net_edge_upper": "0.40"},
+          {"state_id": "fixture-set-state-b", "gross_payoff": "1", "gross_edge": "0.40", "net_edge_lower": "0.40", "net_edge_upper": "0.40"},
+          {"state_id": "fixture-set-state-c", "gross_payoff": "1", "gross_edge": "0.40", "net_edge_lower": "0.40", "net_edge_upper": "0.40"}
+        ],
+        "aggregate_gross_edge": ["0.40", "0.40"],
+        "aggregate_net_edge": ["0.40", "0.40"]
+      }
+    },
+    {
+      "case_id": "partition-kalshi-derived-asks",
+      "relationship": "exclusive_and_exhaustive_partition",
+      "venue": "kalshi",
+      "timestamp": "2023-11-14T22:13:20+00:00",
+      "quantity": "1",
+      "event_scope": "synthetic partition event",
+      "propositions": [
+        {"id": "fixture-part-p0", "text": "Synthetic partition proposition A"},
+        {"id": "fixture-part-p1", "text": "Synthetic partition proposition B"},
+        {"id": "fixture-part-p2", "text": "Synthetic partition proposition C"}
+      ],
+      "bindings": [
+        {"proposition_id": "fixture-part-p0", "binding_id": "fixture-part-b0", "market_ticker": "FIXTURE-PART-A", "market_id": "fixture-part-market-a", "native_side": "yes", "raw_reference": "fixture-part-raw-a"},
+        {"proposition_id": "fixture-part-p1", "binding_id": "fixture-part-b1", "market_ticker": "FIXTURE-PART-B", "market_id": "fixture-part-market-b", "native_side": "yes", "raw_reference": "fixture-part-raw-b"},
+        {"proposition_id": "fixture-part-p2", "binding_id": "fixture-part-b2", "market_ticker": "FIXTURE-PART-C", "market_id": "fixture-part-market-c", "native_side": "yes", "raw_reference": "fixture-part-raw-c"}
+      ],
+      "states": [
+        {"state_id": "fixture-part-state-a", "terminal_kind": "normal", "truth": {"fixture-part-p0": true, "fixture-part-p1": false, "fixture-part-p2": false}, "payouts": {"fixture-part-b0": "1", "fixture-part-b1": "0", "fixture-part-b2": "0"}, "evidence_ids": ["partition-kalshi-derived-asks-rule"], "raw_references": ["fixture-part-raw-a", "fixture-part-raw-b", "fixture-part-raw-c"]},
+        {"state_id": "fixture-part-state-b", "terminal_kind": "normal", "truth": {"fixture-part-p0": false, "fixture-part-p1": true, "fixture-part-p2": false}, "payouts": {"fixture-part-b0": "0", "fixture-part-b1": "1", "fixture-part-b2": "0"}, "evidence_ids": ["partition-kalshi-derived-asks-rule"], "raw_references": ["fixture-part-raw-a", "fixture-part-raw-b", "fixture-part-raw-c"]},
+        {"state_id": "fixture-part-state-c", "terminal_kind": "normal", "truth": {"fixture-part-p0": false, "fixture-part-p1": false, "fixture-part-p2": true}, "payouts": {"fixture-part-b0": "0", "fixture-part-b1": "0", "fixture-part-b2": "1"}, "evidence_ids": ["partition-kalshi-derived-asks-rule"], "raw_references": ["fixture-part-raw-a", "fixture-part-raw-b", "fixture-part-raw-c"]}
+      ],
+      "snapshots": [
+        {"binding_id": "fixture-part-b0", "fixture_reference": "opportunities/cases.json", "raw_reference": "fixture-part-raw-a", "market_ticker": "FIXTURE-PART-A", "market_id": "fixture-part-market-a", "yes_side": [["0.10", "10"]], "no_side": [["0.70", "1"], ["0.65", "2"]], "timestamp_ms": "1700000000000", "session_id": 1, "sequence": 1, "price_convention": "outcome_leg"},
+        {"binding_id": "fixture-part-b1", "fixture_reference": "opportunities/cases.json", "raw_reference": "fixture-part-raw-b", "market_ticker": "FIXTURE-PART-B", "market_id": "fixture-part-market-b", "yes_side": [["0.10", "10"]], "no_side": [["0.70", "1"], ["0.65", "2"]], "timestamp_ms": "1700000000000", "session_id": 1, "sequence": 1, "price_convention": "outcome_leg"},
+        {"binding_id": "fixture-part-b2", "fixture_reference": "opportunities/cases.json", "raw_reference": "fixture-part-raw-c", "market_ticker": "FIXTURE-PART-C", "market_id": "fixture-part-market-c", "yes_side": [["0.10", "10"]], "no_side": [["0.70", "1"], ["0.65", "2"]], "timestamp_ms": "1700000000000", "session_id": 1, "sequence": 1, "price_convention": "outcome_leg"}
+      ],
+      "fee_policies": [
+        {"binding_id": "fixture-part-b0", "schema_version": "fee-policy-v1", "policy_id": "fixture-part-fee-a", "venue": "kalshi", "effective_start": "2023-01-01T00:00:00+00:00", "effective_end": "2024-01-01T00:00:00+00:00", "start_inclusive": true, "end_inclusive": true, "role": "taker", "trade_side": "buy", "formula_kind": "flat_per_contract", "formula_parameters": [{"name": "amount", "lower": "0.01", "upper": "0.01"}], "calculation_scope": "per_depth_slice", "rounding_scope": "each_calculation_component", "rounding_mode": "ROUND_HALF_UP", "currency": "USD", "rounding_quantum": "0.01", "provenance": ["fixture-part-fee-raw-a"]},
+        {"binding_id": "fixture-part-b1", "schema_version": "fee-policy-v1", "policy_id": "fixture-part-fee-b", "venue": "kalshi", "effective_start": "2023-01-01T00:00:00+00:00", "effective_end": "2024-01-01T00:00:00+00:00", "start_inclusive": true, "end_inclusive": true, "role": "taker", "trade_side": "buy", "formula_kind": "flat_per_contract", "formula_parameters": [{"name": "amount", "lower": "0.01", "upper": "0.01"}], "calculation_scope": "per_depth_slice", "rounding_scope": "each_calculation_component", "rounding_mode": "ROUND_HALF_UP", "currency": "USD", "rounding_quantum": "0.01", "provenance": ["fixture-part-fee-raw-b"]},
+        {"binding_id": "fixture-part-b2", "schema_version": "fee-policy-v1", "policy_id": "fixture-part-fee-c", "venue": "kalshi", "effective_start": "2023-01-01T00:00:00+00:00", "effective_end": "2024-01-01T00:00:00+00:00", "start_inclusive": true, "end_inclusive": true, "role": "taker", "trade_side": "buy", "formula_kind": "flat_per_contract", "formula_parameters": [{"name": "amount", "lower": "0.01", "upper": "0.01"}], "calculation_scope": "per_depth_slice", "rounding_scope": "each_calculation_component", "rounding_mode": "ROUND_HALF_UP", "currency": "USD", "rounding_quantum": "0.01", "provenance": ["fixture-part-fee-raw-c"]}
+      ],
+      "expected": {
+        "status": "validated",
+        "candidate": true,
+        "legs": [
+          {"binding_id": "fixture-part-b0", "market_ticker": "FIXTURE-PART-A", "market_id": "fixture-part-market-a", "native_side": "yes", "snapshot_market_id": "fixture-part-market-a", "depth_slices": [{"index": 0, "quantity": "1", "price": "0.30", "cost": "0.30"}], "observed_ask_capacity": "3", "total_purchase_cost": "0.30", "vwap": "0.30", "fee_interval": ["0.01", "0.01"]},
+          {"binding_id": "fixture-part-b1", "market_ticker": "FIXTURE-PART-B", "market_id": "fixture-part-market-b", "native_side": "yes", "snapshot_market_id": "fixture-part-market-b", "depth_slices": [{"index": 0, "quantity": "1", "price": "0.30", "cost": "0.30"}], "observed_ask_capacity": "3", "total_purchase_cost": "0.30", "vwap": "0.30", "fee_interval": ["0.01", "0.01"]},
+          {"binding_id": "fixture-part-b2", "market_ticker": "FIXTURE-PART-C", "market_id": "fixture-part-market-c", "native_side": "yes", "snapshot_market_id": "fixture-part-market-c", "depth_slices": [{"index": 0, "quantity": "1", "price": "0.30", "cost": "0.30"}], "observed_ask_capacity": "3", "total_purchase_cost": "0.30", "vwap": "0.30", "fee_interval": ["0.01", "0.01"]}
+        ],
+        "total_purchase_cost": "0.90",
+        "total_fee_interval": ["0.03", "0.03"],
+        "state_results": [
+          {"state_id": "fixture-part-state-a", "gross_payoff": "1", "gross_edge": "0.10", "net_edge_lower": "0.07", "net_edge_upper": "0.07"},
+          {"state_id": "fixture-part-state-b", "gross_payoff": "1", "gross_edge": "0.10", "net_edge_lower": "0.07", "net_edge_upper": "0.07"},
+          {"state_id": "fixture-part-state-c", "gross_payoff": "1", "gross_edge": "0.10", "net_edge_lower": "0.07", "net_edge_upper": "0.07"}
+        ],
+        "aggregate_gross_edge": ["0.10", "0.10"],
+        "aggregate_net_edge": ["0.07", "0.07"]
+      }
+    }
+  ]
+}
