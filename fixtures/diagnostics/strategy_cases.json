@@ -1,0 +1,112 @@
+{
+  "schema_version": "diagnostics-fixtures-v1",
+  "synthetic": true,
+  "authoritative": false,
+  "production_configuration": false,
+  "trading_recommendation": false,
+  "future_profitability_evidence": false,
+  "notice": "Synthetic, non-authoritative historical validation cases. They are not implementation authority, production configuration, a trading recommendation, or evidence of future profitability.",
+  "fixture_artifact": "diagnostics/strategy_cases.json",
+  "coverage": {
+    "relationship_classes": [
+      "complement",
+      "exhaustive_set",
+      "exclusive_and_exhaustive_partition"
+    ],
+    "venues": [
+      "polymarket",
+      "kalshi"
+    ],
+    "milestone_3_statuses": [
+      "validated",
+      "no_net_edge",
+      "insufficient_depth",
+      "unsupported_trade_direction",
+      "unavailable"
+    ],
+    "schedule_slot_kinds": [
+      "complete",
+      "explicit_unavailable"
+    ],
+    "historical_fields": [
+      "exact_fee_policy",
+      "caller_supplied_quantity",
+      "chronological_partition",
+      "stratum",
+      "ordered_provenance",
+      "numerator",
+      "denominator",
+      "persistence_run",
+      "criterion_boundary"
+    ],
+    "supported_metrics": [
+      "scheduled_count",
+      "eligible_count",
+      "ineligible_count",
+      "status_count",
+      "status_rate",
+      "reason_count",
+      "reason_rate",
+      "validated_opportunity_frequency",
+      "max_persistence_observations",
+      "purchase_cost",
+      "fee_interval",
+      "gross_edge_interval",
+      "net_edge_interval",
+      "residual_single_leg_failure"
+    ],
+    "unsupported_metrics": [
+      "latency",
+      "queue_position",
+      "fill_probability",
+      "partial_fills",
+      "cancellation",
+      "execution_sequencing",
+      "false_relationship_ground_truth",
+      "portfolio_capital_allocation",
+      "concurrent_capital_usage",
+      "realized_portfolio_pnl",
+      "drawdowns"
+    ]
+  },
+  "example_schedule": {
+    "analysis_interval": {
+      "start": "2023-11-14T22:13:20+00:00",
+      "end": "2023-11-14T22:15:20+00:00",
+      "start_inclusive": true,
+      "end_inclusive": true
+    },
+    "sampling_semantics": "One explicitly scheduled synthetic observation per minute; no inferred gaps.",
+    "denominator_semantics": "all_scheduled_observations",
+    "gap_treatment": "retain_as_unavailable_and_break_persistence",
+    "quantity": "1",
+    "ratio_precision": 12,
+    "rounding_mode": "ROUND_HALF_EVEN",
+    "partitions": [
+      {
+        "partition_id": "synthetic-validation",
+        "purpose": "validation",
+        "observation_ids": [
+          "synthetic-observation-1",
+          "synthetic-observation-2"
+        ]
+      },
+      {
+        "partition_id": "synthetic-test",
+        "purpose": "test",
+        "observation_ids": [
+          "synthetic-observation-3"
+        ]
+      }
+    ],
+    "expected": {
+      "scheduled_numerator": 3,
+      "scheduled_denominator": 3,
+      "validated_numerator": 1,
+      "validated_denominator": 3,
+      "validated_ratio": "0.333333333333",
+      "explicit_unavailable_breaks_persistence": true,
+      "unsupported_metrics_have_numeric_placeholders": false
+    }
+  }
+}
