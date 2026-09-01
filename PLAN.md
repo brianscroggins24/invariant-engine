@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 delivery is fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestone 4 — Strategy validation is the only active implementation milestone, and it retains those same boundaries.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. No implementation milestone is currently active. Milestone 5 and every later milestone remain explicitly inactive.
 
 ## Central system thesis
 
@@ -41,7 +41,7 @@ The following distinctions are mandatory:
 - A validated relationship is not a constraint violation.
 - A constraint violation is not an opportunity.
 - An `OpportunityCandidate` is not historically supported, executable, an order, a recommendation, or an authorization.
-- Historical strategy validation is Milestone 4 work and remains explicitly non-actionable.
+- The accepted Milestone 4 historical strategy-validation result remains explicitly non-actionable.
 - Historical validation is not proof of future profitability, executability, capital suitability, or authorization.
 - No LLM may authorize trades or bypass deterministic validation.
 
@@ -89,7 +89,7 @@ The eventual pipeline is:
 
 The accepted Milestone 3 work includes bounded historical opportunity economics for one synchronized historical constraint violation at a time and ends before aggregate strategy validation, live ingestion, execution simulation, risk authorization, and execution. That description records the accepted boundary and does not authorize further implementation.
 
-The active Milestone 4 work begins at historical strategy validation over a complete, explicitly defined observation schedule and ends with a non-actionable historical validation result. It does not activate live ingestion, execution simulation, risk authorization, execution, or Milestone 5 and later work.
+The accepted Milestone 4 delivery begins at historical strategy validation over a complete, explicitly defined observation schedule and ends with a non-actionable historical validation result. This historical boundary grants no continuing implementation authority and does not activate live ingestion, execution simulation, risk authorization, execution, or Milestone 5 and later work.
 
 ## Milestone 0 — Governance and architecture — completed
 
@@ -128,7 +128,7 @@ The Milestone 2 trust pipeline is the detailed beginning of the longer analytica
 
 `discovered` → `relationship pending` → `relationship validated` → `constraint violated` → `economics validated` → `historically supported` → `simulation supported` → `risk authorized` → `submitted` → `reconciled`
 
-`rejected` may be reached from any applicable non-terminal analytical state. Completed Milestone 2 and Milestone 3 remain read-only; no candidate, draft, certificate, constraint evaluation, opportunity evaluation, or `OpportunityCandidate` may enter `historically supported` merely because one or more candidates exist. Milestone 4 may produce only an explicitly non-actionable historical validation result. Any later trusted historical-support artifact must require every caller-specified acceptance criterion to pass and retain process-local trust protections equivalent to the accepted candidate boundaries. No Milestone 4 output may enter `simulation supported`, `risk authorized`, `submitted`, or another execution state.
+`rejected` may be reached from any applicable non-terminal analytical state. Completed Milestone 2 and Milestone 3 remain read-only; no candidate, draft, certificate, constraint evaluation, opportunity evaluation, or `OpportunityCandidate` may enter `historically supported` merely because one or more candidates exist. The completed Milestone 4 may produce only an explicitly non-actionable historical validation result. Any later trusted historical-support artifact must require every caller-specified acceptance criterion to pass and retain process-local trust protections equivalent to the accepted candidate boundaries. No Milestone 4 output may enter `simulation supported`, `risk authorized`, `submitted`, or another execution state.
 
 ## Domain model direction
 
@@ -236,7 +236,7 @@ The system should remain a modular Python application using:
 - Ruff for formatting and linting;
 - strict type checking.
 
-Start as a modular monolith rather than microservices. The full future package map is recorded below. Under active Milestone 4, package creation is permitted only within the explicitly authorized diagnostics paths; creation of any other future package requires another explicit governance transition.
+Start as a modular monolith rather than microservices. The full future package map is recorded below. No package creation or implementation is currently authorized; any future change requires another explicit governance transition.
 
 ## Milestone 2 — Relationship trust and diagnostic constraint foundation
 
@@ -608,21 +608,21 @@ delivery. These delivered paths and that former exception do not confer
 current implementation authority. Milestone 3 remediation or changes within
 those paths require a future explicit governance transition.
 
-Milestone 4 implementation is authorized only within:
+The following paths record the accepted Milestone 4 delivery:
 
 - `src/invariant_engine/diagnostics/`;
 - `tests/diagnostics/`;
 - `fixtures/diagnostics/`.
 
-A narrow change may be made in
-`tests/relationships/test_relationships.py` only to recognize the active
-diagnostics package while retaining every prohibition for simulation, risk,
-execution, and reconciliation. If implementation requires changing
-opportunities, constraints, relationships, replay, venue models,
-serialization, domain behavior, configuration, dependencies, or any other
-path, implementation must stop and request a governance decision.
+The corresponding diagnostics-recognition change in
+`tests/relationships/test_relationships.py` is also part of the historical
+Milestone 4 delivery and retains every prohibition for simulation, risk,
+execution, and reconciliation. These delivered paths and that former
+exception confer no current implementation authority or continuing path
+exception. Milestone 4 remediation or changes within those paths require a
+future explicit governance transition.
 
-The accepted Milestones 1, 2.1, 2.2, 2.3, and 3 foundations and permanent
+The accepted Milestones 1, 2.1, 2.2, 2.3, 3, and 4 foundations and permanent
 regression guarantees must not regress. No unrelated package or
 later-milestone package is authorized. Live venue or model connections,
 simulation, risk, execution, reconciliation, wallets, signing, orders,
@@ -670,9 +670,9 @@ The accepted implementation has parent
 `489b5453f0c5b0e325d4cf70638090db299947d6`, tree
 `161461d075e93ae8b4ba649b3c7050700abd8cc6`, and content-manifest SHA-256
 `847e68a13d66ca20e144daca582ec6992eada2323778de0b60c79ed7a909a6fb`.
-Milestone 3 implementation authority remains deactivated. Milestone 4 is the
-only active implementation milestone; Milestone 5 and every later milestone
-remain explicitly inactive.
+Milestone 3 implementation authority remains deactivated. Milestone 4 is also
+completed and accepted, and no implementation milestone is currently active.
+Milestone 5 and every later milestone remain explicitly inactive.
 
 Its purpose is deterministic evaluation of the economics of one synchronized
 historical constraint violation at a time. All work remains local, historical,
@@ -698,8 +698,8 @@ RelationshipCandidate
 
 A constraint violation is not an opportunity. An `OpportunityCandidate` is
 not historically supported, executable, an order, a recommendation, or an
-authorization. Historical strategy validation is active Milestone 4 work and
-remains non-actionable.
+authorization. The accepted Milestone 4 historical strategy-validation result
+also remains explicitly non-actionable.
 
 Economics evaluation must begin with all of the following:
 
@@ -847,20 +847,29 @@ preserve:
 
 These accepted guarantees are permanent regression requirements. Milestone 3
 implementation authority remains deactivated. Milestone 3 remediation requires
-a future explicit governance transition. The activation below grants no
-authority to change Milestone 3 semantics or delivered paths.
+a future explicit governance transition. The accepted Milestone 4 delivery
+below grants no authority to change Milestone 3 semantics or delivered paths.
 
-## Milestone 4 — Strategy validation — active
+## Milestone 4 — Strategy validation — completed and accepted
 
-Milestone 4 is the only active implementation milestone. This governance
-transition authorizes its bounded implementation; it does not claim that
-Milestone 4 has been implemented, tested, reviewed, accepted, committed, or
-pushed. Milestone 5 and every later milestone remain explicitly inactive.
+Milestone 4 was independently reviewed and accepted on 2026-08-29 at
+implementation commit `3a4377355b6715d588fb0736e9da3c6d7cd42391`. The
+accepted implementation has parent
+`b9d73ae7c6f42901c38d6ac0a830c3642eb53bff`, tree
+`037416fd7f1a7aac3a59a2573a21c95d1f70751d`, and content-manifest SHA-256
+`53cd2df345aa33ee258a1039810daca1a624f0cae9cdce70939a22746cc70a08`.
+Milestone 4 implementation authority is deactivated. No implementation
+milestone is currently active. Milestone 5 and every later milestone remain
+explicitly inactive.
 
-Milestone 4 validates a fixed strategy specification over a complete,
-explicitly defined historical observation schedule by independently rerunning
-the accepted Milestone 3 evaluator for every scheduled observation and
-aggregating the reconstructed economics without inventing execution behavior.
+The following records the delivered scope and permanent regression boundary;
+it grants no continuing implementation authority.
+
+The accepted Milestone 4 delivery validates a fixed strategy specification
+over a complete, explicitly defined historical observation schedule by
+independently rerunning the accepted Milestone 3 evaluator for every scheduled
+observation and aggregating the reconstructed economics without inventing
+execution behavior.
 All work remains local, historical, read-only, fixture-driven, deterministic,
 network-free, and non-actionable. Historical validation is not proof of future
 profitability, executability, capital suitability, or authorization.
@@ -883,8 +892,8 @@ RelationshipCandidate
     → later deterministic risk authorization
 ```
 
-The validator requires an immutable, versioned validation specification that
-contains at least:
+The accepted validator requires an immutable, versioned validation
+specification that contains at least:
 
 - strategy ID and version;
 - exact included relationship classes;
@@ -917,7 +926,7 @@ copied, reconstructed, mutated, serialized, duplicated, or unavailable
 material must fail closed. The validator must not reinterpret, bypass, or
 change Milestone 3 semantics.
 
-Milestone 4 may deterministically report:
+The accepted Milestone 4 delivery may deterministically report:
 
 - scheduled observation count;
 - eligible and ineligible denominator counts;
@@ -994,21 +1003,19 @@ artifact must require all caller-specified acceptance criteria to pass and
 must retain process-local trust protections equivalent to the existing
 candidate boundaries.
 
-Milestone 4 implementation is authorized only within:
+The historical Milestone 4 delivered paths are:
 
 - `src/invariant_engine/diagnostics/`;
 - `tests/diagnostics/`;
 - `fixtures/diagnostics/`.
 
-One narrow boundary-test update is permitted in
-`tests/relationships/test_relationships.py`. That update may only recognize
-the now-active diagnostics package while retaining prohibitions for simulation,
-risk, execution, and reconciliation. If implementation requires changing
-opportunities, constraints, relationships, replay, venue models,
-serialization, domain behavior, configuration, dependencies, or any other
-path, work must stop and request a governance decision.
+The delivered diagnostics-recognition change in
+`tests/relationships/test_relationships.py` is also historical and retains
+the prohibitions for simulation, risk, execution, and reconciliation. These
+paths and that former exception grant no continuing authority. Any remediation
+or implementation change requires a future explicit governance transition.
 
-Milestone 4 must not add:
+The accepted Milestone 4 boundary permanently excludes:
 
 - live ingestion or network access;
 - authentication, credentials, wallets, or signing;
@@ -1026,28 +1033,100 @@ Milestone 4 must not add:
 - risk authorization;
 - Milestone 5 or later behavior.
 
-Future Milestone 4 implementation acceptance must include:
+### Permanent Milestone 4 regression guarantees
 
-- genuine validator-produced certificates and compiler-produced constraints;
-- independent Milestone 3 reruns for every observation;
-- all three supported buy-only relationship classes;
-- mixed `VALIDATED`, `NO_NET_EDGE`, `INSUFFICIENT_DEPTH`,
-  `UNSUPPORTED_TRADE_DIRECTION`, and `UNAVAILABLE` schedules;
-- exact numerator and denominator tests;
-- persistence with gaps, unavailable records, and boundary timestamps;
-- duplicate, reordered, omitted, and extra observation rejection;
-- incomplete schedule and invalid partition rejection;
-- temporal leakage probes;
-- stratification and currency-separation tests;
-- mutation, copy, reconstruction, pickle, and JSON trust probes;
-- deterministic identities, serialization, ordering, and hash-seed behavior;
-- explicit unavailable results for unsupported roadmap metrics;
-- the full regression suite;
-- Ruff check and format;
-- strict mypy;
-- Python compilation;
-- `git diff --check`;
-- package-boundary and no-network checks.
+All later work must preserve:
+
+- local, historical, read-only, fixture-driven, deterministic, network-free,
+  and explicitly non-actionable behavior;
+- immutable, versioned strategy specifications;
+- exact ordered schedules, timestamps, identities, partitions, strata,
+  quantities, fee regimes, currencies, and provenance;
+- explicit unavailable schedule slots that remain in denominators and break
+  persistence;
+- independent invocation of the accepted public Milestone 3 evaluator for
+  every complete slot;
+- no trust in supplied evaluations, results, candidates, serialized artifacts,
+  or previous reports;
+- rejection of duplicate identity or material, cross-partition material reuse,
+  invalid partitions, schedule mismatches, and temporal leakage;
+- explicit integer numerators and denominators, locally controlled `Decimal`
+  ratio precision and rounding, and no mutation of or dependence on the
+  process-global `Decimal` context;
+- exact status, reason, data-quality, frequency, persistence, scope, and
+  stratification reporting;
+- data-quality classification by the accepted closed reason semantics rather
+  than `UNAVAILABLE` status alone, with at most one data-quality failure per
+  observation;
+- independently non-empty required metrics, evidence minimums, and acceptance
+  criteria, including fail-closed handling of post-construction mutation;
+- exact-scope availability for required economics-derived measurements, with
+  no borrowing from observations outside the requested partition or stratum;
+- preservation of individual requested quantities, depth diagnostics, purchase
+  costs, fee intervals, gross-edge intervals, net-edge intervals, and residual
+  single-leg-failure results without silent financial pooling;
+- explicit unavailable or not-evaluated records for all eleven unsupported
+  roadmap metrics listed above;
+- the fail-closed status precedence `UNAVAILABLE` →
+  `INSUFFICIENT_EVIDENCE` → `CRITERIA_NOT_MET` → `VALIDATED`;
+- successful historical records only for overall `VALIDATED`;
+- evaluator-only process-local weak object-identity trust;
+- rejection of successful-record trust after material mutation, copy,
+  deepcopy, pickle, reconstruction, JSON transfer, or subclassing, together
+  with self-pruning of weak trust entries after garbage collection;
+- stable serialization that excludes all runtime trust state;
+- explicit statements denying future-profit, execution, simulation, risk, or
+  trading authority;
+- continued absence of live ingestion, credentials, wallets, signing, orders,
+  routing, cancellation, execution simulation, risk authorization, and trading
+  behavior.
+
+### Milestone 4 acceptance record
+
+The accepted content manifest is:
+
+```text
+713958c553526732a386456361327082ea1be4d45b72869c63fc38d5bb94a343  fixtures/diagnostics/README.md
+9f9b77cdec7db0edafaff022debb78d91f9f973c82cda2f95b69161afeffd9fb  fixtures/diagnostics/strategy_cases.json
+782729484c5aa071b1746874acb08c6085e9013835fe5d593249a7e20525a852  src/invariant_engine/diagnostics/__init__.py
+41c3e1129875776b7b62c5295201890c589f69d9d3d56db513ccc93f1e548928  src/invariant_engine/diagnostics/evaluator.py
+639b764395ecb79dd98c77877424d92c8a0dc773aeaddf783a1fa74772614328  src/invariant_engine/diagnostics/models.py
+0670711f17b4377c8bbc20b11925683a8f5460506e9b6aab7f76a4f58d114446  tests/diagnostics/test_strategy_validation.py
+41208b5e04b3dce11de1f330a49f731dda2de58e846ea1ac20293cb79bd0fd1f  tests/relationships/test_relationships.py
+```
+
+Its SHA-256 is
+`53cd2df345aa33ee258a1039810daca1a624f0cae9cdce70939a22746cc70a08`,
+calculated over the exact UTF-8 lines above without the Markdown fence and
+with one trailing newline after every line, including the final line.
+
+The independently observed final validation baseline was:
+
+- 64 diagnostics tests passed;
+- 354 complete tests passed;
+- 47 relationship tests passed;
+- 75 opportunity tests passed;
+- 1 no-network test passed;
+- Ruff check passed;
+- Ruff format check passed for 67 files;
+- strict mypy passed for 48 source files;
+- Python 3.11 compilation passed;
+- diagnostics JSON parsing passed;
+- `git diff --check` passed;
+- diagnostics passed under `PYTHONHASHSEED=1`, `2`, and `random`;
+- networking-import, prohibited-package, prohibited-capability, trust,
+  deterministic-serialization, and artifact-hygiene checks passed;
+- final review did not mutate tracked content.
+
+Three remediation cycles were completed before acceptance:
+
+1. Required metrics, evidence minimums, and acceptance criteria were made
+   independently non-empty, and post-construction mutation was made
+   fail-closed.
+2. Data-quality failures were classified using explicit accepted reasons
+   rather than every `UNAVAILABLE` result.
+3. Required economics-derived metrics were made unavailable when their exact
+   scope contained no applicable per-observation measurement.
 
 ## Later milestone roadmap
 
@@ -1099,16 +1178,24 @@ Do not invent answers to these questions:
 - What capital-transfer constraints apply?
 - What constitutes economic finality and cash availability?
 
-## Governance for active Milestone 4
+## Governance after Milestone 4 closure
 
 Milestone 3 — Historical opportunity economics is completed and accepted at
 implementation commit `ecab60460ca0139beea4e289d0511af3e80aa1a9`, with an
 implementation acceptance date of 2026-08-16. Its accepted guarantees are
 permanent regressions, its implementation authority is deactivated, and its
-delivered paths grant no continuing authority. Milestone 4 — Strategy
-validation is the only active implementation milestone. Its implementation is
-authorized only within `src/invariant_engine/diagnostics/`,
-`tests/diagnostics/`, and `fixtures/diagnostics/`, plus the narrow boundary-test
-update stated above. Milestone 5 and every later milestone remain explicitly
-inactive. Expanding Milestone 4 or activating another milestone requires a
-future explicit `PLAN.md` governance transition.
+delivered paths grant no continuing authority.
+
+Milestone 4 — Strategy validation is completed and independently accepted at
+implementation commit `3a4377355b6715d588fb0736e9da3c6d7cd42391`, with an
+implementation acceptance date of 2026-08-29. Its accepted guarantees are
+permanent regressions, its implementation authority is deactivated, and its
+delivered diagnostics paths and relationship boundary-test change grant no
+continuing authority.
+
+No implementation milestone is currently active. Milestone 5 and every later
+milestone remain explicitly inactive and appear above only as an inactive
+roadmap. This closure does not research-plan, scope, authorize, or activate the
+live read-only scanner. Any remediation, implementation, scope expansion, or
+milestone activation requires a future explicit `PLAN.md` governance
+transition.
