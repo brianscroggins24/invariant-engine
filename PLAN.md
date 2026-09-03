@@ -1130,9 +1130,171 @@ Three remediation cycles were completed before acceptance:
 
 ## Later milestone roadmap
 
-### Milestone 5 — Live read-only scanner
+### Milestone 5 — Prospective live read-only capture batch (inactive, non-authorizing)
 
-Add public venue data ingestion without authentication, orders, wallets, or trading.
+This is a prospective planning section only. Milestone 5 is inactive and
+non-authorizing: it does not activate implementation, grant path authority,
+permit network calls, or permit credentials. Any future implementation would
+remain behind a later governance transition.
+
+#### Purpose and boundary
+
+The intended Milestone 5 capability is a finite, one-shot, live, read-only
+capture batch over a fixed, caller-supplied list of venue identifiers. Its
+future boundary would begin with an immutable, caller-supplied capture
+specification and end with immutable live-capture provenance plus either a
+venue-native captured REST order book or an explicit terminal capture failure.
+The batch would capture only the requested targets and would not discover
+markets or tokens.
+
+A live capture is a distinct capture artifact. It must not be represented as,
+or impersonate, a fixture-only `RawEnvelope`, replay input, a trusted
+observation, a relationship or certificate, a constraint evaluation, an
+opportunity, a historical strategy-validation result, or an execution, risk,
+order, or trade object.
+
+#### Candidate venue operations
+
+The prospective REST operations are recorded as candidate operations only:
+
+- Polymarket `GET /book?token_id={caller_supplied_token_id}`;
+- Kalshi `GET /trade-api/v2/markets/{caller_supplied_ticker}/orderbook`.
+
+The current authentication status of the Kalshi operation is an unresolved
+official-documentation conflict; this plan does not characterize that
+operation as authenticated, public, or optionally authenticated.
+
+#### Prospective batch invariants
+
+A later governance transition would be expected to require:
+
+- an immutable, versioned capture specification;
+- a nonempty ordered list of fixed caller-supplied targets;
+- explicit venue, identifier, origin, timeout, response-size limit, and
+  provenance for each target and the batch;
+- one target attempt at a time, in caller order;
+- exactly one request attempt per target;
+- no retries, redirects, polling, concurrency, catch-up, or failover;
+- strict HTTPS origin and path allowlists;
+- strict UTF-8 and JSON parsing;
+- duplicate-key rejection;
+- required-field and exact-type validation;
+- preservation of exact response strings and bytes;
+- exact `Decimal` parsing without binary floating point;
+- immutable attempt identities and body digests;
+- explicit terminal capture-failure statuses;
+- deterministic serialization wherever stable serialization applies; and
+- observer timestamps labeled only as local acquisition provenance.
+
+#### Venue-native semantics and limits
+
+Polymarket planning may retain direct bids and asks, documented descending
+bids and ascending asks, required asset-ID equality with the requested token,
+and a timestamp treated as an opaque venue field without a unit or freshness
+claim.
+
+Kalshi planning may retain YES and NO bid ladders, exact two-string
+price/quantity tuples, response `_fp` quantity strings documented as emitting
+two decimal places, received order and duplicate levels without aggregation,
+and empty arrays as structurally acceptable without assigning them economic
+meaning.
+
+The capture must not fabricate Kalshi asks, a venue timestamp or sequence,
+universal price bounds, a complete price lexical grammar, tie behavior,
+per-market tick validity, snapshot freshness, or snapshot atomicity.
+
+#### Sole Milestone 5 blocking evidence question
+
+The sole Milestone 5-specific blocking evidence question is:
+
+> Does the current Kalshi REST market-orderbook endpoint require
+> authentication?
+
+Current endpoint-reference evidence declares the three Kalshi authentication
+schemes and a 401 authentication-required response. Current quick-start
+evidence describes the same order-book GET as public, supplies no
+authentication headers, and demonstrates an unauthenticated request. Neither
+page provides a reliable update date establishing precedence. Tutorial versus
+OpenAPI evidence strength does not remove the contradiction. No live
+production probe or use of operator credentials is permitted to resolve it.
+Implementation that depends on the answer must remain inactive until reviewed
+evidence or an explicit governance decision resolves the conflict.
+
+#### Candidate research lifecycle gate
+
+Candidate research addressing environment and credential behavior exists, but
+it is not downstream authority. It covers:
+
+- environment-specific credentials and recommended origins;
+- read/write and child API-key scopes;
+- an omitted-scope broad-access default;
+- response-side visibility of granted scope labels; and
+- public/no-authentication market-data guidance.
+
+These findings require promotion and reviewed synthesis reconciliation before
+any implementation activation. They are not accepted engine defaults.
+
+#### Resolved or non-applicable to this capture boundary
+
+The following are not Milestone 5 implementation blockers (and are not
+thereby resolved globally; subjects that remain relevant to later milestones
+stay in the global open-evidence section below):
+
+- rate limits, retryability, and backoff: one attempt and no retry;
+- server failover: prohibited;
+- ticker normalization: preserve the caller-supplied identifier under a
+  fail-closed local safety grammar;
+- cross-venue observation safety: no cross-venue aggregation or analytical
+  promotion;
+- snapshot freshness, atomicity, and timestamp units: capture without making
+  those claims;
+- discovery: excluded;
+- WebSockets and gap recovery: deferred beyond this REST capture;
+- key rotation, revocation, and compromise recovery: outside the capture
+  library's secret boundary; and
+- actual scope of an operator credential: an external deployment precondition,
+  not something the engine may inspect during ordinary tests.
+
+#### Explicit non-goals
+
+This prospective section excludes:
+
+- implementation activation;
+- real network access during ordinary tests;
+- access to the operator's Kalshi key;
+- credential or signer implementation;
+- ambient environment, file, keychain, or configuration secret discovery;
+- WebSockets and subscriptions;
+- market or token discovery;
+- polling and background workers;
+- retries, redirects, or failover;
+- cross-venue synchronization and analytics;
+- replay promotion;
+- relationship, constraint, opportunity, or strategy evaluation;
+- fees, simulation, risk, execution, reconciliation, orders, and trading; and
+- Milestone 6 activation.
+
+#### Future activation gate
+
+Implementation remains prohibited until a later governance transition has:
+
+1. promoted and reconciled the required research evidence;
+2. resolved or explicitly governed the Kalshi authentication conflict;
+3. updated both `AGENTS.md` and `PLAN.md` consistently;
+4. identified exact permitted source, test, and fixture paths;
+5. defined credential handling if authentication is later permitted;
+6. defined exact dependencies, if any;
+7. defined protected Milestone 1–4 regression requirements; and
+8. designated Milestone 5 as the sole implementation milestone in force.
+
+Until every gate is met through that later transition, no implementation,
+network access, or credential use follows from this planning text.
+
+#### Current governance remains unchanged
+
+No implementation milestone is currently active. Milestone 5 remains
+prospective and inactive; Milestone 6 and every later milestone remain
+inactive; and accepted Milestones 1–4 remain permanent regression boundaries.
 
 ### Milestone 6 — Execution simulation
 
@@ -1195,7 +1357,7 @@ continuing authority.
 
 No implementation milestone is currently active. Milestone 5 and every later
 milestone remain explicitly inactive and appear above only as an inactive
-roadmap. This closure does not research-plan, scope, authorize, or activate the
-live read-only scanner. Any remediation, implementation, scope expansion, or
+roadmap. The prospective Milestone 5 planning above does not authorize or activate the
+live read-only capture capability. Any remediation, implementation, scope expansion, or
 milestone activation requires a future explicit `PLAN.md` governance
 transition.
