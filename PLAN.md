@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. No implementation milestone is currently active. Milestone 5 and every later milestone remain explicitly inactive.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. This uncommitted Milestone 5 activation draft grants no implementation authority. If and only if it is independently reviewed, committed, accepted, and the accepted activation commit is verified by the planner, Milestone 5 becomes the sole active implementation milestone for its bounded capture scope; implementation must still await a separate bounded implementation prompt. Milestone 6 and every later milestone remain explicitly inactive.
 
 ## Central system thesis
 
@@ -236,7 +236,7 @@ The system should remain a modular Python application using:
 - Ruff for formatting and linting;
 - strict type checking.
 
-Start as a modular monolith rather than microservices. The full future package map is recorded below. No package creation or implementation is currently authorized; any future change requires another explicit governance transition.
+Start as a modular monolith rather than microservices. The only package creation that may take effect under this transition is the exact Milestone 5 capture-path allowance in its activation section, effective only after the accepted activation commit is verified and a separate bounded implementation prompt is issued. Any other change requires another explicit governance transition.
 
 ## Milestone 2 — Relationship trust and diagnostic constraint foundation
 
@@ -624,10 +624,12 @@ future explicit governance transition.
 
 The accepted Milestones 1, 2.1, 2.2, 2.3, 3, and 4 foundations and permanent
 regression guarantees must not regress. No unrelated package or
-later-milestone package is authorized. Live venue or model connections,
-simulation, risk, execution, reconciliation, wallets, signing, orders,
-cancellation, and routing remain prohibited. No live provider or model
-integration is allowed.
+later-milestone package is authorized. After the accepted activation commit is
+verified, only the exact Milestone 5 read-only capture connection and narrow
+caller-owned Kalshi signing adapter described below are permitted. All model
+connections, simulation, risk, execution, reconciliation, wallets, private-key
+handling, orders, cancellation, routing, and other live provider integration
+remain prohibited.
 
 ## Milestone 2 non-goals
 
@@ -671,8 +673,10 @@ The accepted implementation has parent
 `161461d075e93ae8b4ba649b3c7050700abd8cc6`, and content-manifest SHA-256
 `847e68a13d66ca20e144daca582ec6992eada2323778de0b60c79ed7a909a6fb`.
 Milestone 3 implementation authority remains deactivated. Milestone 4 is also
-completed and accepted, and no implementation milestone is currently active.
-Milestone 5 and every later milestone remain explicitly inactive.
+completed and accepted. At the time of Milestone 3 closure, no implementation
+milestone was active and Milestone 5 and every later milestone were inactive;
+the conditional Milestone 5 activation draft below does not alter this
+historical acceptance record.
 
 Its purpose is deterministic evaluation of the economics of one synchronized
 historical constraint violation at a time. All work remains local, historical,
@@ -858,9 +862,10 @@ accepted implementation has parent
 `b9d73ae7c6f42901c38d6ac0a830c3642eb53bff`, tree
 `037416fd7f1a7aac3a59a2573a21c95d1f70751d`, and content-manifest SHA-256
 `53cd2df345aa33ee258a1039810daca1a624f0cae9cdce70939a22746cc70a08`.
-Milestone 4 implementation authority is deactivated. No implementation
-milestone is currently active. Milestone 5 and every later milestone remain
-explicitly inactive.
+Milestone 4 implementation authority is deactivated. At Milestone 4 closure,
+no implementation milestone was active and Milestone 5 and every later
+milestone were inactive. The conditional Milestone 5 activation draft below
+does not reopen Milestone 4 or change its accepted boundary.
 
 The following records the delivered scope and permanent regression boundary;
 it grants no continuing implementation authority.
@@ -1130,192 +1135,749 @@ Three remediation cycles were completed before acceptance:
 
 ## Later milestone roadmap
 
-### Milestone 5 — Prospective live read-only capture batch (inactive, non-authorizing)
+### Milestone 5 — Bounded live read-only capture batch (activation draft)
 
-This is a prospective planning section only. Milestone 5 is inactive and
-non-authorizing: it does not activate implementation, grant path authority,
-permit network calls, or permit credentials. Any future implementation would
-remain behind a later governance transition.
+#### Activation state and separation of authority
 
-#### Purpose and boundary
+This is an uncommitted activation governance draft. It does not activate
+implementation, network access, credentials, deployment, or a live trial. If
+and only if every activation gate below is satisfied, Milestone 5 becomes the
+sole active implementation milestone for the exact bounded scope below.
 
-The intended Milestone 5 capability is a finite, one-shot, live, read-only
-capture batch over a fixed, caller-supplied list of venue identifiers. Its
-future boundary would begin with an immutable, caller-supplied capture
-specification and end with immutable live-capture provenance plus either a
-venue-native captured REST order book or an explicit terminal capture failure.
-The batch would capture only the requested targets and would not discover
-markets or tokens.
+The activation sequence is mandatory:
 
-A live capture is a distinct capture artifact. It must not be represented as,
-or impersonate, a fixture-only `RawEnvelope`, replay input, a trusted
-observation, a relationship or certificate, a constraint evaluation, an
-opportunity, a historical strategy-validation result, or an execution, risk,
-order, or trade object.
+1. An independent reviewer must read the exact uncommitted `AGENTS.md` and
+   `PLAN.md` content and complete HEAD-relative governance diff, record the two
+   document SHA-256 values and full-diff SHA-256 as the accepted-content
+   identity, and explicitly accept or reject that exact content.
+2. After acceptance, the user—not the reviewing or implementation agent—must
+   commit and push the accepted content. This draft need not and cannot contain
+   its eventual commit hash or tree.
+3. Before activation takes effect, the planner must verify the resulting
+   commit identity, its expected parent
+   `ec3a8356a91cdbcf6eefbc140da0f579e0cb6233`, its tree, the committed document
+   blobs and parent-to-commit governance diff against the accepted-content
+   identity, local `HEAD` and local `origin/main` alignment, and complete clean
+   tracked, staged, unstaged, untracked, and ignored manifests.
+4. After that verification, implementation must still await a separate
+   bounded implementation prompt before any file is created or changed.
 
-#### Candidate venue operations
+The `origin/main` check in step 3 is an offline comparison with the locally
+stored remote-tracking ref. It is not a fetch, remote API call, or proof of the
+server's current state. Any actual remote query requires separate authority;
+the required user push is not delegated to an agent by this draft.
 
-The prospective REST operations are recorded as candidate operations only:
+Implementation acceptance and governance closure remain separate. A future
+review may accept the implementation without deactivating Milestone 5. A later
+explicit governance closure must deactivate Milestone 5 authority; this draft
+does not write or presume that closure. Milestone 6 and every later milestone
+remain inactive.
 
-- Polymarket `GET /book?token_id={caller_supplied_token_id}`;
-- Kalshi `GET /trade-api/v2/markets/{caller_supplied_ticker}/orderbook`.
+#### Purpose and trust boundary
 
-The current authentication status of the Kalshi operation is an unresolved
-official-documentation conflict; this plan does not characterize that
-operation as authenticated, public, or optionally authenticated.
+Milestone 5 implements a finite, one-shot, live, read-only REST capture batch
+over an immutable ordered list of caller-supplied venue identifiers. The
+boundary begins with a validated capture specification and, for Kalshi, a
+runtime-only caller-owned authentication binding. It ends with immutable
+capture provenance plus either a venue-native captured REST order book or an
+explicit terminal target failure. It does not discover markets or tokens.
 
-#### Prospective batch invariants
+Finite means at most 64 caller-supplied targets and bounded engine-controlled
+attempts. It is not a promise of a hard wall-clock completion deadline for
+caller-owned signer code or system DNS resolution, neither of which the engine
+can forcibly bound.
 
-A later governance transition would be expected to require:
+A live capture is a distinct artifact. It is not and cannot impersonate a
+fixture-only `RawEnvelope`, replay input, trusted observation, relationship,
+certificate, constraint evaluation, opportunity, historical
+strategy-validation result, simulation, risk decision, order, or trade. A
+capture does not prove venue truth, freshness, atomicity, completeness,
+executability, or successful future access.
 
-- an immutable, versioned capture specification;
-- a nonempty ordered list of fixed caller-supplied targets;
-- explicit venue, identifier, origin, timeout, response-size limit, and
-  provenance for each target and the batch;
-- one target attempt at a time, in caller order;
-- exactly one request attempt per target;
-- no retries, redirects, polling, concurrency, catch-up, or failover;
-- strict HTTPS origin and path allowlists;
-- strict UTF-8 and JSON parsing;
-- duplicate-key rejection;
-- required-field and exact-type validation;
-- preservation of exact response strings and bytes;
-- exact `Decimal` parsing without binary floating point;
-- immutable attempt identities and body digests;
-- explicit terminal capture-failure statuses;
-- deterministic serialization wherever stable serialization applies; and
-- observer timestamps labeled only as local acquisition provenance.
+#### Reviewed research authority and provenance
 
-#### Venue-native semantics and limits
+The planner verified research commit
+`8361a49bcc3519ca17a91c69c46a9b36f3017273`. The following research files are
+listed only for provenance and are not part of this repository:
 
-Polymarket planning may retain direct bids and asks, documented descending
-bids and ascending asks, required asset-ID equality with the requested token,
-and a timestamp treated as an opaque venue field without a unit or freshness
-claim.
+- `wiki/platforms/kalshi.md` — `PLATFORM-0002`;
+- `wiki/platforms/polymarket.md` — `PLATFORM-0001`;
+- `wiki/concepts/prediction-market-mechanics.md` — `CONCEPT-0002`;
+- `registry/sources.yaml`;
+- `registry/pages.yaml`;
+- `registry/claims.yaml`;
+- `index.md`;
+- `log.md`; and
+- reviewed source summaries for `SRC-0014`, `SRC-0024`, and `SRC-0040`
+  through `SRC-0045`.
 
-Kalshi planning may retain YES and NO bid ladders, exact two-string
-price/quantity tuples, response `_fp` quantity strings documented as emitting
-two decimal places, received order and duplicate levels without aggregation,
-and empty arrays as structurally acceptable without assigning them economic
-meaning.
+The applicable sources are active, their summaries and applicable claims are
+reviewed, `SRC-0041` supersedes `SRC-0022`, and promotion and synthesis
+reconciliation are complete. This activation draft uses only the supplied
+reviewed findings below; it does not inspect the research repository, use the
+newly found demo-funds documentation, or rely on unverified Polymarket staging
+access.
 
-The capture must not fabricate Kalshi asks, a venue timestamp or sequence,
-universal price bounds, a complete price lexical grammar, tie behavior,
-per-market tick validity, snapshot freshness, or snapshot atomicity.
+The reviewed findings establish for this bounded implementation:
 
-#### Currently identified Milestone 5 evidence issue
+- `SRC-0014` / `CLM-0067`–`CLM-0068`: Polymarket `GET /book` requires
+  `token_id`; its documented public operation returns `market`, `asset_id`,
+  `timestamp`, `hash`, `bids`, `asks`, `min_order_size`, `tick_size`,
+  `neg_risk`, and `last_trade_price`; bids are descending and asks ascending;
+  price and size fields are strings; HTTP 200 is documented; and the active
+  artifact was reacquired byte-identically on 2026-08-31.
+- `SRC-0041` / `CLM-0179`, `CLM-0182`, and `CLM-0185`–`CLM-0187`: Kalshi
+  `GET /markets/{ticker}/orderbook` requires a string ticker; HTTP 200 requires
+  `orderbook_fp` with `yes_dollars` and `no_dollars` arrays; every level is
+  exactly two strings containing dollar price followed by contract quantity.
+- `SRC-0041` / `CLM-0184`: Kalshi native YES and NO bids must be preserved;
+  published asks must not be fabricated.
+- `SRC-0024` / `CLM-0093`: response contract-count `_fp` strings emit two
+  decimal places; this does not establish a complete numeric lexical grammar.
+- `SRC-0040` / `CLM-0175`–`CLM-0177` and `SRC-0042` / `CLM-0192`: Kalshi
+  authentication uses `KALSHI-ACCESS-KEY`, `KALSHI-ACCESS-TIMESTAMP`, and
+  `KALSHI-ACCESS-SIGNATURE`; the demonstrated signing message concatenates
+  timestamp, HTTP method, and the full request path retaining
+  `/trade-api/v2`; hostname and query are excluded; examples use Base64
+  RSA-PSS/SHA-256 signatures with digest-length salt but are not normative
+  cryptographic test vectors.
+- `SRC-0042` / `CLM-0190`–`CLM-0191`: demo and production credentials are not
+  shared; the recommended REST bases are
+  `https://external-api.demo.kalshi.co/trade-api/v2` and
+  `https://external-api.kalshi.com/trade-api/v2`; compatibility origins do not
+  establish safe failover, data equivalence, or credential portability.
+- `SRC-0043`–`SRC-0044` / `CLM-0194`–`CLM-0197`: documented scope labels,
+  response-side visibility, and omitted-scope broad read-plus-write behavior
+  do not prove the actual environment, scope, or effective permissions of an
+  uninspected credential. The engine must not enumerate or create keys.
 
-The currently identified unresolved evidence issue for the bounded prospective
-capture scope is:
+No current external documentation or unreviewed material may become
+implementation authority. If implementation needs evidence beyond this
+reviewed scope, work on the dependent portion must stop and report the exact
+candidate-source question.
 
-> Does the current Kalshi REST market-orderbook endpoint require
-> authentication?
+#### Authentication conflict and selected policy
 
-Current endpoint-reference evidence declares the three Kalshi authentication
-schemes and a 401 authentication-required response. Current quick-start
-evidence describes the same order-book GET as public, supplies no
-authentication headers, and demonstrates an unauthenticated request. Neither
-page provides a reliable update date establishing precedence. Tutorial versus
-OpenAPI evidence strength does not remove the contradiction. No live
-production probe or use of operator credentials is permitted to resolve it.
-Implementation that depends on the answer must remain inactive until reviewed
-evidence or an explicit governance decision resolves the conflict. Later
-scope-specific review may identify additional dependencies.
+The documentation conflict remains unresolved. `SRC-0041` / `CLM-0180` and
+`CLM-0188` declare operation-level authentication and a 401
+authentication-required response. `SRC-0045` / `CLM-0198`–`CLM-0199` describe
+and demonstrate the same order-book GET without authentication headers.
+Neither establishes publication or update precedence.
 
-#### Reviewed-research checkpoint
+The user selects authenticated Kalshi requests as an engineering policy under
+uncertainty. This choice does not resolve the evidence conflict and must not be
+described as proof that the endpoint is universally authenticated,
+universally public, or optionally authenticated. Kalshi has no anonymous
+fallback.
 
-The planner supplies the following research lifecycle checkpoint at research
-commit `8361a49bcc3519ca17a91c69c46a9b36f3017273`:
+#### Exact operations and environments
 
-- `SRC-0042` through `SRC-0045` are active;
-- `SOURCE-SUMMARY-0041` through `SOURCE-SUMMARY-0044` are reviewed;
-- `CLM-0190` through `CLM-0199` are reviewed; and
-- `PLATFORM-0002`, `wiki/platforms/kalshi.md`, is reviewed and incorporates
-  those sources while preserving the authentication conflict.
+Only these operations may be implemented:
 
-This supplied checkpoint records completed promotion and synthesis
-reconciliation for research addressing:
+- Polymarket production: `GET https://clob.polymarket.com/book?token_id={caller_supplied_token_id}`;
+- Kalshi demo: `GET https://external-api.demo.kalshi.co/trade-api/v2/markets/{ticker}/orderbook`;
+- Kalshi production: `GET https://external-api.kalshi.com/trade-api/v2/markets/{ticker}/orderbook`.
 
-- environment-specific credentials and recommended origins;
-- read/write and child API-key scopes;
-- an omitted-scope broad-access default;
-- response-side visibility of granted scope labels; and
-- public/no-authentication market-data guidance.
+Polymarket supports production only. Kalshi supports explicit demo and
+production environments with environment-bound authentication inputs. No
+staging or compatibility origin, optional depth parameter, arbitrary URL,
+additional query parameter, other HTTP method, redirect target, or origin
+failover is allowed.
 
-This plan does not claim to have independently verified the research
-repository or its contents. Reviewed documentary findings are not accepted
-engine defaults, do not prove the scopes of an operator credential, and do not
-grant implementation authority. The Kalshi REST order-book authentication
-conflict remains unresolved; promotion and synthesis reconciliation did not
-resolve it.
+Production support means that the bounded implementation must correctly model
+and test that exact operation. It is not permission to deploy or make a live
+production request. The initial separately authorized Kalshi live trial, if
+later approved, will use demo. A Polymarket production trial also requires
+separate bounded operational authorization even though its selected operation
+is public. A live trial is not part of implementation or ordinary tests.
 
-#### Resolved or non-applicable to this capture boundary
+#### Exact implementation-path and dependency allowance
 
-The following are not Milestone 5 implementation blockers (and are not
-thereby resolved globally; subjects that remain relevant to later milestones
-stay in the evidence-dependencies section below):
+After activation and a separate implementation prompt, source changes are
+limited exactly to:
 
-- rate limits, retryability, and backoff: one attempt and no retry;
-- server failover: prohibited;
-- ticker normalization: preserve the caller-supplied identifier under a
-  fail-closed local safety grammar;
-- cross-venue observation safety: no cross-venue aggregation or analytical
-  promotion;
-- snapshot freshness, atomicity, and timestamp units: capture without making
-  those claims;
-- discovery: excluded;
-- WebSockets and gap recovery: deferred beyond this REST capture;
-- key rotation, revocation, and compromise recovery: outside the capture
-  library's secret boundary; and
-- actual scope of an operator credential: an external deployment precondition,
-  not something the engine may inspect during ordinary tests.
+- `src/invariant_engine/capture/__init__.py`;
+- `src/invariant_engine/capture/models.py`;
+- `src/invariant_engine/capture/specification.py`;
+- `src/invariant_engine/capture/authentication.py`;
+- `src/invariant_engine/capture/transport.py`;
+- `src/invariant_engine/capture/parsing.py`;
+- `src/invariant_engine/capture/batch.py`; and
+- `src/invariant_engine/capture/serialization.py`.
 
-#### Explicit non-goals
+Test changes are limited exactly to:
 
-This prospective section excludes:
+- `tests/capture/conftest.py`;
+- `tests/capture/test_specification.py`;
+- `tests/capture/test_authentication.py`;
+- `tests/capture/test_transport.py`;
+- `tests/capture/test_parsing.py`;
+- `tests/capture/test_batch.py`;
+- `tests/capture/test_serialization.py`; and
+- `tests/capture/test_trust_boundaries.py`.
 
-- implementation activation;
-- real network access during ordinary tests;
-- access to the operator's Kalshi key;
-- credential or signer implementation;
-- ambient environment, file, keychain, or configuration secret discovery;
-- WebSockets and subscriptions;
-- market or token discovery;
-- polling and background workers;
-- retries, redirects, or failover;
-- cross-venue synchronization and analytics;
-- replay promotion;
-- relationship, constraint, opportunity, or strategy evaluation;
-- fees, simulation, risk, execution, reconciliation, orders, and trading; and
-- Milestone 6 activation.
+Fixture changes are limited exactly to:
 
-#### Future activation gate
+- `fixtures/capture/README.md`; and
+- `fixtures/capture/cases.json`.
 
-Implementation remains prohibited until a later governance transition has:
+No existing implementation file, existing test, `pyproject.toml`, or other
+path may change. No new runtime or development dependency is authorized. The
+implementation must use standard-library transport and a caller-owned signing
+interface. If these boundaries prevent sound implementation, stop and report
+the concrete problem rather than expanding the allowance.
 
-1. acknowledged the completed reviewed-research checkpoint and verified at
-   activation that the reviewed research applicable to the exact eventual
-   implementation scope remains current and sufficient;
-2. resolved or explicitly governed the Kalshi authentication conflict;
-3. updated both `AGENTS.md` and `PLAN.md` consistently;
-4. identified exact permitted source, test, and fixture paths;
-5. defined credential handling if authentication is later permitted;
-6. defined exact dependencies, if any;
-7. defined protected Milestone 1–4 regression requirements; and
-8. designated Milestone 5 as the sole implementation milestone in force.
+#### Capture specification and local input limits
 
-Until every gate is met through that later transition, no implementation,
-network access, or credential use follows from this planning text.
+The capture specification must be immutable, versioned, provenance-bearing,
+and contain 1 through 64 ordered targets. Every target binds its position,
+venue, environment, exact permitted origin, identifier, limits, and ordered
+provenance. All limits in this section are local engineering restrictions, not
+universal venue rules; venue-valid input may be outside this supported local
+contract.
 
-#### Current governance remains unchanged
+The local identifier contract is:
 
-No implementation milestone is currently active. Milestone 5 remains
-prospective and inactive; Milestone 6 and every later milestone remain
-inactive; and accepted Milestones 1–4 remain permanent regression boundaries.
-This editorial update grants no source, test, fixture, dependency, network,
-credential, signing, risk, execution, or trading authority; approves no
-simulation assumption or milestone-scope change; and does not reopen accepted
-Milestones 1–4.
+- Polymarket `token_id`: 1 through 128 ASCII decimal digits, grammar
+  `[0-9]{1,128}`;
+- Kalshi `ticker`: 1 through 128 ASCII characters, grammar
+  `[A-Z0-9][A-Z0-9._-]{0,127}`;
+- capture specification ID and provenance reference components: 1 through 128
+  visible ASCII characters from `[A-Za-z0-9._:/-]`;
+- at most 64 ordered provenance references per specification or target, each
+  at most 512 ASCII characters after its typed components are serialized.
+
+No identifier normalization is performed. The caller-supplied identifier that
+passes the grammar is preserved exactly. A duplicate target is the same exact
+venue, environment, origin, and identifier tuple appearing more than once;
+any duplicate rejects the entire specification before signing or transport.
+The same Kalshi ticker in demo and production is not a duplicate because its
+environment and origin differ.
+
+The implementation must validate the complete specification and every nested
+value before invoking a signer or transport. Unsupported targets, unknown
+versions, empty or oversized lists, invalid provenance, duplicates, ambiguous
+types including `bool` used as an integer, and environment/origin mismatches
+reject the whole batch with zero signing calls and zero dispatches.
+All runtime authentication bindings required by the validated Kalshi targets
+must then be present, exactly typed, unique by environment, and internally
+consistent before the first attempt begins. A missing, extra, duplicated, or
+mismatched binding rejects the batch invocation with zero signer calls and
+zero dispatches; bindings are never specification material.
+
+#### Authentication contract
+
+Kalshi uses a narrow runtime-only authentication binding containing:
+
+- the explicit Kalshi demo or production environment and its one permitted
+  origin;
+- a caller-supplied key ID; and
+- a caller-owned signer that receives engine-constructed signing `bytes` and
+  returns only the signature string.
+
+The key ID must be an exact `str` of 1 through 256 visible ASCII characters
+matching `[A-Za-z0-9._-]{1,256}`. The signature must be an exact `str` of 1
+through 4096 ASCII characters in canonical standard Base64, decode with strict
+validation to 128 through 1024 bytes, and re-encode byte-identically. Newlines,
+control characters, whitespace, non-ASCII text, URL-safe Base64 substitutions,
+and noncanonical padding are rejected. These are header-safety and boundedness
+restrictions, not proof of cryptographic correctness or a universal venue key-
+size rule.
+
+No arbitrary caller-supplied header mapping is accepted. The library must not
+load or discover secrets from files, environment variables, keychains,
+configuration, network services, ambient HTTP state, or any other location. It
+must not implement RSA or other private-key cryptography, persist or serialize
+the signer, key ID, signature, signing bytes, or authentication binding, or
+send Kalshi authentication to Polymarket.
+
+For each Kalshi target, the engine must first construct the exact ASCII request
+path `/trade-api/v2/markets/{ticker}/orderbook`. Immediately before that
+target's signer call, it generates a base-10 Unix-epoch millisecond timestamp
+as an ASCII digit string of 1 through 20 characters. The signing bytes are the
+ASCII concatenation `timestamp + "GET" + full_path`; host and query are absent.
+The exact same timestamp, method, and path must be dispatched, and the same
+timestamp must be transmitted in `KALSHI-ACCESS-TIMESTAMP` together with the
+validated key ID and returned signature in the other two fixed headers.
+
+Environment/origin binding is checked before signing and again immediately
+before dispatch. The complete specification material fingerprint is checked
+before the signer call and immediately after it; mutation or misbinding during
+the callback causes a terminal integrity failure and zero dispatches for that
+target. The signer is trusted caller code: engine acceptance cannot prove its
+purity, completion time, private-key handling, signature algorithm, or
+cryptographic correctness. The engine validates the declared environment
+binding only; it does not establish the actual environment, scopes, or
+permissions of the key.
+
+Signer exceptions and malformed signer returns become a terminal
+`SIGNING_FAILED` result. Public capture results, serialization, logs, and
+capture-API exception chains must not include the arbitrary exception text,
+exception object, traceback, signing bytes, key ID, or signature. A signing
+failure performs zero HTTP dispatches and does not stop later valid targets.
+
+#### Attempt, identity, mutation, and continuation contract
+
+The prospective phrase “exactly one request attempt per target” is amended:
+each position receives exactly one logical `TargetAttempt`, while each target
+performs at most one HTTP dispatch. A Kalshi signing or integrity failure is a
+completed terminal target attempt with zero dispatches. No retry is performed.
+
+Targets are processed serially in caller order. Ordinary terminal target
+failures do not prevent later targets from receiving their one logical
+attempt. There is no concurrency, polling, catch-up, retry, redirect, failover,
+or implicit second request. A batch-level invalid specification produces no
+target attempts because positions are not trusted until complete validation.
+
+Specification, target, attempt, and result identities must be immutable,
+deterministic, positional, and bound to the complete specification. Material
+mutation or misbinding must be rejected before signing, dispatch, publication,
+and serialization. Completed results must reject omitted, extra, reordered,
+duplicated, substituted, or positionally misbound attempt records. Runtime
+producer trust must be process-local and excluded from stable serialization;
+copy, reconstruction, pickle, or JSON does not transfer it.
+
+#### Transport construction, timeouts, and header policy
+
+The transport must connect directly with the standard library to the exact
+allowlisted HTTPS origin and construct only the exact allowed method, path,
+and query. It must use the default system trust store with certificate and
+hostname verification enabled and TLS 1.2 or later. It must not use ambient
+proxy configuration, cookies, credentials, authentication handlers, redirects,
+retries, connection failover, or caller-supplied transport headers. Requests
+have no body and send only the exact-origin `Host`, `Accept: application/json`,
+`Accept-Encoding: identity`, and `Connection: close` headers, plus the three
+fixed validated Kalshi authentication headers for Kalshi only. A non-identity
+content encoding is a terminal header failure.
+
+The fixed local timing policy is:
+
+- 5.0 seconds for TCP connection and TLS handshake operations;
+- 5.0 seconds as the socket inactivity timeout for each request-write,
+  response-header, or body-read operation; and
+- a 20.0-second transport elapsed budget beginning immediately before the
+  engine invokes system name resolution for the one dispatch and covering
+  engine-controlled resolution orchestration, connect, TLS, request write,
+  response headers, and body reads.
+
+The engine must check the monotonic elapsed budget before and after every
+engine-controlled blocking stage and between body reads, and must use the
+smaller remaining budget where a standard-library timeout accepts one. The
+budget excludes specification validation and caller signer execution. System
+DNS calls may outlast the budget because the standard library and operating
+system do not guarantee hard cancellation; this limitation must be explicit.
+No hard wall-clock completion guarantee is made for DNS or external signer
+code.
+
+Response headers are quarantined and limited to at most 100 fields, at most
+8,192 ISO-8859-1 octets for any parsed name/value pair, and at most 32,768 such
+octets in aggregate. The underlying standard-library maximum accepted header
+line remains an additional ceiling, not an expanded capture contract. Invalid
+names or values, control characters other than parsing syntax already removed
+by the library, obsolete folding, conflicting `Content-Length`, unsupported
+transfer framing, or non-identity `Content-Encoding` fail closed.
+
+Unknown and unexpected response headers count toward limits but are otherwise
+ignored. Public results may retain only the integer HTTP status, a strictly
+parsed nonnegative `Content-Length` when unambiguous, and a normalized
+`Content-Type` media type from visible ASCII; raw response headers and header
+parameters are not retained or serialized. All received header names and
+values are nevertheless scanned by the confidentiality detector before this
+allowlisted metadata may be published.
+
+#### Body acquisition, retention, and confidentiality
+
+The maximum response entity body is 1,048,576 bytes. The transport reads in
+chunks of at most 65,536 bytes and may read one additional byte solely to
+classify oversize input. “Received bytes” means entity-body bytes after HTTP
+transfer framing is removed and before any content decoding; only identity
+content encoding is supported.
+
+Body acquisition outcome and body retention state are separate closed enums.
+The acquisition outcome records what occurred before confidentiality filtering:
+
+- `NOT_STARTED`: no body-read operation began;
+- `FAILED_BEFORE_FIRST_BYTE`: a body-read operation began but failed before
+  receiving any body byte;
+- `COMPLETED`: normal EOF or the exact declared body length was reached within
+  the cap, including a normally completed zero-length body;
+- `PARTIAL`: acquisition failed after receiving at least one byte and before
+  normal completion, without crossing the cap; and
+- `OVERSIZED`: streaming acquisition observed at least one byte beyond the
+  1,048,576-byte cap.
+
+The result separately records `acquisition_started`, `normal_completion`,
+`received_byte_count`, `retained_byte_count`, optional retained bytes, and an
+optional retained-body SHA-256. `received_byte_count` counts body bytes actually
+obtained from the transport, including the one oversize probe byte when read.
+`retained_byte_count` counts only bytes retained for publication. The retention
+states are:
+
+- `ABSENT`: no body byte was acquired without established normal completion;
+  this covers both `NOT_STARTED` and `FAILED_BEFORE_FIRST_BYTE`; retain no body
+  and no digest;
+- `COMPLETE`: normal completion occurred within the cap; retain the exact
+  bytes and their SHA-256, including a present zero-length byte string and the
+  empty-body SHA-256
+  `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`;
+- `PARTIAL`: retain the exact nonempty prefix received before failure and its
+  SHA-256;
+- `OVERSIZED`: retain only the exact first 1,048,576-byte prefix and its
+  SHA-256, never the probe byte; and
+- `SUPPRESSED`: confidentiality filtering prevents publication of any body
+  material and discards any otherwise retainable body or prefix; retain no
+  body and no digest while preserving the actual received-byte count and
+  recording whether acquisition started and how it ended.
+
+An unambiguous `Content-Length` greater than the cap permits an immediate
+`BODY_OVERSIZED` result without beginning body acquisition; its retention state
+is `ABSENT`, and no body digest exists. Otherwise streaming acquisition applies
+the prefix rule above. In both cases no oversized material is parsed or
+published as a successful capture.
+
+The valid unsuppressed combinations are exhaustive:
+
+| Acquisition outcome | Acquisition started | Normal completion | Retention | Received length | Retained length and material | Ordinary status before integrity or confidentiality override |
+|---|---:|---:|---|---:|---|---|
+| `NOT_STARTED` | No | No | `ABSENT` | 0 | 0; body and digest absent | Predispatch failure, header failure, timeout/transport failure before body acquisition, or declared `BODY_OVERSIZED`. |
+| `FAILED_BEFORE_FIRST_BYTE` | Yes | No | `ABSENT` | 0 | 0; body and digest absent | `TIMEOUT` or `TLS_OR_TRANSPORT_FAILED`. |
+| `COMPLETED` | Yes | Yes | `COMPLETE` | 0 through 1,048,576 | Equal to received length; body present and digest present, including zero length. | `BODY_EMPTY`, `HTTP_STATUS_UNSUPPORTED`, parsing/schema/identifier failure, or `CAPTURED` as applicable. |
+| `PARTIAL` | Yes | No | `PARTIAL` | 1 through 1,048,576 | Equal to received length; nonempty prefix and digest present. | `BODY_PARTIAL`. |
+| `OVERSIZED` | Yes | No | `OVERSIZED` | 1,048,577 | 1,048,576-byte prefix and digest present. | `BODY_OVERSIZED`. |
+
+Confidentiality detection replaces the retention state in any safely observed
+case with `SUPPRESSED` and makes the primary status
+`CONFIDENTIALITY_FAILURE`. Header-only detection must stop before body
+acquisition and therefore combines `NOT_STARTED`, acquisition-started `No`,
+normal-completion `No`, received length 0, retained length 0, no body, and no
+digest. Detection in a complete, partial, or oversized body preserves its
+original acquisition outcome, acquisition flags, and actual received length,
+but requires retained length 0, no body, and no digest. Suppression provenance
+may identify only `HEADER` or `BODY`, never the matched key ID, signature, or
+matched bytes.
+
+Normal completion is defined exclusively by acquisition outcome `COMPLETED`,
+not by retention state `COMPLETE`. A confidentiality-suppressed body whose
+acquisition outcome is `COMPLETED` therefore retains acquisition-started `Yes`
+and normal-completion `Yes` while using retention `SUPPRESSED`, retained length
+0, and no retained body or digest. Confidentiality suppression changes what
+may be retained and published; it does not rewrite independently established
+acquisition history.
+
+No other combination is valid. In particular, `ABSENT` or `SUPPRESSED` cannot
+carry bytes or a digest; `COMPLETE`, `PARTIAL`, and `OVERSIZED` must carry both
+bytes and the SHA-256 of exactly those bytes; retained length must equal the
+actual retained body length; normal completion is true if and only if the
+acquisition outcome is `COMPLETED`, whose retention may be `COMPLETE` or, after
+confidentiality filtering, `SUPPRESSED`; `PARTIAL` and `OVERSIZED` require
+positive received length; and `CAPTURED` requires `COMPLETED` plus `COMPLETE`
+and a successfully parsed nonempty HTTP 200 body. Contradictory state, status,
+flag, length, body, or digest material must fail integrity validation before
+publication or serialization.
+
+Every digest identifies exactly the retained bytes under the explicit
+retention state; it never purports to identify discarded or unreceived bytes.
+`PARTIAL` and `OVERSIZED` are terminal failures and are not parsed as successful
+order books. A normally completed zero-length body is retained with the empty-
+body digest. It receives `BODY_EMPTY` only for an unsuppressed HTTP 200 response
+when no higher-priority failure applies. A completed empty HTTP response with
+any other status, including HTTP 404, retains the empty bytes and digest but
+receives `HTTP_STATUS_UNSUPPORTED`; confidentiality or a trustworthy observed
+integrity failure still takes precedence.
+
+All header and body material is quarantined before publication. The exact
+confidentiality detector searches for the complete key ID and signature as
+raw ASCII byte substrings in every received header name/value and quarantined
+candidate body or prefix. It also lexically scans every complete JSON string
+token in the quarantined candidate bytes and decodes valid JSON escapes—including `\"`, `\\`,
+`\/`, the control escapes, and case-insensitive four-hex-digit `\uXXXX`
+sequences with valid surrogate pairing—then searches each decoded string for
+the exact key ID or signature. This detects arbitrarily mixed valid JSON
+escapes within complete string tokens; malformed or incomplete string tokens
+are covered only by the raw-byte search.
+
+If either value is detected, the result is terminal
+`CONFIDENTIALITY_FAILURE`: suppress the entire body or prefix and its digest,
+suppress all response-header metadata except the integer HTTP status when
+already safely parsed, and retain only safe attempt identity, target identity,
+timing classification, acquisition outcome and flags, received-byte count,
+zero retained-byte count, suppression source, and failure code.
+Confidentiality failure takes precedence over partial- or oversized-body retention and every other
+detected response failure. This is an explicit exception to byte preservation.
+The detector is bounded to exact supplied values and the stated JSON escape
+normalization; it does not prove the absence of every transformed, encoded,
+truncated, hashed, or otherwise derived secret.
+
+No public representation, stable serialization, log, warning, or exposed
+exception may contain unrestricted response headers, raw transport or signer
+exception messages, authentication bindings, key IDs, signatures, signing
+bytes, callbacks, or other runtime-only state.
+
+#### UTF-8, JSON, and numeric parsing restrictions
+
+Only a `COMPLETE` HTTP 200 identity-encoded body proceeds to parsing. Parsing
+requires strict UTF-8 with no replacement, strict JSON with exactly one top-
+level object, duplicate-key rejection at every depth, rejection of nonstandard
+numeric constants, rejection of unpaired Unicode surrogates, and exact required
+field types. JSON numbers are not accepted for venue financial, price, size,
+quantity, or timestamp strings, and binary floating-point values must never be
+created for them.
+
+The local parser limits JSON nesting to 32 containers, any decoded JSON string
+to 262,144 Unicode scalar values, any object to 4,096 members, any array to
+10,000 elements, and every JSON numeric token to 64 ASCII characters. JSON
+integers and decimals are parsed without binary floating point even when they
+occur only in unknown retained material. Venue numeric strings are also
+limited to 64 ASCII characters. General supported decimal strings use
+`(?:0|[1-9][0-9]*)(?:\.[0-9]{1,18})?`; signs, exponent notation, leading
+zeros except the single integer zero, trailing decimal points, and non-ASCII
+digits are outside the local contract. Kalshi contract-quantity `_fp` strings
+use `(?:0|[1-9][0-9]*)\.[0-9]{2}`. Accepted numeric strings are parsed with
+exact `Decimal` under a locally controlled context; these lexical subsets and
+limits are engineering restrictions, not complete venue grammars or price
+bounds.
+
+Unknown JSON fields remain preserved only in the quarantined retained body and
+are excluded from the normalized capture model and safe metadata. They are not
+silently promoted into semantics. Known required fields must have exact types;
+`bool` is never accepted as an integer.
+
+#### Venue-native response contract
+
+For Polymarket HTTP 200, require exactly typed presence of all reviewed fields:
+`market`, `asset_id`, `timestamp`, and `hash` are strings; `bids` and `asks`
+are arrays whose levels are objects with string `price` and `size` fields;
+`min_order_size`, `tick_size`, and `last_trade_price` are supported decimal
+strings; and `neg_risk` is a Boolean. Require `asset_id` to equal the requested
+`token_id` exactly. Preserve direct bid and ask levels, received duplicates,
+and received order without sorting or aggregation. Validate bids as adjacent
+non-increasing prices and asks as adjacent non-decreasing prices, so equal
+adjacent prices are preserved without assigning tie semantics. Preserve price
+and size strings and their exact `Decimal` interpretations. Treat `timestamp`
+as an opaque venue string with no unit, ordering, freshness, or atomicity
+claim. These exact types and non-strict ordering checks define the supported
+local response subset; they do not declare other venue responses invalid.
+
+For Kalshi HTTP 200, require `orderbook_fp` with exactly typed `yes_dollars`
+and `no_dollars` arrays. Every level must be an array of exactly two strings:
+price followed by contract quantity. Preserve native YES and NO bids, received
+level order, exact strings, and duplicate levels without sorting or
+aggregation. Structurally empty arrays are accepted without an economic
+interpretation. Do not invent asks, a venue timestamp or sequence, price
+bounds, tie semantics, per-market tick validity, freshness, atomicity, or a
+complete numeric grammar.
+
+#### Terminal classifications and precedence
+
+The batch and target result models must use closed, versioned status and reason
+enums. Batch-level `SPECIFICATION_INVALID` or
+`AUTHENTICATION_BINDING_INVALID` precedes target construction and causes zero
+attempts, signer calls, and dispatches. For a constructed target, only
+conditions actually observed are compared, using this precedence:
+
+1. `CONFIDENTIALITY_FAILURE`;
+2. `INTEGRITY_FAILURE` for mutation, identity, position, environment, origin,
+   method, path, timestamp, header, or material misbinding;
+3. `SIGNING_FAILED` before dispatch;
+4. `RESPONSE_HEADERS_INVALID`;
+5. `BODY_OVERSIZED`;
+6. `BODY_PARTIAL` when bytes precede a timeout or transport/framing failure;
+7. `TIMEOUT` when no body prefix exists;
+8. `TLS_OR_TRANSPORT_FAILED` when no body prefix exists;
+9. `HTTP_STATUS_UNSUPPORTED` for a completed response other than HTTP 200;
+10. `BODY_EMPTY` only for an unsuppressed completed zero-length HTTP 200 body
+    when no higher-priority failure applies;
+11. `UTF8_INVALID`;
+12. `JSON_INVALID`, including duplicate keys, depth, member, array, constant,
+    or surrogate violations;
+13. `SCHEMA_INVALID`, including exact-type, numeric-lexical, ordering, or
+    structural violations;
+14. `IDENTIFIER_MISMATCH`; and
+15. `CAPTURED`.
+
+This precedence does not require continued unsafe I/O merely to discover a
+higher-priority condition. It governs conditions safely observed within the
+bounded acquisition. Failure results use fixed safe codes and structured safe
+metadata, never arbitrary exception text. Every ordinary terminal target
+failure continues to the next already-validated target.
+
+An observed `INTEGRITY_FAILURE` overrides the ordinary acquisition-derived
+status, including `BODY_OVERSIZED`, `BODY_PARTIAL`, `TIMEOUT`, transport, HTTP,
+empty-body, parsing, schema, identifier, and prospective `CAPTURED` statuses,
+but remains below `CONFIDENTIALITY_FAILURE`. It must never be converted to
+`CAPTURED`. If the attempt identity and acquisition facts are independently
+trustworthy—for example, a separately bound material fingerprint detects
+mutation after a transport-local complete or partial acquisition—the result
+may retain those exact acquisition outcome, flags, byte counts, retention
+state, body, and digest facts while its primary status is `INTEGRITY_FAILURE`.
+
+If the identity binding, acquisition outcome, flags, counts, retained bytes, or
+digest cannot be independently trusted, no attempt artifact containing those
+facts may be published or serialized. Without independently trustworthy
+confidentiality evidence, the batch must fail closed with a fixed outer
+integrity code and safe batch identity only. If independently trustworthy
+confidentiality evidence was already established from quarantined material,
+suppression and a fixed safe outer confidentiality code take precedence, but
+the untrusted attempt facts still must not be emitted. Neither case may
+fabricate a well-formed attempt, infer replacement acquisition facts, or reuse
+untrusted material.
+
+#### Stable serialization and observer time
+
+Stable, versioned serialization must bind the complete specification, target
+order, immutable positional attempt identities, per-target dispatch count,
+terminal statuses and reasons, safe ordered provenance, acquisition outcome,
+acquisition-started and normal-completion flags, received-byte count, retention
+state, retained-byte count, retained body and digest when permitted, and safe
+suppression source when applicable. It must reject omitted, extra, reordered,
+duplicated, mutated, misbound, or internally contradictory attempt material.
+An `INTEGRITY_FAILURE` attempt is serializable only when its attempt identity
+and every serialized acquisition and retention fact remain independently
+trustworthy and satisfy the state matrix. When those facts are implicated, the
+attempt itself is not serializable and only the applicable fixed safe outer
+batch failure described above may be emitted.
+
+Authentication bindings, key IDs, signatures, signing bytes, signer callbacks,
+raw exceptions, unrestricted headers, suppressed bodies and digests, sockets,
+clocks, and all process-local trust state are excluded. Local observer
+timestamps are acquisition provenance only; they make no venue-time,
+freshness, synchronization, or ordering claim.
+
+#### Acceptance contract
+
+Implementation acceptance requires an independent reviewer to:
+
+1. verify the exact accepted activation commit, its expected parent, tree,
+   accepted document/content identities, and local `HEAD`/`origin/main`
+   alignment without treating the local remote-tracking ref as a live remote
+   query;
+2. record complete tracked, staged, unstaged, untracked, and ignored paths and
+   SHA-256 values for every changed or untracked file before validation;
+3. read every changed and untracked file completely;
+4. verify that every path and import is authorized and that no runtime or
+   development dependency changed;
+5. run the complete required validation independently with caches and probe
+   artifacts outside the engine worktree;
+6. run materially distinct adversarial probes outside the engine worktree,
+   including probes not merely restating implementation-authored tests;
+7. recheck content hashes, complete manifests, diff scope, and artifact hygiene
+   after validation; and
+8. explicitly accept or reject the exact implementation content reviewed.
+
+Implementation acceptance also requires deterministic offline tests covering
+at least:
+
+- success and every closed terminal-failure path for Polymarket and Kalshi;
+- exact Polymarket production and Kalshi demo/production origin binding;
+- Kalshi signing-byte construction and equality of the signed timestamp,
+  method, and path with transmitted fixed headers;
+- malformed key IDs and signer outputs, signer exceptions containing secrets,
+  zero dispatch after signing failure, no anonymous fallback, and no Kalshi
+  authentication sent to Polymarket;
+- specification and nested-material mutation before signing, during a signer
+  callback, before dispatch, and before serialization;
+- duplicate-target rejection and omitted, extra, reordered, duplicated,
+  substituted, or misbound attempt rejection;
+- malformed UTF-8 and JSON, duplicate keys at every depth, nonstandard numeric
+  constants, unpaired surrogates, depth/member/array/string limits, exact
+  required types, numeric ambiguity, ordering, duplicate levels, identifier
+  mismatch, and structurally empty Kalshi arrays;
+- the 64-target and identifier/provenance limits, exact URL construction,
+  TLS and hostname verification, direct no-proxy transport, timeout coverage,
+  body and header bounds, and no redirects, retries, failover, cookies, or
+  ambient credentials;
+- the actual production transport code exercised through mocked lower-level
+  socket/TLS/HTTP I/O, not only a substituted high-level fake transport;
+- body acquisition never started; timeout and transport failure after body
+  acquisition starts but before the first byte; normally completed zero-length
+  bodies with the actual empty-body digest; retained partial and oversized
+  prefixes; and received-versus-retained byte counts;
+- normal completion preserved for a confidentiality-suppressed `COMPLETED`
+  body; `BODY_EMPTY` for an unsuppressed completed zero-length HTTP 200 response
+  with no higher-priority failure; and an empty completed HTTP 404 response
+  retaining its empty bytes and digest while receiving
+  `HTTP_STATUS_UNSUPPORTED`;
+- header-only confidentiality detection and complete, partial, and oversized
+  bodies suppressed for confidentiality; exact digest scope; raw and mixed
+  JSON-escaped key-ID/signature reflection; confidentiality precedence; and
+  suppression from representations and serialization;
+- `INTEGRITY_FAILURE` detected after complete and partial acquisition,
+  including preservation only of independently trustworthy acquisition facts,
+  precedence over the ordinary acquisition status, rejection rather than
+  serialization when identity or acquisition facts are implicated, continued
+  confidentiality precedence, and prohibition on conversion to `CAPTURED`;
+- rejection of every contradictory acquisition outcome, retention state,
+  failure status, acquisition flag, byte count, body, digest, and suppression-
+  source combination;
+- stable serialization, process-local trust rejection after copy or transfer,
+  repeated-run and hash-seed determinism, and observer-time labeling;
+- no entry into replay or any accepted historical trust path;
+- no network access anywhere in ordinary capture or regression tests; and
+- every protected Milestone 1–4 guarantee and the exact path, import,
+  dependency, and artifact boundaries.
+
+Ordinary tests use only synthetic responses. Offline acceptance establishes
+implementation behavior, not successful real signatures, actual credential
+environment or permissions, live endpoint availability, or successful
+order-book acquisition. A failure-only live result is not proof of successful
+capture.
+
+Implementation acceptance remains distinct from activation, operational
+validation, and governance closure. An implementation may be accepted against
+the offline contract only if its record explicitly leaves live-access claims
+unvalidated. Any later claim that authenticated Kalshi acquisition works live
+requires a separately authorized successful demo result for the initial trial;
+any Polymarket live-success claim requires a separately authorized production
+trial. Neither trial is authorized here, and a failure-only result cannot
+satisfy a live-success claim.
+
+Required implementation validation must use an identified external Python
+3.11-or-newer toolchain with bytecode and cache output disabled or redirected
+outside the repository:
+
+```text
+python -m pytest -p no:cacheprovider tests/capture
+python -m pytest -p no:cacheprovider
+python -m pytest -p no:cacheprovider tests/unit tests/replay tests/relationships tests/discovery tests/constraints tests/opportunities tests/diagnostics
+python -m pytest -p no:cacheprovider tests/unit/test_no_network.py
+python -m ruff check --no-cache src tests
+python -m ruff format --check --no-cache src tests
+python -m mypy --strict src/invariant_engine
+python -m compileall -q src tests
+python -m json.tool fixtures/capture/cases.json
+git diff --check
+```
+
+Repeat the capture suite with `PYTHONHASHSEED=1`, `2`, and `random`. Set an
+external `MYPY_CACHE_DIR` and external `PYTHONPYCACHEPREFIX` for commands that
+write caches. Include package/import-boundary and repository-artifact checks.
+
+#### Non-goals and stop conditions
+
+Milestone 5 excludes private-key loading, RSA implementation, credential
+creation or enumeration, ambient secret discovery, live calls during
+implementation or ordinary tests, staging or compatibility origins, market or
+token discovery, WebSockets, polling, concurrency, retries, redirects,
+failover, replay promotion, cross-venue synchronization, analytics, fees,
+relationships, opportunities, strategy evaluation, simulation, risk,
+execution, reconciliation, orders, trading, deployment, and Milestone 6 or
+later planning or activation.
+
+Stop for unexplained baseline changes, a required path or dependency outside
+the exact allowance, missing applicable reviewed evidence, or a contract that
+cannot be implemented without an unsupported assumption. Report the concrete
+problem and candidate-source question; do not expand scope or import current
+external or unreviewed material.
+
+#### Governance state after accepted activation
+
+While this draft is uncommitted or its accepted commit is unverified, no
+implementation milestone is active. After the accepted activation commit is
+verified by the planner, Milestone 5 is the sole active implementation
+milestone, limited to the scope above, and still requires a separate bounded
+implementation prompt. Accepted Milestones 1–4 remain closed and protected.
+Milestone 6 and every later milestone remain inactive. No implementation
+acceptance or governance closure is claimed or written here.
 
 ### Milestone 6 — Execution simulation
 
@@ -1417,9 +1979,13 @@ permanent regressions, its implementation authority is deactivated, and its
 delivered diagnostics paths and relationship boundary-test change grant no
 continuing authority.
 
-No implementation milestone is currently active. Milestone 5 and every later
-milestone remain explicitly inactive and appear above only as an inactive
-roadmap. The prospective Milestone 5 planning above does not authorize or activate the
-live read-only capture capability. Any remediation, implementation, scope expansion, or
-milestone activation requires a future explicit `PLAN.md` governance
-transition.
+This uncommitted activation draft does not itself authorize or activate
+implementation. If it is independently reviewed, committed, accepted, and the
+accepted activation commit is verified by the planner, Milestone 5 becomes the
+sole active implementation milestone for only the bounded capture scope above;
+a separate bounded implementation prompt remains required. Milestone 6 and
+every later milestone remain inactive. Any Milestone 1–4 remediation, scope
+expansion, other implementation, or later milestone activation requires a
+future explicit `PLAN.md` governance transition. Milestone 5 implementation
+acceptance and its future deactivation and governance closure remain separate
+later decisions.
