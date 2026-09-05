@@ -1203,9 +1203,10 @@ The capture must not fabricate Kalshi asks, a venue timestamp or sequence,
 universal price bounds, a complete price lexical grammar, tie behavior,
 per-market tick validity, snapshot freshness, or snapshot atomicity.
 
-#### Sole Milestone 5 blocking evidence question
+#### Currently identified Milestone 5 evidence issue
 
-The sole Milestone 5-specific blocking evidence question is:
+The currently identified unresolved evidence issue for the bounded prospective
+capture scope is:
 
 > Does the current Kalshi REST market-orderbook endpoint require
 > authentication?
@@ -1218,12 +1219,22 @@ page provides a reliable update date establishing precedence. Tutorial versus
 OpenAPI evidence strength does not remove the contradiction. No live
 production probe or use of operator credentials is permitted to resolve it.
 Implementation that depends on the answer must remain inactive until reviewed
-evidence or an explicit governance decision resolves the conflict.
+evidence or an explicit governance decision resolves the conflict. Later
+scope-specific review may identify additional dependencies.
 
-#### Candidate research lifecycle gate
+#### Reviewed-research checkpoint
 
-Candidate research addressing environment and credential behavior exists, but
-it is not downstream authority. It covers:
+The planner supplies the following research lifecycle checkpoint at research
+commit `8361a49bcc3519ca17a91c69c46a9b36f3017273`:
+
+- `SRC-0042` through `SRC-0045` are active;
+- `SOURCE-SUMMARY-0041` through `SOURCE-SUMMARY-0044` are reviewed;
+- `CLM-0190` through `CLM-0199` are reviewed; and
+- `PLATFORM-0002`, `wiki/platforms/kalshi.md`, is reviewed and incorporates
+  those sources while preserving the authentication conflict.
+
+This supplied checkpoint records completed promotion and synthesis
+reconciliation for research addressing:
 
 - environment-specific credentials and recommended origins;
 - read/write and child API-key scopes;
@@ -1231,14 +1242,18 @@ it is not downstream authority. It covers:
 - response-side visibility of granted scope labels; and
 - public/no-authentication market-data guidance.
 
-These findings require promotion and reviewed synthesis reconciliation before
-any implementation activation. They are not accepted engine defaults.
+This plan does not claim to have independently verified the research
+repository or its contents. Reviewed documentary findings are not accepted
+engine defaults, do not prove the scopes of an operator credential, and do not
+grant implementation authority. The Kalshi REST order-book authentication
+conflict remains unresolved; promotion and synthesis reconciliation did not
+resolve it.
 
 #### Resolved or non-applicable to this capture boundary
 
 The following are not Milestone 5 implementation blockers (and are not
 thereby resolved globally; subjects that remain relevant to later milestones
-stay in the global open-evidence section below):
+stay in the evidence-dependencies section below):
 
 - rate limits, retryability, and backoff: one attempt and no retry;
 - server failover: prohibited;
@@ -1278,7 +1293,9 @@ This prospective section excludes:
 
 Implementation remains prohibited until a later governance transition has:
 
-1. promoted and reconciled the required research evidence;
+1. acknowledged the completed reviewed-research checkpoint and verified at
+   activation that the reviewed research applicable to the exact eventual
+   implementation scope remains current and sufficient;
 2. resolved or explicitly governed the Kalshi authentication conflict;
 3. updated both `AGENTS.md` and `PLAN.md` consistently;
 4. identified exact permitted source, test, and fixture paths;
@@ -1295,6 +1312,10 @@ network access, or credential use follows from this planning text.
 No implementation milestone is currently active. Milestone 5 remains
 prospective and inactive; Milestone 6 and every later milestone remain
 inactive; and accepted Milestones 1–4 remain permanent regression boundaries.
+This editorial update grants no source, test, fixture, dependency, network,
+credential, signing, risk, execution, or trading authority; approves no
+simulation assumption or milestone-scope change; and does not reopen accepted
+Milestones 1–4.
 
 ### Milestone 6 — Execution simulation
 
@@ -1312,33 +1333,74 @@ Enable one venue and one validated strategy class with tightly limited capital t
 
 Add cross-venue execution only after venue-local execution and reconciliation are reliable.
 
-## Open evidence questions
+## Evidence dependencies and deferred research
 
-Do not invent answers to these questions:
+These items identify unresolved evidence and design dependencies.
+Reclassification does not resolve an item, authorize assumptions, change
+milestone scope, or satisfy acceptance criteria. Excluding a required
+capability requires an explicit governance decision.
 
-- How can natural-language relationship meaning eventually be validated beyond explicit review?
-- How should state-space completeness be established for real market rules?
-- How should conflicting or changing resolution rules invalidate certificates?
-- How should certificate versions respond to amended venue rules?
-- What labeled benchmark should evaluate LLM-assisted discovery?
-- What precision and reviewer-load thresholds should govern whether LLM discovery is useful?
-- How should conditional relationships be represented?
-- How should scalar payouts be represented?
-- How should asynchronous cross-venue observations be evaluated safely?
-- How should websocket gap recovery work?
-- What are the complete fill-history semantics?
-- What are the current venue schemas?
-- What are the current venue fee schedules?
-- What are the inventory and collateral requirements?
-- What borrowing and short-sale mechanics apply?
-- What complement-conversion mechanics apply?
-- What are the relevant latency distributions?
-- How should queue position and fill probability be determined?
-- What are the economics of partial fills?
-- What execution sequencing is safe?
-- How do cross-venue settlement processes differ?
-- What capital-transfer constraints apply?
-- What constitutes economic finality and cash availability?
+Dependencies apply only to the markets, operations, and strategies actually
+supported; they do not require universal answers. Mutable venue facts require
+scoped, dated verification. Failure or refusal alone does not satisfy a
+milestone whose accepted purpose requires a working capability. These
+classifications do not establish new milestone acceptance criteria. Do not
+invent answers to these questions.
+
+### A. Decisions needed for remaining capabilities
+
+These are bounded decisions for a supported capability, not requirements for
+a universal natural-language proof system.
+
+| # | Topic and affected capability | Trigger | Required evidence or decision | Status |
+|---:|---|---|---|---|
+| A1 | State-space completeness for real market rules; relationship certification for each market admitted to the supported strategy. | A strategy admits a real market to deterministic certification. | What review evidence establishes complete payoff states for each admitted market, including applicable cancellation, void, refund, and edge-case states? | Unresolved decision. |
+| A2 | Certificate invalidation after conflicting or changing resolution rules; certificate trust. | Evidence shows that resolution rules conflict with or materially change the rules bound by a certificate. | Decide the fail-closed invalidation conditions and the evidence that demonstrates them for affected certificates. | Unresolved decision. |
+| A3 | Certificate versioning after amended venue rules; certificate identity and lifecycle. | A venue amends rules material to a supported certificate. | Decide how amended rules produce, supersede, or retire certificate versions while preserving time-scoped provenance. | Unresolved decision. |
+| A4 | Safe asynchronous cross-venue observations; cross-venue analytics. | A supported analytical or later execution capability uses observations that are not exactly synchronized. | Decide the bounded safety policy and supporting evidence for acceptable timing, staleness, and failure handling. | Unresolved decision. |
+| A5 | Inventory and collateral requirements; supported strategy economics, simulation, risk, and execution. | A selected supported strategy or venue operation consumes inventory or collateral. | Establish the exact, time-scoped requirements and how available inventory and collateral are represented and checked. | Unresolved decision. |
+| A6 | Partial-fill economics; execution simulation. | A supported simulation capability models less than complete fills. | Decide the exact economic accounting across supported partial-fill states without inventing fill behavior. | Unresolved decision. |
+| A7 | Safe execution sequencing; multi-leg execution simulation and later execution. | A supported strategy requires multiple non-atomic operations. | Decide which sequences are permitted and how failures, cancellations, exposure, and venue constraints are evaluated. | Unresolved decision. |
+| A8 | Cross-venue settlement differences; cross-venue strategy economics, risk, and reconciliation. | A supported strategy spans venues with distinct settlement processes. | Establish the applicable settlement rules, timing, failure states, and reconciliation treatment for the selected markets and operations. | Unresolved decision. |
+| A9 | Economic finality and cash availability; settlement, reconciliation, and reusable-capital accounting. | A supported capability relies on a result being economically final or funds being available for reuse. | Decide the exact, venue- and operation-specific evidence for finality and cash availability. | Unresolved decision. |
+
+### B. Venue contracts requiring scoped verification
+
+These mutable venue facts require dated verification for the exact interfaces,
+operations, and effective periods used by the selected capability.
+
+| # | Topic and affected capability | Trigger | Required evidence or decision | Status |
+|---:|---|---|---|---|
+| B1 | Fill-history semantics; reconciliation of supported orders. | The selected capability must retrieve and reconcile fills for its supported order operations. | Verify which fill identifiers, corrections, ordering, and retrieval semantics are needed for that reconciliation, without presuming that any particular venue behavior exists. | Scope-specific verification required. |
+| B2 | Current venue schemas; selected capture, execution, or reconciliation interfaces. | A selected capability consumes a venue interface. | Verify the exact request, response, event, versioning, and compatibility schemas used by its supported operations for the applicable effective period. | Scope-specific verification required. |
+| B3 | Current venue fee schedules; selected economics, simulation, risk, or execution operations. | A selected capability requires fees for specified venues, markets, roles or sides, operations, and times. | Verify the exact effective fee policies, formulas, scopes, rounding, currency, and provenance applicable to those operations and periods. | Scope-specific verification required. |
+
+### C. Dependencies triggered by a design choice
+
+These dependencies do not choose a design or authorize implementation.
+
+| # | Topic and affected capability | Trigger | Required evidence or decision | Status |
+|---:|---|---|---|---|
+| C1 | WebSocket gap recovery; streaming market-data capture and state reconstruction. | Streaming market data is selected. | Define the venue- and channel-specific sequence, gap detection, recovery, replay-validity, and fail-closed semantics. | Conditional dependency. |
+| C2 | Latency distributions; calibrated latency analysis or simulation. | The design makes calibrated latency claims. | Supply empirical, scope-matched evidence for the claimed distributions. Explicit scenario assumptions must be labeled and are not empirical estimates. | Conditional dependency. |
+| C3 | Queue position and fill probability; execution simulation. | The selected simulation design models queue position or fill probability. | Define the selected simulation model and the evidence needed for any empirical or predictive claim; do not silently assume full fills or a queue model. | Conditional dependency. |
+| C4 | Borrowing and short-sale mechanics; strategy economics, simulation, risk, and execution. | An authorized strategy depends on borrowing or shorting. | Verify the exact permitted mechanics, availability, costs, collateral, lifecycle, and failure handling for the supported venue operations. | Conditional dependency. |
+| C5 | Complement conversion; strategy economics, simulation, risk, and execution. | An authorized strategy depends on conversion. | Verify the exact conversion eligibility, mechanics, timing, costs, identifiers, settlement effects, and failure handling. | Conditional dependency. |
+| C6 | Capital-transfer constraints; available-capital accounting and cross-venue strategy operation. | The design relies on capital movement. | Define transfer timing, limits, costs, failure and finality semantics, and accounting. Cross-venue execution does not inherently require transfers during execution; prefunded venues still require separate available-capital accounting. | Conditional dependency. |
+
+### D. Deferred capability and research extensions
+
+These extensions do not block the currently bounded roadmap unless the
+corresponding capability is explicitly added. They remain unresolved and all
+existing exclusions remain in force.
+
+| # | Topic and affected capability | Trigger | Required evidence or decision | Status |
+|---:|---|---|---|---|
+| D1 | Natural-language relationship validation beyond explicit review; expanded relationship-validation automation. | That capability is explicitly added. | Decide how natural-language meaning could be validated without allowing a model or discovery provider to bypass explicit review and deterministic certification. | Deferred extension. |
+| D2 | A labeled benchmark for LLM-assisted discovery; empirical discovery evaluation. | Production-relevant LLM discovery evaluation is explicitly added. | Establish a separately governed, representative labeled benchmark with provenance and leakage controls. | Deferred extension. |
+| D3 | Precision and reviewer-load thresholds for LLM discovery; discovery-governance decisions. | Production use or acceptance thresholds for LLM discovery are explicitly considered. | Decide the evidence-backed precision and reviewer-load thresholds; existing synthetic measurements remain non-authoritative. | Deferred extension. |
+| D4 | Conditional relationships; relationship modeling, certification, compilation, and evaluation. | Conditional-relationship support is explicitly added. | Define representation, complete payoff semantics, deterministic validation, constraint semantics, and fail-closed boundaries. | Deferred extension. |
+| D5 | Scalar payouts; relationship modeling, certification, compilation, and evaluation. | Scalar-payout support is explicitly added. | Define exact payout representation, units, state spaces, deterministic validation, and constraint semantics without approximating binary unit payouts. | Deferred extension. |
 
 ## Governance after Milestone 4 closure
 
