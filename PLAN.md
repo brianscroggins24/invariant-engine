@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. This uncommitted Milestone 5 activation draft grants no implementation authority. If and only if it is independently reviewed, committed, accepted, and the accepted activation commit is verified by the planner, Milestone 5 becomes the sole active implementation milestone for its bounded capture scope; implementation must still await a separate bounded implementation prompt. Milestone 6 and every later milestone remain explicitly inactive.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestone 5's bounded live read-only capture batch is completed and independently accepted. This uncommitted closure draft grants no implementation authority and does not claim committed, accepted, or verified closure. The governance state established by the closure is that no implementation milestone is active. Milestone 6 and every later milestone remain explicitly inactive.
 
 ## Central system thesis
 
@@ -236,7 +236,7 @@ The system should remain a modular Python application using:
 - Ruff for formatting and linting;
 - strict type checking.
 
-Start as a modular monolith rather than microservices. The only package creation that may take effect under this transition is the exact Milestone 5 capture-path allowance in its activation section, effective only after the accepted activation commit is verified and a separate bounded implementation prompt is issued. Any other change requires another explicit governance transition.
+Start as a modular monolith rather than microservices. The Milestone 5 capture package is a historical accepted delivery and grants no continuing path exception. Any implementation change or other package creation requires another explicit governance transition.
 
 ## Milestone 2 — Relationship trust and diagnostic constraint foundation
 
@@ -622,14 +622,14 @@ exception confer no current implementation authority or continuing path
 exception. Milestone 4 remediation or changes within those paths require a
 future explicit governance transition.
 
-The accepted Milestones 1, 2.1, 2.2, 2.3, 3, and 4 foundations and permanent
-regression guarantees must not regress. No unrelated package or
-later-milestone package is authorized. After the accepted activation commit is
-verified, only the exact Milestone 5 read-only capture connection and narrow
-caller-owned Kalshi signing adapter described below are permitted. All model
-connections, simulation, risk, execution, reconciliation, wallets, private-key
-handling, orders, cancellation, routing, and other live provider integration
-remain prohibited.
+The accepted Milestones 1, 2.1, 2.2, 2.3, 3, 4, and 5 foundations and
+permanent regression guarantees must not regress. No unrelated package or
+later-milestone package is authorized. The exact Milestone 5 read-only capture
+connection and narrow caller-owned Kalshi signing adapter described below are
+historical delivered behavior and confer no continuing implementation
+authority. All model connections, simulation, risk, execution,
+reconciliation, wallets, private-key handling, orders, cancellation, routing,
+and other live provider integration remain prohibited.
 
 ## Milestone 2 non-goals
 
@@ -672,11 +672,11 @@ The accepted implementation has parent
 `489b5453f0c5b0e325d4cf70638090db299947d6`, tree
 `161461d075e93ae8b4ba649b3c7050700abd8cc6`, and content-manifest SHA-256
 `847e68a13d66ca20e144daca582ec6992eada2323778de0b60c79ed7a909a6fb`.
-Milestone 3 implementation authority remains deactivated. Milestone 4 is also
-completed and accepted. At the time of Milestone 3 closure, no implementation
-milestone was active and Milestone 5 and every later milestone were inactive;
-the conditional Milestone 5 activation draft below does not alter this
-historical acceptance record.
+Milestone 3 implementation authority remains deactivated. Milestone 4 and
+Milestone 5 are also completed and accepted. At the time of Milestone 3
+closure, no implementation milestone was active and Milestone 5 and every
+later milestone were inactive; their later governance transitions do not
+alter this historical acceptance record.
 
 Its purpose is deterministic evaluation of the economics of one synchronized
 historical constraint violation at a time. All work remains local, historical,
@@ -864,8 +864,8 @@ accepted implementation has parent
 `53cd2df345aa33ee258a1039810daca1a624f0cae9cdce70939a22746cc70a08`.
 Milestone 4 implementation authority is deactivated. At Milestone 4 closure,
 no implementation milestone was active and Milestone 5 and every later
-milestone were inactive. The conditional Milestone 5 activation draft below
-does not reopen Milestone 4 or change its accepted boundary.
+milestone were inactive. Milestone 5's later activation and accepted delivery
+did not reopen Milestone 4 or change its accepted boundary.
 
 The following records the delivered scope and permanent regression boundary;
 it grants no continuing implementation authority.
@@ -1133,75 +1133,63 @@ Three remediation cycles were completed before acceptance:
 3. Required economics-derived metrics were made unavailable when their exact
    scope contained no applicable per-observation measurement.
 
-## Later milestone roadmap
+## Milestone 5 delivery and later milestone roadmap
 
-### Milestone 5 — Bounded live read-only capture batch (activation draft)
+### Milestone 5 — Bounded live read-only capture batch — completed and accepted
 
-#### Activation state and separation of authority
+#### Historical activation, amendment, acceptance, and closure state
 
-This is an uncommitted activation governance draft. It does not activate
-implementation, network access, credentials, deployment, or a live trial. If
-and only if every activation gate below is satisfied, Milestone 5 becomes the
-sole active implementation milestone for the exact bounded scope below.
+Milestone 5 was activated through governance commit
+`282a3a1ccbe9263ce74cb3a38c90773fc817f244`, parent
+`ec3a8356a91cdbcf6eefbc140da0f579e0cb6233`, tree
+`b8530b7128b4e864e48df45676f0c1ecadaf6b50`. Its bounded trailer-discard
+amendment was established through governance commit
+`a0776a1b99f334aa953a361da2100ca75c93b9f1`, parent
+`282a3a1ccbe9263ce74cb3a38c90773fc817f244`, tree
+`175b754c947df4b646fb1cbe6ddbc2e72e824d75`. These are historical identities
+of completed, separate governance transitions; they do not grant continuing
+implementation authority or operational authorization.
 
-The activation sequence is mandatory:
+The bounded implementation was independently reviewed and accepted at commit
+`e6cfd01d9eb9e3143d3fa23c4e739c8dcecacbfa`, parent
+`a0776a1b99f334aa953a361da2100ca75c93b9f1`, tree
+`1b76b0c06bf6af5c8aae07358240ead1a844803c`. Its accepted 18-file
+content-manifest SHA-256 is
+`612c14ec018eed00323fb45003a30ae17578f3c2eff7b6daac0edf35ed0610ef`.
 
-1. An independent reviewer must read the exact uncommitted `AGENTS.md` and
-   `PLAN.md` content and complete HEAD-relative governance diff, record the two
-   document SHA-256 values and full-diff SHA-256 as the accepted-content
-   identity, and explicitly accept or reject that exact content.
-2. After acceptance, the user—not the reviewing or implementation agent—must
-   commit and push the accepted content. This draft need not and cannot contain
-   its eventual commit hash or tree.
-3. Before activation takes effect, the planner must verify the resulting
-   commit identity, its expected parent
-   `ec3a8356a91cdbcf6eefbc140da0f579e0cb6233`, its tree, the committed document
-   blobs and parent-to-commit governance diff against the accepted-content
-   identity, local `HEAD` and local `origin/main` alignment, and complete clean
-   tracked, staged, unstaged, untracked, and ignored manifests.
-4. After that verification, implementation must still await a separate
-   bounded implementation prompt before any file is created or changed.
+The independently observed acceptance results were:
 
-The `origin/main` check in step 3 is an offline comparison with the locally
-stored remote-tracking ref. It is not a fetch, remote API call, or proof of the
-server's current state. Any actual remote query requires separate authority;
-the required user push is not delegated to an agent by this draft.
+- 554 total tests, including 200 capture tests and 354 protected Milestones
+  1–4 tests;
+- 20 materially distinct external adversarial probes;
+- the no-network suite and capture suite under `PYTHONHASHSEED=1`, `2`, and
+  `random`;
+- Ruff check and format check, strict mypy, and Python compilation;
+- parsing of all 15 fixture JSON files; and
+- package and import boundaries, whitespace, dependency, and artifact-hygiene
+  checks.
 
-Implementation acceptance and governance closure remain separate. A future
-review may accept the implementation without deactivating Milestone 5. A later
-explicit governance closure must deactivate Milestone 5 authority; this draft
-does not write or presume that closure. Milestone 6 and every later milestone
-remain inactive.
+These are previously observed implementation-acceptance results, not fresh
+tests performed during this documentation-only closure task. Implementation
+acceptance and governance closure remain separate.
 
-The bounded trailer discard amendment is a separate governance transition. Its
-uncommitted text grants no immediate trailer-remediation or test authority.
-The amendment takes effect only after this mandatory sequence:
-
-1. an independent reviewer accepts the exact governance diff and records the
-   SHA-256 identities of both documents and the complete diff;
-2. the user commits and pushes only `AGENTS.md` and `PLAN.md`; the 18 preserved
-   untracked implementation files need not be removed or committed merely to
-   make the governance commit;
-3. the planner verifies the resulting commit with expected parent
-   `282a3a1ccbe9263ce74cb3a38c90773fc817f244`, its tree, the accepted document
-   and diff identities, offline local `HEAD`/`origin/main` alignment, complete
-   manifests, no other changes, and the unchanged 18-file implementation
-   content-manifest identity
-   `70f16794dd526032f56117e960d2af44233a9a248a7111e01fd92579557664ff`;
-   and
-4. implementation still awaits a separate bounded remediation prompt.
-
-Independent amendment acceptance, later implementation acceptance, and
-governance closure remain distinct. This amendment does not claim any of them.
+This uncommitted closure draft grants no implementation, network, credential,
+deployment, live-trial, or production-use authority and does not claim that
+closure is independently accepted, committed, pushed, or planner-verified.
+The governance state established by accepted and verified closure is that
+Milestone 5 implementation authority is deactivated and no implementation
+milestone is active. Milestone 6 and every later milestone remain explicitly
+inactive.
 
 #### Purpose and trust boundary
 
-Milestone 5 implements a finite, one-shot, live, read-only REST capture batch
-over an immutable ordered list of caller-supplied venue identifiers. The
-boundary begins with a validated capture specification and, for Kalshi, a
-runtime-only caller-owned authentication binding. It ends with immutable
-capture provenance plus either a venue-native captured REST order book or an
-explicit terminal target failure. It does not discover markets or tokens.
+The accepted Milestone 5 delivery provides a finite, one-shot, live, read-only
+REST capture batch over an immutable ordered list of caller-supplied venue
+identifiers. The boundary begins with a validated capture specification and,
+for Kalshi, a runtime-only caller-owned authentication binding. It ends with
+immutable capture provenance plus either a venue-native captured REST order
+book or an explicit terminal target failure. It does not discover markets or
+tokens.
 
 Finite means at most 64 caller-supplied targets and bounded engine-controlled
 attempts. It is not a promise of a hard wall-clock completion deadline for
@@ -1234,10 +1222,13 @@ listed only for provenance and are not part of this repository:
 
 The applicable sources are active, their summaries and applicable claims are
 reviewed, `SRC-0041` supersedes `SRC-0022`, and promotion and synthesis
-reconciliation are complete. This activation draft uses only the supplied
-reviewed findings below; it does not inspect the research repository, use the
-newly found demo-funds documentation, or rely on unverified Polymarket staging
-access.
+reconciliation are complete. The accepted governance and implementation use
+only the supplied reviewed findings below; they did not inspect the research
+repository, use the newly found demo-funds documentation, or rely on
+unverified Polymarket staging access. Relevant synthesis provenance remains
+`PLATFORM-0001` (`wiki/platforms/polymarket.md`) and `PLATFORM-0002`
+(`wiki/platforms/kalshi.md`). This closure adds no external evidence and
+claims no research promotion.
 
 The reviewed findings establish for this bounded implementation:
 
@@ -1285,15 +1276,16 @@ authentication-required response. `SRC-0045` / `CLM-0198`–`CLM-0199` describe
 and demonstrate the same order-book GET without authentication headers.
 Neither establishes publication or update precedence.
 
-The user selects authenticated Kalshi requests as an engineering policy under
-uncertainty. This choice does not resolve the evidence conflict and must not be
-described as proof that the endpoint is universally authenticated,
-universally public, or optionally authenticated. Kalshi has no anonymous
-fallback.
+The accepted implementation signs Kalshi requests from the outset as an
+engineering policy under uncertainty. This choice does not resolve the
+evidence conflict and must not be described as proof that the endpoint is
+universally authenticated, universally public, or optionally authenticated.
+Kalshi has no anonymous fallback.
 
 #### Exact operations and environments
 
-Only these operations may be implemented:
+Only these operations were implemented and remain supported by the accepted
+delivery:
 
 - Polymarket production: `GET https://clob.polymarket.com/book?token_id={caller_supplied_token_id}`;
 - Kalshi demo: `GET https://external-api.demo.kalshi.co/trade-api/v2/markets/{ticker}/orderbook`;
@@ -1305,17 +1297,16 @@ staging or compatibility origin, optional depth parameter, arbitrary URL,
 additional query parameter, other HTTP method, redirect target, or origin
 failover is allowed.
 
-Production support means that the bounded implementation must correctly model
-and test that exact operation. It is not permission to deploy or make a live
-production request. The initial separately authorized Kalshi live trial, if
-later approved, will use demo. A Polymarket production trial also requires
-separate bounded operational authorization even though its selected operation
-is public. A live trial is not part of implementation or ordinary tests.
+Production support means that the bounded implementation models and tests that
+exact operation. It is not permission to deploy or make a live production
+request. The initial separately authorized Kalshi live trial, if later
+approved, will use demo. A Polymarket production trial also requires separate
+bounded operational authorization even though its selected operation is
+public. A live trial was not part of implementation or ordinary tests.
 
-#### Exact implementation-path and dependency allowance
+#### Historical delivered paths and dependency record
 
-After activation and a separate implementation prompt, source changes are
-limited exactly to:
+The accepted source delivery consists of:
 
 - `src/invariant_engine/capture/__init__.py`;
 - `src/invariant_engine/capture/models.py`;
@@ -1326,7 +1317,7 @@ limited exactly to:
 - `src/invariant_engine/capture/batch.py`; and
 - `src/invariant_engine/capture/serialization.py`.
 
-Test changes are limited exactly to:
+The accepted test delivery consists of:
 
 - `tests/capture/conftest.py`;
 - `tests/capture/test_specification.py`;
@@ -1337,16 +1328,17 @@ Test changes are limited exactly to:
 - `tests/capture/test_serialization.py`; and
 - `tests/capture/test_trust_boundaries.py`.
 
-Fixture changes are limited exactly to:
+The accepted fixture delivery consists of:
 
 - `fixtures/capture/README.md`; and
 - `fixtures/capture/cases.json`.
 
-No existing implementation file, existing test, `pyproject.toml`, or other
-path may change. No new runtime or development dependency is authorized. The
-implementation must use standard-library transport and a caller-owned signing
-interface. If these boundaries prevent sound implementation, stop and report
-the concrete problem rather than expanding the allowance.
+These 18 paths are historical Milestone 5 delivered paths. They confer no
+continuing implementation authority or path exception. No runtime or
+development dependency was added; the accepted implementation uses
+standard-library transport and a caller-owned signing interface. Any future
+change to these paths, `pyproject.toml`, an existing implementation or test,
+or another path requires an explicit governance transition.
 
 #### Capture specification and local input limits
 
@@ -1439,10 +1431,11 @@ failure performs zero HTTP dispatches and does not stop later valid targets.
 
 #### Attempt, identity, mutation, and continuation contract
 
-The prospective phrase “exactly one request attempt per target” is amended:
-each position receives exactly one logical `TargetAttempt`, while each target
-performs at most one HTTP dispatch. A Kalshi signing or integrity failure is a
-completed terminal target attempt with zero dispatches. No retry is performed.
+The earlier prospective phrase “exactly one request attempt per target” was
+amended: each position receives exactly one logical `TargetAttempt`, while
+each target performs at most one HTTP dispatch. A Kalshi signing or integrity
+failure is a completed terminal target attempt with zero dispatches. No retry
+is performed.
 
 Targets are processed serially in caller order. Ordinary terminal target
 failures do not prevent later targets from receiving their one logical
@@ -1783,13 +1776,14 @@ failure continues to the next already-validated target.
 
 An observed `INTEGRITY_FAILURE` overrides the ordinary acquisition-derived
 status, including `BODY_OVERSIZED`, `BODY_PARTIAL`, `TIMEOUT`, transport, HTTP,
-empty-body, parsing, schema, identifier, and prospective `CAPTURED` statuses,
-but remains below `CONFIDENTIALITY_FAILURE`. It must never be converted to
-`CAPTURED`. If the attempt identity and acquisition facts are independently
-trustworthy—for example, a separately bound material fingerprint detects
-mutation after a transport-local complete or partial acquisition—the result
-may retain those exact acquisition outcome, flags, byte counts, retention
-state, body, and digest facts while its primary status is `INTEGRITY_FAILURE`.
+empty-body, parsing, schema, identifier, and otherwise possible `CAPTURED`
+statuses, but remains below `CONFIDENTIALITY_FAILURE`. It must never be
+converted to `CAPTURED`. If the attempt identity and acquisition facts are
+independently trustworthy—for example, a separately bound material fingerprint
+detects mutation after a transport-local complete or partial acquisition—the
+result may retain those exact acquisition outcome, flags, byte counts,
+retention state, body, and digest facts while its primary status is
+`INTEGRITY_FAILURE`.
 
 If the identity binding, acquisition outcome, flags, counts, retained bytes, or
 digest cannot be independently trusted, no attempt artifact containing those
@@ -1823,9 +1817,45 @@ and digests, sockets, clocks, and all process-local trust state are excluded.
 Local observer timestamps are acquisition provenance only; they make no
 venue-time, freshness, synchronization, or ordering claim.
 
-#### Acceptance contract
+#### Permanent Milestone 5 regression guarantees
 
-Implementation acceptance requires an independent reviewer to:
+All future work must preserve:
+
+- immutable, exact-type, versioned specifications and exact ordered targets;
+- finite sequential logical attempts, with at most one HTTP dispatch per
+  target and ordinary terminal failures continuing to later validated targets;
+- exact allowlisted origins, operations, methods, paths, queries, and Kalshi
+  environment binding;
+- caller-owned Kalshi signing, no anonymous fallback, no Kalshi
+  authentication sent to Polymarket, and no ambient credential discovery;
+- redacted authentication representations and detached caller-signer
+  exception chains that cannot expose arbitrary exception text or runtime
+  authentication material;
+- bounded transport reads, exact body, initial/informational-header, and
+  trailer limits, elapsed-budget enforcement, and rejection of negative chunk
+  lengths before an entity-data read;
+- truthful acquisition and retention states, exact received and retained byte
+  accounting, and exact digest scope, including bytes obtained before an
+  interrupted chunked read;
+- bounded trailer discard without publication, serialization, logging,
+  metadata merging, or trailer reflection scanning;
+- initial/informational-header and entity-body confidentiality protection with
+  the accepted precedence and suppression semantics;
+- strict UTF-8 and JSON, duplicate-key rejection, exact `Decimal` handling,
+  and preservation of venue-native strings, received ordering, and duplicate
+  levels;
+- deterministic identities, ordering, stable serialization, and process-local
+  producer trust that does not transfer through copy, reconstruction, pickle,
+  or JSON;
+- no promotion of a capture artifact into an accepted historical artifact,
+  replay input, trusted observation, relationship, evaluation, opportunity,
+  simulation, risk decision, execution instruction, order, or trade; and
+- entirely synthetic network-free ordinary tests and every protected
+  Milestones 1–4 guarantee.
+
+#### Accepted implementation validation contract and record
+
+Implementation acceptance required an independent reviewer to:
 
 1. verify the exact accepted activation commit, its expected parent, tree,
    accepted document/content identities, and local `HEAD`/`origin/main`
@@ -1844,7 +1874,7 @@ Implementation acceptance requires an independent reviewer to:
    after validation; and
 8. explicitly accept or reject the exact implementation content reviewed.
 
-Implementation acceptance also requires deterministic offline tests covering
+Implementation acceptance also required deterministic offline tests covering
 at least:
 
 - success and every closed terminal-failure path for Polymarket and Kalshi;
@@ -1913,24 +1943,26 @@ at least:
 - every protected Milestone 1–4 guarantee and the exact path, import,
   dependency, and artifact boundaries.
 
-Ordinary tests use only synthetic responses. Offline acceptance establishes
-implementation behavior, not successful real signatures, actual credential
-environment or permissions, live endpoint availability, or successful
-order-book acquisition. A failure-only live result is not proof of successful
-capture.
+Ordinary acceptance tests used only synthetic responses and no actual
+credentials or live requests. Offline acceptance established implementation
+behavior, not successful real signatures, actual credential validity,
+environment or effective permissions, live endpoint availability, deployment
+readiness, or successful order-book acquisition. A failure-only live result is
+not proof of successful capture.
 
 Implementation acceptance remains distinct from activation, operational
-validation, and governance closure. An implementation may be accepted against
-the offline contract only if its record explicitly leaves live-access claims
-unvalidated. Any later claim that authenticated Kalshi acquisition works live
-requires a separately authorized successful demo result for the initial trial;
-any Polymarket live-success claim requires a separately authorized production
-trial. Neither trial is authorized here, and a failure-only result cannot
-satisfy a live-success claim.
+validation, and governance closure. Live-access claims remain unvalidated.
+Any later claim that authenticated Kalshi acquisition works live requires a
+separately authorized successful demo result for the initial trial; any
+Polymarket live-success claim requires a separately authorized production
+trial. Neither trial, credentials, deployment, nor production use is
+authorized here, and a failure-only result cannot satisfy a live-success
+claim. System DNS and caller-owned signer execution still lack a guaranteed
+hard deadline, and actual venue trailer behavior remains unknown.
 
-Required implementation validation must use an identified external Python
-3.11-or-newer toolchain with bytecode and cache output disabled or redirected
-outside the repository:
+The accepted implementation validation matrix used an identified external
+Python 3.11-or-newer toolchain with bytecode and cache output disabled or
+redirected outside the repository:
 
 ```text
 python -m pytest -p no:cacheprovider tests/capture
@@ -1945,9 +1977,14 @@ python -m json.tool fixtures/capture/cases.json
 git diff --check
 ```
 
-Repeat the capture suite with `PYTHONHASHSEED=1`, `2`, and `random`. Set an
-external `MYPY_CACHE_DIR` and external `PYTHONPYCACHEPREFIX` for commands that
-write caches. Include package/import-boundary and repository-artifact checks.
+The capture suite was also run with `PYTHONHASHSEED=1`, `2`, and `random`, with
+external cache locations. Package/import boundaries and repository artifacts
+were checked. The independently observed final record was 554 total tests,
+including 200 capture and 354 protected Milestones 1–4 tests; 20 external
+adversarial probes; one no-network suite; Ruff check and format check; strict
+mypy; compilation; all 15 fixture JSON files; and package, dependency,
+whitespace, and artifact-hygiene checks. This closure task records those
+previously observed results and does not rerun them.
 
 #### Non-goals and stop conditions
 
@@ -1960,26 +1997,45 @@ relationships, opportunities, strategy evaluation, simulation, risk,
 execution, reconciliation, orders, trading, deployment, and Milestone 6 or
 later planning or activation.
 
-Stop for unexplained baseline changes, a required path or dependency outside
-the exact allowance, missing applicable reviewed evidence, or a contract that
-cannot be implemented without an unsupported assumption. Report the concrete
-problem and candidate-source question; do not expand scope or import current
-external or unreviewed material.
+Future work must stop for unexplained baseline changes, a path or dependency
+outside its then-active allowance, missing applicable reviewed evidence, or a
+contract that cannot be implemented without an unsupported assumption. It
+must report the concrete problem and candidate-source question rather than
+expand scope or import current external or unreviewed material.
 
-The uncommitted bounded trailer discard amendment is governed by its separate
-acceptance, user-commit-and-push, planner-verification, unchanged-implementation,
-and separate-remediation-prompt gate above. Until every gate is satisfied, no
-trailer remediation or trailer test implementation is authorized.
+The bounded trailer-discard amendment and its remediation are completed
+historical transitions. Their historical path allowance grants no current
+remediation or test authority. Any future remediation requires an explicit
+governance transition.
 
-#### Governance state after accepted activation
+#### Governance-closure gate and resulting state
 
-While this draft is uncommitted or its accepted commit is unverified, no
-implementation milestone is active. After the accepted activation commit is
-verified by the planner, Milestone 5 is the sole active implementation
-milestone, limited to the scope above, and still requires a separate bounded
-implementation prompt. Accepted Milestones 1–4 remain closed and protected.
-Milestone 6 and every later milestone remain inactive. No implementation
-acceptance or governance closure is claimed or written here.
+This closure takes effect only after this mandatory sequence:
+
+1. An independent reviewer reads the exact uncommitted `AGENTS.md` and
+   `PLAN.md` content and complete HEAD-relative governance diff, records both
+   document SHA-256 values and the full-diff SHA-256 as the accepted-content
+   identity, and explicitly accepts or rejects that exact content.
+2. After acceptance, the user—not the reviewing or documentation agent—commits
+   and pushes only `AGENTS.md` and `PLAN.md`. This draft need not and cannot
+   contain its eventual commit hash or tree.
+3. The planner verifies the resulting commit with expected parent
+   `e6cfd01d9eb9e3143d3fa23c4e739c8dcecacbfa`, its tree, the committed document
+   blobs and parent-to-commit governance diff against the accepted-content
+   identity, local `HEAD` and local `origin/main` alignment, and complete clean
+   tracked, staged, unstaged, untracked, and ignored manifests.
+
+Comparison to local `origin/main` in step 3 is offline inspection of the local
+remote-tracking ref. It is not a fetch, remote API call, actual remote query,
+or proof of server state. The required user push is not delegated by this
+draft.
+
+The governance state established by accepted and verified closure is that
+Milestone 5 implementation authority is deactivated and no implementation
+milestone is active. Accepted Milestones 1–5 remain closed and protected.
+Milestone 6 and every later milestone remain explicitly inactive. This
+uncommitted draft grants no authority and does not claim independent closure
+acceptance, a closure commit or push, or planner verification.
 
 ### Milestone 6 — Execution simulation
 
@@ -2066,7 +2122,7 @@ existing exclusions remain in force.
 | D4 | Conditional relationships; relationship modeling, certification, compilation, and evaluation. | Conditional-relationship support is explicitly added. | Define representation, complete payoff semantics, deterministic validation, constraint semantics, and fail-closed boundaries. | Deferred extension. |
 | D5 | Scalar payouts; relationship modeling, certification, compilation, and evaluation. | Scalar-payout support is explicitly added. | Define exact payout representation, units, state spaces, deterministic validation, and constraint semantics without approximating binary unit payouts. | Deferred extension. |
 
-## Governance after Milestone 4 closure
+## Governance after Milestone 5 closure
 
 Milestone 3 — Historical opportunity economics is completed and accepted at
 implementation commit `ecab60460ca0139beea4e289d0511af3e80aa1a9`, with an
@@ -2081,13 +2137,20 @@ permanent regressions, its implementation authority is deactivated, and its
 delivered diagnostics paths and relationship boundary-test change grant no
 continuing authority.
 
-This uncommitted activation draft does not itself authorize or activate
-implementation. If it is independently reviewed, committed, accepted, and the
-accepted activation commit is verified by the planner, Milestone 5 becomes the
-sole active implementation milestone for only the bounded capture scope above;
-a separate bounded implementation prompt remains required. Milestone 6 and
-every later milestone remain inactive. Any Milestone 1–4 remediation, scope
-expansion, other implementation, or later milestone activation requires a
-future explicit `PLAN.md` governance transition. Milestone 5 implementation
-acceptance and its future deactivation and governance closure remain separate
-later decisions.
+Milestone 5 — Bounded live read-only capture batch is completed and
+independently accepted at implementation commit
+`e6cfd01d9eb9e3143d3fa23c4e739c8dcecacbfa`, parent
+`a0776a1b99f334aa953a361da2100ca75c93b9f1`, tree
+`1b76b0c06bf6af5c8aae07358240ead1a844803c`, with accepted 18-file
+content-manifest SHA-256
+`612c14ec018eed00323fb45003a30ae17578f3c2eff7b6daac0edf35ed0610ef`.
+Its accepted guarantees are permanent regressions, and its delivered capture
+paths grant no continuing authority or exception.
+
+The governance state established by the closure is that Milestone 5
+implementation authority is deactivated and no implementation milestone is
+active. Milestone 6 and every later milestone remain explicitly inactive and
+appear above only as an inactive roadmap. Any remediation, implementation,
+scope expansion, or milestone activation requires a future explicit
+`PLAN.md` governance transition. This uncommitted closure draft does not claim
+independent acceptance, commitment, push, or planner verification of closure.
