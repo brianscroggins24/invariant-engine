@@ -1173,6 +1173,27 @@ explicit governance closure must deactivate Milestone 5 authority; this draft
 does not write or presume that closure. Milestone 6 and every later milestone
 remain inactive.
 
+The bounded trailer discard amendment is a separate governance transition. Its
+uncommitted text grants no immediate trailer-remediation or test authority.
+The amendment takes effect only after this mandatory sequence:
+
+1. an independent reviewer accepts the exact governance diff and records the
+   SHA-256 identities of both documents and the complete diff;
+2. the user commits and pushes only `AGENTS.md` and `PLAN.md`; the 18 preserved
+   untracked implementation files need not be removed or committed merely to
+   make the governance commit;
+3. the planner verifies the resulting commit with expected parent
+   `282a3a1ccbe9263ce74cb3a38c90773fc817f244`, its tree, the accepted document
+   and diff identities, offline local `HEAD`/`origin/main` alignment, complete
+   manifests, no other changes, and the unchanged 18-file implementation
+   content-manifest identity
+   `70f16794dd526032f56117e960d2af44233a9a248a7111e01fd92579557664ff`;
+   and
+4. implementation still awaits a separate bounded remediation prompt.
+
+Independent amendment acceptance, later implementation acceptance, and
+governance closure remain distinct. This amendment does not claim any of them.
+
 #### Purpose and trust boundary
 
 Milestone 5 implements a finite, one-shot, live, read-only REST capture batch
@@ -1454,36 +1475,74 @@ The fixed local timing policy is:
 
 - 5.0 seconds for TCP connection and TLS handshake operations;
 - 5.0 seconds as the socket inactivity timeout for each request-write,
-  response-header, or body-read operation; and
+  response-header, body-read, or trailer-read operation; and
 - a 20.0-second transport elapsed budget beginning immediately before the
   engine invokes system name resolution for the one dispatch and covering
   engine-controlled resolution orchestration, connect, TLS, request write,
-  response headers, and body reads.
+  response headers, body reads, and trailer reads.
 
 The engine must check the monotonic elapsed budget before and after every
-engine-controlled blocking stage and between body reads, and must use the
-smaller remaining budget where a standard-library timeout accepts one. The
-budget excludes specification validation and caller signer execution. System
-DNS calls may outlast the budget because the standard library and operating
-system do not guarantee hard cancellation; this limitation must be explicit.
-No hard wall-clock completion guarantee is made for DNS or external signer
-code.
+engine-controlled blocking stage and before and after every body or trailer
+read, and must use the smaller remaining budget where a standard-library
+timeout accepts one. No further engine-controlled read may begin after the
+elapsed budget expires. The budget excludes specification validation and
+caller signer execution. System DNS calls may outlast the budget because the
+standard library and operating system do not guarantee hard cancellation;
+this limitation must be explicit. No hard wall-clock completion guarantee is
+made for DNS or external signer code.
 
-Response headers are quarantined and limited to at most 100 fields, at most
-8,192 ISO-8859-1 octets for any parsed name/value pair, and at most 32,768 such
-octets in aggregate. The underlying standard-library maximum accepted header
-line remains an additional ceiling, not an expanded capture contract. Invalid
-names or values, control characters other than parsing syntax already removed
-by the library, obsolete folding, conflicting `Content-Length`, unsupported
-transfer framing, or non-identity `Content-Encoding` fail closed.
+Initial and informational response headers are quarantined and limited to at
+most 100 fields, at most 8,192 ISO-8859-1 octets for any parsed name/value pair,
+and at most 32,768 such octets in aggregate. These limits remain cumulative
+across informational responses and are separate from the trailer limits below.
+The underlying standard-library maximum accepted header line remains an
+additional ceiling, not an expanded capture contract. Invalid names or values,
+control characters other than parsing syntax already removed by the library,
+obsolete folding, conflicting `Content-Length`, unsupported transfer framing,
+or non-identity `Content-Encoding` fail closed.
 
-Unknown and unexpected response headers count toward limits but are otherwise
-ignored. Public results may retain only the integer HTTP status, a strictly
-parsed nonnegative `Content-Length` when unambiguous, and a normalized
-`Content-Type` media type from visible ASCII; raw response headers and header
-parameters are not retained or serialized. All received header names and
-values are nevertheless scanned by the confidentiality detector before this
-allowlisted metadata may be published.
+Unknown and unexpected initial or informational response headers count toward
+their limits but are otherwise ignored. Public results may retain only the
+integer HTTP status, a strictly parsed nonnegative `Content-Length` when
+unambiguous, and a normalized `Content-Type` media type from visible ASCII; raw
+response headers and header parameters are not retained or serialized. All
+received initial and informational header names and values are nevertheless
+scanned by the confidentiality detector before this allowlisted metadata may
+be published.
+
+#### Bounded trailer discard policy
+
+Trailers are discarded. They must not be exposed, serialized, logged, merged
+into response headers, used as response metadata or market data, or accumulated
+as an unrestricted collection. The engine may process trailer framing only as
+needed to bound consumption and establish response termination.
+
+The separate fixed local trailer limits are at most 100 nonempty trailer
+lines, at most 8,192 raw bytes per line including its line ending, and at most
+32,768 raw bytes across the complete trailer section including its final
+terminator. Reads must be bounded; only a bounded excess probe may be used to
+detect a limit violation. These limits do not reset or change the cumulative
+initial/informational-header limits.
+
+Trailer reads remain within the existing 20.0-second elapsed budget and
+5.0-second inactivity timeout. The engine checks the elapsed budget before and
+after each trailer read, reduces a supported socket timeout to the smaller
+remaining budget, and initiates no further read after expiry. The existing DNS
+and external-signer deadline limitations remain unchanged.
+
+Interrupted, over-limit, or unterminated trailer consumption prevents normal
+response completion. After zero acquired entity-body bytes, deadline or
+inactivity failure produces `FAILED_BEFORE_FIRST_BYTE` with `TIMEOUT`; every
+other trailer-consumption failure produces `FAILED_BEFORE_FIRST_BYTE` with
+`TLS_OR_TRANSPORT_FAILED`. After one or more acquired entity-body bytes, either
+kind produces `PARTIAL` with `BODY_PARTIAL`. Existing safely acquired header or
+body confidentiality evidence overrides these ordinary statuses. The engine
+must not continue unsafe I/O solely to seek additional evidence.
+
+This is a user-selected local engineering policy, not a claim that either
+venue sends trailers. Whether either supported endpoint actually sends them
+remains unknown. External HTTP documentation considered during planning is not
+newly promoted research authority.
 
 #### Body acquisition, retention, and confidentiality
 
@@ -1491,18 +1550,23 @@ The maximum response entity body is 1,048,576 bytes. The transport reads in
 chunks of at most 65,536 bytes and may read one additional byte solely to
 classify oversize input. “Received bytes” means entity-body bytes after HTTP
 transfer framing is removed and before any content decoding; only identity
-content encoding is supported.
+content encoding is supported. Trailer and other transfer-framing bytes never
+contribute to entity-body counts or digests.
 
 Body acquisition outcome and body retention state are separate closed enums.
 The acquisition outcome records what occurred before confidentiality filtering:
 
 - `NOT_STARTED`: no body-read operation began;
-- `FAILED_BEFORE_FIRST_BYTE`: a body-read operation began but failed before
-  receiving any body byte;
+- `FAILED_BEFORE_FIRST_BYTE`: acquisition began but failed before receiving
+  any entity-body byte, including chunked termination or trailer-consumption
+  failure after a zero-length entity body;
 - `COMPLETED`: normal EOF or the exact declared body length was reached within
-  the cap, including a normally completed zero-length body;
-- `PARTIAL`: acquisition failed after receiving at least one byte and before
-  normal completion, without crossing the cap; and
+  the cap, including a normally completed zero-length body; for a chunked
+  response, completion additionally requires consumption of the terminating
+  trailer section within its limits and the transport deadline;
+- `PARTIAL`: acquisition failed after receiving at least one entity-body byte
+  and before normal response completion, including chunked termination or
+  trailer-consumption failure, without crossing the cap; and
 - `OVERSIZED`: streaming acquisition observed at least one byte beyond the
   1,048,576-byte cap.
 
@@ -1529,6 +1593,12 @@ states are:
   body and no digest while preserving the actual received-byte count and
   recording whether acquisition started and how it ended.
 
+Every entity-body byte returned by an engine-controlled read is accounted for
+before a later deadline or transport failure from that read is classified.
+This includes entity-body bytes already buffered when a read subsequently
+fails. Trailer and other framing bytes are discarded and cannot change the
+body count, retained prefix, or digest.
+
 An unambiguous `Content-Length` greater than the cap permits an immediate
 `BODY_OVERSIZED` result without beginning body acquisition; its retention state
 is `ABSENT`, and no body digest exists. Otherwise streaming acquisition applies
@@ -1540,21 +1610,21 @@ The valid unsuppressed combinations are exhaustive:
 | Acquisition outcome | Acquisition started | Normal completion | Retention | Received length | Retained length and material | Ordinary status before integrity or confidentiality override |
 |---|---:|---:|---|---:|---|---|
 | `NOT_STARTED` | No | No | `ABSENT` | 0 | 0; body and digest absent | Predispatch failure, header failure, timeout/transport failure before body acquisition, or declared `BODY_OVERSIZED`. |
-| `FAILED_BEFORE_FIRST_BYTE` | Yes | No | `ABSENT` | 0 | 0; body and digest absent | `TIMEOUT` or `TLS_OR_TRANSPORT_FAILED`. |
+| `FAILED_BEFORE_FIRST_BYTE` | Yes | No | `ABSENT` | 0 | 0; body and digest absent | `TIMEOUT` or `TLS_OR_TRANSPORT_FAILED`, including interrupted, over-limit, or unterminated trailer consumption after zero entity-body bytes. |
 | `COMPLETED` | Yes | Yes | `COMPLETE` | 0 through 1,048,576 | Equal to received length; body present and digest present, including zero length. | `BODY_EMPTY`, `HTTP_STATUS_UNSUPPORTED`, parsing/schema/identifier failure, or `CAPTURED` as applicable. |
-| `PARTIAL` | Yes | No | `PARTIAL` | 1 through 1,048,576 | Equal to received length; nonempty prefix and digest present. | `BODY_PARTIAL`. |
+| `PARTIAL` | Yes | No | `PARTIAL` | 1 through 1,048,576 | Equal to received length; nonempty prefix and digest present. | `BODY_PARTIAL`, including interrupted, over-limit, or unterminated trailer consumption after a body prefix. |
 | `OVERSIZED` | Yes | No | `OVERSIZED` | 1,048,577 | 1,048,576-byte prefix and digest present. | `BODY_OVERSIZED`. |
 
 Confidentiality detection replaces the retention state in any safely observed
 case with `SUPPRESSED` and makes the primary status
-`CONFIDENTIALITY_FAILURE`. Header-only detection must stop before body
-acquisition and therefore combines `NOT_STARTED`, acquisition-started `No`,
-normal-completion `No`, received length 0, retained length 0, no body, and no
-digest. Detection in a complete, partial, or oversized body preserves its
-original acquisition outcome, acquisition flags, and actual received length,
-but requires retained length 0, no body, and no digest. Suppression provenance
-may identify only `HEADER` or `BODY`, never the matched key ID, signature, or
-matched bytes.
+`CONFIDENTIALITY_FAILURE`. Initial/informational-header-only detection must stop
+before body acquisition and therefore combines `NOT_STARTED`,
+acquisition-started `No`, normal-completion `No`, received length 0, retained
+length 0, no body, and no digest. Detection in a complete, partial, or oversized
+body preserves its original acquisition outcome, acquisition flags, and actual
+received length, but requires retained length 0, no body, and no digest.
+Suppression provenance may identify only `HEADER` or `BODY`, never the matched
+key ID, signature, or matched bytes.
 
 Normal completion is defined exclusively by acquisition outcome `COMPLETED`,
 not by retention state `COMPLETE`. A confidentiality-suppressed body whose
@@ -1585,16 +1655,26 @@ any other status, including HTTP 404, retains the empty bytes and digest but
 receives `HTTP_STATUS_UNSUPPORTED`; confidentiality or a trustworthy observed
 integrity failure still takes precedence.
 
-All header and body material is quarantined before publication. The exact
-confidentiality detector searches for the complete key ID and signature as
-raw ASCII byte substrings in every received header name/value and quarantined
-candidate body or prefix. It also lexically scans every complete JSON string
-token in the quarantined candidate bytes and decodes valid JSON escapes—including `\"`, `\\`,
-`\/`, the control escapes, and case-insensitive four-hex-digit `\uXXXX`
-sequences with valid surrogate pairing—then searches each decoded string for
-the exact key ID or signature. This detects arbitrarily mixed valid JSON
-escapes within complete string tokens; malformed or incomplete string tokens
-are covered only by the raw-byte search.
+All initial/informational header and entity-body material is quarantined before
+publication. The exact confidentiality detector searches for the complete key
+ID and signature as raw ASCII byte substrings in every received initial or
+informational header name/value and quarantined candidate body or prefix. It
+also lexically scans every complete JSON string token in the quarantined
+candidate bytes and decodes valid JSON escapes—including `\"`, `\\`, `\/`,
+the control escapes, and case-insensitive four-hex-digit `\uXXXX` sequences
+with valid surrogate pairing—then searches each decoded string for the exact
+key ID or signature. This detects arbitrarily mixed valid JSON escapes within
+complete string tokens; malformed or incomplete string tokens are covered only
+by the raw-byte search.
+
+Discarded trailers are explicitly outside confidentiality-reflection scanning.
+A key ID or signature appearing only in a discarded trailer does not trigger
+body suppression or `CONFIDENTIALITY_FAILURE`. This narrow exclusion does not
+permit trailer bytes or fields in a public result, serialization, log,
+warning, or exposed exception. Existing safely observed initial-header or body
+confidentiality findings retain precedence over ordinary trailer-consumption
+failures. Suppression provenance remains limited to `HEADER` or `BODY`; no
+trailer suppression source or public enum is added.
 
 If either value is detected, the result is terminal
 `CONFIDENTIALITY_FAILURE`: suppress the entire body or prefix and its digest,
@@ -1738,10 +1818,10 @@ attempt itself is not serializable and only the applicable fixed safe outer
 batch failure described above may be emitted.
 
 Authentication bindings, key IDs, signatures, signing bytes, signer callbacks,
-raw exceptions, unrestricted headers, suppressed bodies and digests, sockets,
-clocks, and all process-local trust state are excluded. Local observer
-timestamps are acquisition provenance only; they make no venue-time,
-freshness, synchronization, or ordering claim.
+raw exceptions, unrestricted headers, all trailer material, suppressed bodies
+and digests, sockets, clocks, and all process-local trust state are excluded.
+Local observer timestamps are acquisition provenance only; they make no
+venue-time, freshness, synchronization, or ordering claim.
 
 #### Acceptance contract
 
@@ -1784,8 +1864,8 @@ at least:
   mismatch, and structurally empty Kalshi arrays;
 - the 64-target and identifier/provenance limits, exact URL construction,
   TLS and hostname verification, direct no-proxy transport, timeout coverage,
-  body and header bounds, and no redirects, retries, failover, cookies, or
-  ambient credentials;
+  body, initial/informational-header, and trailer bounds, and no redirects,
+  retries, failover, cookies, or ambient credentials;
 - the actual production transport code exercised through mocked lower-level
   socket/TLS/HTTP I/O, not only a substituted high-level fake transport;
 - body acquisition never started; timeout and transport failure after body
@@ -1797,10 +1877,27 @@ at least:
   with no higher-priority failure; and an empty completed HTTP 404 response
   retaining its empty bytes and digest while receiving
   `HTTP_STATUS_UNSUPPORTED`;
-- header-only confidentiality detection and complete, partial, and oversized
-  bodies suppressed for confidentiality; exact digest scope; raw and mixed
-  JSON-escaped key-ID/signature reflection; confidentiality precedence; and
-  suppression from representations and serialization;
+- initial/informational-header-only confidentiality detection and complete,
+  partial, and oversized bodies suppressed for confidentiality; exact digest
+  scope; raw and mixed JSON-escaped key-ID/signature reflection;
+  confidentiality precedence; and suppression from representations and
+  serialization;
+- valid empty and nonempty trailer sections; discarding trailer-only synthetic
+  key-ID or signature reflection without publication or trailer-triggered
+  suppression; and continued initial/informational-header and entity-body
+  reflection protection;
+- exact trailer line-length, nonempty-line-count, and aggregate-byte
+  boundaries and their bounded excess cases; elapsed-budget and inactivity
+  enforcement during repeated trailer reads; and initiation of no further read
+  after budget expiry;
+- timeout, transport interruption, over-limit input, and missing trailer
+  termination after both zero and nonzero entity-body acquisition; exact
+  preservation and digest scope for body bytes already acquired or buffered;
+  no trailer contribution to entity-body counts or digests; and no conversion
+  of incomplete chunked acquisition to `CAPTURED`;
+- no trailer metadata overrides, public or exception leakage, unrestricted
+  trailer accumulation, trailer suppression provenance, retries, or extra
+  dispatches, plus ordinary later-target continuation after trailer failure;
 - `INTEGRITY_FAILURE` detected after complete and partial acquisition,
   including preservation only of independently trustworthy acquisition facts,
   precedence over the ordinary acquisition status, rejection rather than
@@ -1868,6 +1965,11 @@ the exact allowance, missing applicable reviewed evidence, or a contract that
 cannot be implemented without an unsupported assumption. Report the concrete
 problem and candidate-source question; do not expand scope or import current
 external or unreviewed material.
+
+The uncommitted bounded trailer discard amendment is governed by its separate
+acceptance, user-commit-and-push, planner-verification, unchanged-implementation,
+and separate-remediation-prompt gate above. Until every gate is satisfied, no
+trailer remediation or trailer test implementation is authorized.
 
 #### Governance state after accepted activation
 
