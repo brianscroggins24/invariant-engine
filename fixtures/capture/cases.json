@@ -1,0 +1,42 @@
+{
+    "schema_version": "synthetic-capture-cases-v1",
+    "cases": [
+        {
+            "case_id": "polymarket-complete",
+            "synthetic": true,
+            "venue": "polymarket",
+            "environment": "production",
+            "identifier": "123",
+            "response": {
+                "market": "synthetic-market",
+                "asset_id": "123",
+                "timestamp": "opaque-synthetic-time",
+                "hash": "synthetic-hash",
+                "bids": [
+                    {"price": "0.50", "size": "2.0"},
+                    {"price": "0.50", "size": "1.0"}
+                ],
+                "asks": [
+                    {"price": "0.51", "size": "3.0"}
+                ],
+                "min_order_size": "1",
+                "tick_size": "0.01",
+                "neg_risk": false,
+                "last_trade_price": "0.50"
+            }
+        },
+        {
+            "case_id": "kalshi-native-sides",
+            "synthetic": true,
+            "venue": "kalshi",
+            "environment": "demo",
+            "identifier": "TEST-1",
+            "response": {
+                "orderbook_fp": {
+                    "yes_dollars": [["0.40", "2.00"], ["0.40", "1.00"]],
+                    "no_dollars": [["0.59", "3.00"]]
+                }
+            }
+        }
+    ]
+}
