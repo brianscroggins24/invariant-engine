@@ -2067,6 +2067,45 @@ milestone whose accepted purpose requires a working capability. These
 classifications do not establish new milestone acceptance criteria. Do not
 invent answers to these questions.
 
+### Polymarket US future access questions
+
+This subsection records access questions for possible future Polymarket US
+work. It does not reclassify or modify any of the 23 existing A–D topics
+below, does not activate implementation, and does not make deferred access
+questions blockers for the bounded public REST capture proposed later in this
+document.
+
+The supplied reviewed evidence records that the retail public market-data
+gateway at `https://gateway.polymarket.us` is key-free for the documented
+public operation. Public REST capture therefore does not presently require an
+API key under that evidence. The same evidence records that future retail
+WebSockets, account or portfolio access, and trading require authentication
+and introduce credential, onboarding, identity-verification, permission, and
+effective-access dependencies. Broad authentication wording coexists with the
+explicit public-operation exemption; the exemption must remain scoped to the
+documented public REST operation rather than generalized to other interfaces.
+No self-service retail demo equivalent to Kalshi demo has been verified.
+
+The following URLs are candidate-source leads only. They have not been
+ingested and reviewed for this engine proposal and are not implementation
+authority:
+
+- `https://docs.polymarket.us/trader-guide/environments` appears to document
+  Exchange development and pre-production environments and onboarding-based
+  access.
+- `https://docs.polymarket.us/trader-guide/api-overview` appears to distinguish
+  Exchange or direct-access APIs from retail APIs.
+- `https://docs.polymarket.us/trader-guide/authentication` appears to describe
+  separate environment onboarding and Exchange authentication.
+
+The open access question is: can this user's intended retail integration
+access a suitable testing environment, or would separate Exchange onboarding
+and a different integration be necessary? Do not assume that retail
+credentials work on Exchange endpoints, that the interfaces are
+interchangeable, or that the user qualifies for access. Any new external
+finding must return through research ingestion and review before it can become
+implementation authority.
+
 ### A. Decisions needed for remaining capabilities
 
 These are bounded decisions for a supported capability, not requirements for
@@ -2121,6 +2160,282 @@ existing exclusions remain in force.
 | D3 | Precision and reviewer-load thresholds for LLM discovery; discovery-governance decisions. | Production use or acceptance thresholds for LLM discovery are explicitly considered. | Decide the evidence-backed precision and reviewer-load thresholds; existing synthetic measurements remain non-authoritative. | Deferred extension. |
 | D4 | Conditional relationships; relationship modeling, certification, compilation, and evaluation. | Conditional-relationship support is explicitly added. | Define representation, complete payoff semantics, deterministic validation, constraint semantics, and fail-closed boundaries. | Deferred extension. |
 | D5 | Scalar payouts; relationship modeling, certification, compilation, and evaluation. | Scalar-payout support is explicitly added. | Define exact payout representation, units, state spaces, deterministic validation, and constraint semantics without approximating binary unit payouts. | Deferred extension. |
+
+## Inactive proposal — bounded Polymarket US public REST capture support
+
+### Proposal status and effect
+
+This is a documentation-only proposal for a possible future governance
+transition. It is not an activation contract, grants no implementation or
+operational authority, and does not reopen or renumber Milestone 5. Milestones
+1–5 remain accepted foundations, no implementation milestone is active, and
+Milestone 6 and every later milestone remain inactive. The accepted
+international Polymarket and Kalshi behavior, identities, schemas, trust
+boundaries, and permanent regression guarantees remain unchanged unless a
+future explicit activation contract authorizes the exact compatibility work
+described here.
+
+The proposed outcome is to extend bounded capture support to the Polymarket US
+retail public order-book operation while preserving all accepted international
+Polymarket and Kalshi behavior. Inputs would be explicit caller-supplied
+Polymarket US market slugs in immutable capture specifications. There would be
+no automatic event or market discovery. Each target would end in either a
+distinct US-native captured order book or an explicit terminal failure, with
+immutable acquisition provenance and retained raw evidence under the accepted
+Milestone 5 confidentiality and retention rules.
+
+### Supplied reviewed evidence and limits
+
+The planner consulted research commit
+`add0b312e5788e0cbabf8a2d35476141872f7da8`, including
+`wiki/platforms/polymarket-us.md` (`PLATFORM-0003`), the corresponding
+`SRC-0046` through `SRC-0049` source summaries, and
+`registry/sources.yaml`, `registry/pages.yaml`, and `registry/claims.yaml`.
+Those research files were not accessed during this task. The documentation was
+captured on 2026-09-07 and reviewed on 2026-09-09. This proposal relies only on
+the supplied reviewed findings below:
+
+- `SRC-0046` / `CLM-0200`: the retail public market-data gateway is
+  `https://gateway.polymarket.us` and is documented as key-free.
+- `SRC-0047` / `CLM-0201`–`CLM-0202`: trading, portfolio access, and
+  WebSockets require authentication. API-key onboarding describes account
+  creation, identity verification, developer-portal sign-in, and Key ID and
+  Secret Key issuance. Broad authentication wording coexists with the
+  explicit public exemption, so neither statement may be generalized beyond
+  its documented scope.
+- `SRC-0048` / `CLM-0203`: an event may contain multiple markets, and the US
+  order-book operation uses a market slug rather than an international CLOB
+  token identifier.
+- `SRC-0049` / `CLM-0204`–`CLM-0207`: the documented operation is
+  `GET https://gateway.polymarket.us/v1/markets/{slug}/book` on the production
+  server with `security: []`. Documented response properties include
+  `marketData.marketSlug`, `bids`, `offers`, `state`, `stats`, and
+  `transactTime`. Book entries define `px` and string `qty`. `Amount` requires
+  `value` and `currency`; `value` is declared to be a decimal string even
+  though an example shows an unquoted JSON number. Other response objects do
+  not explicitly require their properties.
+
+The string declaration and numeric example are inconsistent. The reviewed
+material also does not establish a complete numeric grammar, level ordering,
+duplicate-level semantics, freshness, atomicity, or a mapping from a side to
+an outcome. These absences must remain explicit. A local parser contract may
+be narrower than the venue, but it must be labeled as an engineering policy
+under uncertainty rather than a venue guarantee or a resolution of the source
+inconsistency.
+
+An independent diagnostic—not an engine acceptance test—successfully fetched
+the user's US event and one public order book without credentials on
+2026-09-15. The order-book request returned HTTP 200, its market slug matched
+`paccc-usse-midterms-2026-11-03-dem`, and the observed prices and quantities
+were strings. This observation is not ingested source authority, a permanent
+wire-format guarantee, proof of engine support, or a substitute for the later
+engine-based live-capture gate.
+
+### Proposed operation, inputs, and outputs
+
+Only the exact production public operation would be supported:
+
+`GET https://gateway.polymarket.us/v1/markets/{caller_supplied_slug}/book`
+
+The caller would provide every market slug explicitly in an immutable,
+ordered, versioned capture specification. Event lookup, event-to-market
+expansion, automatic discovery, and identifier translation are excluded. The
+target identity would bind a distinct Polymarket US venue value, production
+environment, exact gateway origin, exact market slug, position, fixed limits,
+and ordered provenance. The response identity would have to contain
+`marketData.marketSlug` exactly equal to the requested slug. Identity mismatch
+would produce the existing explicit terminal mismatch class rather than a
+capture.
+
+A successful output would use a distinct US-native captured-book model. It
+would preserve native `bids` and `offers`, every received level in received
+order, duplicate levels, each `px.value` textual representation and currency,
+each `qty` textual representation, and exact `Decimal` interpretations only
+after lexical validation. It would not call offers international asks, assign
+outcome semantics to either side, sort or aggregate levels, infer tie
+semantics, or convert the slug to an international market, condition, or token
+identifier. `state`, `stats`, and `transactTime` would remain in retained raw
+evidence without inferred semantics; normalized inclusion requires exact
+types and requiredness to be approved before activation.
+
+The proposed local numeric policy is schema-first: `Amount.value` and `qty`
+must arrive as JSON strings. A JSON numeric value would be rejected rather
+than coerced, including the unquoted example form. This is an engineering
+policy under uncertainty and does not resolve the source inconsistency. The
+exact bounded decimal-string grammar, currency constraints, and slug grammar
+and length remain policy decisions required before activation; the existing
+international token-ID, Kalshi ticker, and general decimal grammars must not
+be silently reused as if they were reviewed US venue guarantees.
+
+### Proposed boundaries and compatibility decisions
+
+The future bounded implementation would:
+
+- use only the production public gateway and exact GET operation above;
+- send no credentials or authentication headers and provide no
+  authentication fallback;
+- preserve the accepted finite, serial, caller-ordered logical-attempt model,
+  with at most one dispatch per target and no retry;
+- reuse the accepted direct standard-library transport, TLS verification,
+  timeout, elapsed-budget, header, trailer, body, confidentiality,
+  acquisition, retention, digest, and safe-error behavior where feasible;
+- preserve native bids and offers, currency, exact numeric representations,
+  received order, duplicate levels, raw response evidence, and ordered
+  provenance;
+- require exact response-identity matching as a local safety policy;
+- fail closed for unknown versions, unsupported venue/environment/origin
+  combinations, malformed or missing locally required structure, numeric JSON
+  where strings are required, unknown currency treatment, identifier
+  mismatch, or any unsupported assumption; and
+- keep capture artifacts separate from historical or replay trust,
+  relationships, constraints, evaluations, opportunities, strategy
+  validation, simulation, risk, execution, orders, and trades.
+
+The proposed identity decision is a new exact enum value such as
+`Venue.POLYMARKET_US = "polymarket_us"`; the existing
+`Venue.POLYMARKET = "polymarket"` would continue to mean the international
+CLOB interface only. No parser, target, order book, provenance record, or
+serialized value may alias the two. The proposed model decision is a new
+`PolymarketUSOrderBook` and US-specific level or amount model where needed,
+not reuse of `PolymarketOrderBook`, because market slugs, bids/offers, amount
+currency, and response metadata differ materially from international CLOB
+token books.
+
+The proposed schema compatibility policy is to retain accepted v1
+specification and result handling unchanged for international Polymarket and
+Kalshi and introduce an explicitly reviewed v2 specification/result contract
+for US-capable batches. A v1 specification could not contain a US target. V2
+would support explicitly enumerated existing targets plus the US target; old
+target behavior and serialized material would remain semantically unchanged,
+and existing v1 output must remain byte-stable. There would be no implicit v1
+upgrade, down-conversion, venue alias, or unsupported-venue fallthrough. The
+exact v2 model fields, mixed-batch rules, schema constants, and version routing
+must be approved in the future activation contract and tested before
+implementation acceptance.
+
+No transport redesign is proposed. The existing request-validation branch
+would be extended to recognize both public venues explicitly as requiring an
+empty authentication-header set and empty confidentiality-value set, while
+retaining the exact Kalshi authenticated branch and rejecting every other
+venue. Request-path construction would gain one explicit US branch; it must
+not rely on the current fallback from international Polymarket to the Kalshi
+path.
+
+Explicit exclusions are WebSockets; account or portfolio access; credential,
+secret, private-key, or signer implementation; institutional Exchange or
+direct-access integration; assumptions about development, pre-production,
+staging, or retail credential portability; event or market discovery;
+retries; polling; concurrency; redirects; failover; analytics; replay
+promotion; historical normalization; simulation; orders; trading; deployment;
+and any Milestone 6 or later behavior.
+
+### Exact candidate paths for a future implementation
+
+The following are proposed paths only. They confer no implementation authority
+or continuing path exception.
+
+Candidate implementation paths:
+
+- `src/invariant_engine/domain/ids.py`: add the distinct Polymarket US venue
+  identity without changing the meaning of existing identities.
+- `src/invariant_engine/capture/models.py`: add the US-native immutable models,
+  exact venue-to-model integrity checks, and approved v1/v2 schema handling.
+- `src/invariant_engine/capture/specification.py`: add the exact US origin,
+  explicit venue/environment binding, approved slug validation, and exact
+  request path while removing any reliance on venue fallthrough.
+- `src/invariant_engine/capture/parsing.py`: add the separate strict US parser,
+  response-identity check, schema-first string-decimal policy, and native
+  bids/offers preservation.
+- `src/invariant_engine/capture/transport.py`: recognize the US target as an
+  explicitly anonymous exact-origin request while preserving all accepted
+  transport limits and rejecting unsupported venues.
+- `src/invariant_engine/capture/batch.py`: route approved specification/result
+  versions and the new parser result through the existing one-attempt flow
+  without adding retries, credentials, or transport behavior.
+- `src/invariant_engine/capture/__init__.py`: export only the approved public US
+  models, origin, and schema symbols.
+
+Candidate test paths:
+
+- `tests/unit/test_domain.py`: prove that international Polymarket and
+  Polymarket US identities are distinct and serialize distinctly.
+- `tests/unit/test_venues.py`: prove the accepted historical international
+  venue parser does not accept or reinterpret US material.
+- `tests/capture/conftest.py`: provide synthetic US targets and response bytes
+  for offline tests only.
+- `tests/capture/test_specification.py`: cover origin, environment, slug,
+  duplicate identity, exact type, version, mixed-batch, and unsupported-venue
+  rejection.
+- `tests/capture/test_authentication.py`: prove US targets require and transmit
+  no authentication and cannot consume Kalshi bindings.
+- `tests/capture/test_transport.py`: cover exact method/origin/path, empty
+  authentication material, one dispatch, and preservation of every accepted
+  transport bound without live network access.
+- `tests/capture/test_parsing.py`: cover US success; identity mismatch;
+  exact-type failures; missing and malformed local schema; string-only decimal
+  values; currency preservation; received order; duplicate levels; and lack
+  of invented side, freshness, or atomicity semantics.
+- `tests/capture/test_batch.py`: cover success and every applicable terminal
+  failure, ordinary continuation, no credential fallback, no unsupported-
+  venue fallthrough, and no promotion into another trust domain.
+- `tests/capture/test_serialization.py`: cover v1 byte stability, v2 stable
+  ordering and identity, native representation preservation, and exclusion of
+  runtime trust.
+- `tests/capture/test_trust_boundaries.py`: cover exact-type enforcement,
+  mutation, copy, reconstruction, pickle, JSON transfer, and process-local
+  trust for the new model and versioned result.
+- `tests/unit/test_no_network.py`: retain and, only if needed, extend ordinary-
+  test proof that no test performs network access.
+
+Candidate fixture paths:
+
+- `fixtures/capture/README.md`: document the synthetic US case and deny live,
+  credential, replay, and venue-guarantee status.
+- `fixtures/capture/cases.json`: add a minimal synthetic US response that
+  exercises native market-slug identity, bids/offers, string values and
+  quantities, currency, received order, and duplicates.
+
+No change is proposed to `src/invariant_engine/venues/polymarket/`, replay,
+relationships, constraints, opportunities, diagnostics, authentication,
+stable serialization, dependencies, environment files, or another fixture or
+test path. If implementation review finds a required path outside the exact
+future activation allowance, work must stop for a governance amendment rather
+than expanding scope implicitly.
+
+### Gates before and after implementation
+
+Before any implementation, all of the following are required:
+
+1. Independent review and explicit acceptance of this proposal, including the
+   unresolved local slug, decimal grammar, currency, normalized metadata,
+   schema-version, and mixed-batch policy decisions.
+2. A consistent `AGENTS.md` and `PLAN.md` activation contract naming the sole
+   active work and preserving all accepted Milestones 1–5 guarantees.
+3. Exact approved paths, compatibility rules, validation requirements, and a
+   sole-active-work designation.
+4. User commit and push of the accepted governance transition followed by
+   planner verification of commit, tree, accepted-content identity, local
+   `HEAD` and local `origin/main` alignment, and complete manifests.
+5. A separate bounded implementation prompt.
+
+Proposed implementation acceptance must include:
+
+- US parsing, exact identity-mismatch, exact-type, and malformed-input
+  coverage;
+- exact native representation, currency, duplicate, received-order, raw
+  evidence, and provenance preservation;
+- no credentials and no network in ordinary tests;
+- no historical trust transfer, replay promotion, or unsupported-venue
+  fallthrough;
+- v1 compatibility and deterministic v2 identity, ordering, and stable
+  serialization under the approved compatibility rules;
+- preservation of every accepted Milestones 1–5 behavior and permanent
+  regression guarantee; and
+- independent exact-tree review and the finalized validation matrix.
+
+After implementation acceptance, a separately authorized successful
+engine-based Polymarket US live capture is required before researcher handoff.
+The 2026-09-15 independent diagnostic does not replace that engine-based gate.
 
 ## Governance after Milestone 5 closure
 
