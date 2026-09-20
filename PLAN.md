@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestone 5's bounded live read-only capture batch is completed and independently accepted. This uncommitted closure draft grants no implementation authority and does not claim committed, accepted, or verified closure. The governance state established by the closure is that no implementation milestone is active. Milestone 6 and every later milestone remain explicitly inactive.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestone 5's bounded live read-only capture batch is completed, independently accepted, and closed. No implementation milestone is active. This uncommitted Capture v2 governance draft grants no implementation, network, credential, deployment, live-trial, or production-use authority and does not claim independent acceptance, commitment, push, or planner verification. Milestone 6 and every later milestone remain explicitly inactive.
 
 ## Central system thesis
 
@@ -1173,13 +1173,10 @@ These are previously observed implementation-acceptance results, not fresh
 tests performed during this documentation-only closure task. Implementation
 acceptance and governance closure remain separate.
 
-This uncommitted closure draft grants no implementation, network, credential,
-deployment, live-trial, or production-use authority and does not claim that
-closure is independently accepted, committed, pushed, or planner-verified.
-The governance state established by accepted and verified closure is that
 Milestone 5 implementation authority is deactivated and no implementation
 milestone is active. Milestone 6 and every later milestone remain explicitly
-inactive.
+inactive. The separate prospective Capture v2 extension below does not alter
+that state unless and until its complete activation gate is satisfied.
 
 #### Purpose and trust boundary
 
@@ -2008,34 +2005,14 @@ historical transitions. Their historical path allowance grants no current
 remediation or test authority. Any future remediation requires an explicit
 governance transition.
 
-#### Governance-closure gate and resulting state
+#### Closed governance state
 
-This closure takes effect only after this mandatory sequence:
-
-1. An independent reviewer reads the exact uncommitted `AGENTS.md` and
-   `PLAN.md` content and complete HEAD-relative governance diff, records both
-   document SHA-256 values and the full-diff SHA-256 as the accepted-content
-   identity, and explicitly accepts or rejects that exact content.
-2. After acceptance, the user—not the reviewing or documentation agent—commits
-   and pushes only `AGENTS.md` and `PLAN.md`. This draft need not and cannot
-   contain its eventual commit hash or tree.
-3. The planner verifies the resulting commit with expected parent
-   `e6cfd01d9eb9e3143d3fa23c4e739c8dcecacbfa`, its tree, the committed document
-   blobs and parent-to-commit governance diff against the accepted-content
-   identity, local `HEAD` and local `origin/main` alignment, and complete clean
-   tracked, staged, unstaged, untracked, and ignored manifests.
-
-Comparison to local `origin/main` in step 3 is offline inspection of the local
-remote-tracking ref. It is not a fetch, remote API call, actual remote query,
-or proof of server state. The required user push is not delegated by this
-draft.
-
-The governance state established by accepted and verified closure is that
-Milestone 5 implementation authority is deactivated and no implementation
-milestone is active. Accepted Milestones 1–5 remain closed and protected.
-Milestone 6 and every later milestone remain explicitly inactive. This
-uncommitted draft grants no authority and does not claim independent closure
-acceptance, a closure commit or push, or planner verification.
+Milestones 1–5 are accepted and closed. Milestone 5 implementation authority
+is deactivated, its delivered paths confer no continuing exception, and no
+implementation milestone is active. Milestone 6 and every later milestone
+remain explicitly inactive. The prospective Capture v2 extension below is a
+separate bounded extension, not Milestone 6 and not a reopening or renumbering
+of Milestone 5.
 
 ### Milestone 6 — Execution simulation
 
@@ -2161,21 +2138,23 @@ existing exclusions remain in force.
 | D4 | Conditional relationships; relationship modeling, certification, compilation, and evaluation. | Conditional-relationship support is explicitly added. | Define representation, complete payoff semantics, deterministic validation, constraint semantics, and fail-closed boundaries. | Deferred extension. |
 | D5 | Scalar payouts; relationship modeling, certification, compilation, and evaluation. | Scalar-payout support is explicitly added. | Define exact payout representation, units, state spaces, deterministic validation, and constraint semantics without approximating binary unit payouts. | Deferred extension. |
 
-## Inactive proposal — bounded Polymarket US public REST capture support
+## Capture v2 — prospective bounded capture extension
 
-### Proposal status and effect
+### Contract status and effect
 
-This is a documentation-only proposal for a possible future governance
-transition. It is not an activation contract, grants no implementation or
-operational authority, and does not reopen or renumber Milestone 5. Milestones
-1–5 remain accepted foundations, no implementation milestone is active, and
-Milestone 6 and every later milestone remain inactive. The accepted
-international Polymarket and Kalshi behavior, identities, schemas, trust
-boundaries, and permanent regression guarantees remain unchanged unless a
-future explicit activation contract authorizes the exact compatibility work
-described here.
+This documentation defines a prospective activation contract for a separate
+bounded implementation extension named Capture v2. It is not Milestone 6 and
+does not reopen or renumber Milestone 5. This uncommitted draft grants no
+implementation or operational authority: Milestones 1–5 remain accepted and
+closed, no implementation milestone is active, and Milestone 6 and every later
+milestone remain inactive. Capture v2 becomes the sole active implementation
+work only after the complete activation gate below is satisfied.
 
-The proposed outcome is to extend bounded capture support to the Polymarket US
+Every Capture v2 restriction below is a local engineering policy under
+uncertainty, not a universal Polymarket US, international Polymarket, or Kalshi
+venue contract.
+
+The prospective outcome is to extend bounded capture support to the Polymarket US
 retail public order-book operation while preserving all accepted international
 Polymarket and Kalshi behavior. Inputs would be explicit caller-supplied
 Polymarket US market slugs in immutable capture specifications. There would be
@@ -2191,9 +2170,11 @@ The planner consulted research commit
 `wiki/platforms/polymarket-us.md` (`PLATFORM-0003`), the corresponding
 `SRC-0046` through `SRC-0049` source summaries, and
 `registry/sources.yaml`, `registry/pages.yaml`, and `registry/claims.yaml`.
-Those research files were not accessed during this task. The documentation was
-captured on 2026-09-07 and reviewed on 2026-09-09. This proposal relies only on
-the supplied reviewed findings below:
+Those research files were not accessed during this task. Local origin
+alignment for that research repository has not established that the supplied
+research commit was pushed. The documentation was captured on 2026-09-07 and
+reviewed on 2026-09-09. This prospective contract relies only on the supplied
+reviewed findings below:
 
 - `SRC-0046` / `CLM-0200`: the retail public market-data gateway is
   `https://gateway.polymarket.us` and is documented as key-free.
@@ -2202,7 +2183,8 @@ the supplied reviewed findings below:
   creation, identity verification, developer-portal sign-in, and Key ID and
   Secret Key issuance. Broad authentication wording coexists with the
   explicit public exemption, so neither statement may be generalized beyond
-  its documented scope.
+  its documented scope. The reviewed material proves neither credential scope
+  nor account eligibility.
 - `SRC-0048` / `CLM-0203`: an event may contain multiple markets, and the US
   order-book operation uses a market slug rather than an international CLOB
   token identifier.
@@ -2231,13 +2213,15 @@ were strings. This observation is not ingested source authority, a permanent
 wire-format guarantee, proof of engine support, or a substitute for the later
 engine-based live-capture gate.
 
-### Proposed operation, inputs, and outputs
+### Exact prospective local Polymarket US policy
 
-Only the exact production public operation would be supported:
+Every restriction in this subsection is a local engineering policy under
+uncertainty, not a universal venue contract. Only the exact production public
+operation is supported:
 
 `GET https://gateway.polymarket.us/v1/markets/{caller_supplied_slug}/book`
 
-The caller would provide every market slug explicitly in an immutable,
+The caller provides every market slug explicitly in an immutable,
 ordered, versioned capture specification. Event lookup, event-to-market
 expansion, automatic discovery, and identifier translation are excluded. The
 target identity would bind a distinct Polymarket US venue value, production
@@ -2247,33 +2231,114 @@ and ordered provenance. The response identity would have to contain
 would produce the existing explicit terminal mismatch class rather than a
 capture.
 
-A successful output would use a distinct US-native captured-book model. It
-would preserve native `bids` and `offers`, every received level in received
+A successful output uses a distinct US-native captured-book model. It
+preserves native `bids` and `offers`, every received level in received
 order, duplicate levels, each `px.value` textual representation and currency,
 each `qty` textual representation, and exact `Decimal` interpretations only
 after lexical validation. It would not call offers international asks, assign
 outcome semantics to either side, sort or aggregate levels, infer tie
 semantics, or convert the slug to an international market, condition, or token
 identifier. `state`, `stats`, and `transactTime` would remain in retained raw
-evidence without inferred semantics; normalized inclusion requires exact
-types and requiredness to be approved before activation.
+evidence without normalized fields or inferred semantics.
 
-The proposed local numeric policy is schema-first: `Amount.value` and `qty`
-must arrive as JSON strings. A JSON numeric value would be rejected rather
-than coerced, including the unquoted example form. This is an engineering
-policy under uncertainty and does not resolve the source inconsistency. The
-exact bounded decimal-string grammar, currency constraints, and slug grammar
-and length remain policy decisions required before activation; the existing
-international token-ID, Kalshi ticker, and general decimal grammars must not
-be silently reused as if they were reviewed US venue guarantees.
+The exact identity policy is:
 
-### Proposed boundaries and compatibility decisions
+- `Venue.POLYMARKET_US = "polymarket_us"`, distinct from international
+  `Venue.POLYMARKET = "polymarket"`;
+- production only;
+- exact origin `https://gateway.polymarket.us`;
+- exact GET path `/v1/markets/{slug}/book`; and
+- ASCII slug full-match `[a-z0-9][a-z0-9-]{0,127}`.
 
-The future bounded implementation would:
+There is no normalization, trimming, case conversion, query, percent encoding,
+slash, fragment, arbitrary URL, or origin override.
 
-- use only the production public gateway and exact GET operation above;
-- send no credentials or authentication headers and provide no
-  authentication fallback;
+The exact required response structure is a top-level JSON object containing
+an object `marketData`. `marketData` must contain exact-string `marketSlug` and
+exact-array `bids` and `offers`. Every level must be an object containing
+object `px` and exact-string `qty`; `px` must contain exact-string `value` and
+exact-string `currency`. Currency must equal `USD` and is preserved on every
+level. Missing, null, wrong-type, or unsupported-currency material fails schema
+validation; values are neither coerced nor fabricated. Empty arrays are
+structurally permitted without economic interpretation. Required structure
+and numeric fields are validated before reporting an otherwise well-formed
+response-slug mismatch.
+
+Price and quantity strings are at most 64 ASCII characters and must full-match
+`(?:0|[1-9][0-9]*)(?:\.[0-9]{1,18})?`. Signs, whitespace, exponents,
+leading-zero variants, non-finite values, Unicode digits, and JSON numbers are
+rejected. Accepted strings are parsed directly to exact `Decimal` without
+binary floating point or rounding. Original strings, including trailing
+fractional zeros, are preserved. No added price upper bound, tick-validity
+rule, or integer-only quantity assumption applies. Zero is structurally
+permitted without assigned economic meaning. These rules do not alter the
+accepted Kalshi or international Polymarket numeric policies. Schema-first
+rejection of the reviewed numeric example does not resolve its documentary
+inconsistency.
+
+The frozen US-native models are:
+
+- `PolymarketUSPriceLevel(price_text, quantity_text, currency, price,
+  quantity)`; and
+- `PolymarketUSOrderBook(market_slug, bids, offers)`.
+
+Immutable tuples retain received order and duplicate levels. Existing
+`PriceLevel` and historical order-book models are unchanged. `state`, `stats`,
+`transactTime`, and every other extra field remain only in raw evidence, with
+no normalized fields or semantic interpretation. The accepted strict UTF-8,
+strict JSON, duplicate-key, and global structural limits apply to the complete
+payload, including ignored fields. Existing closed JSON, schema, identity,
+transport, and integrity classifications and precedence are reused; no new
+public status is introduced.
+
+### Exact v1/v2 batch, version, transport, and authentication contract
+
+The existing public `capture_batch` interface and capture-specification model
+remain in place. Existing dataclass fields and public signatures are preserved
+where applicable.
+
+V1 retains the current values of every existing schema constant and preserves
+unchanged international Polymarket production, Kalshi demo, and Kalshi
+production behavior. V1 rejects every Polymarket US target.
+
+V2 defines these exact additional constants:
+
+- `CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2 = "capture-specification-v2"`;
+- `CAPTURE_RESULT_SCHEMA_VERSION_V2 = "capture-result-v2"`.
+
+V2 permits any nonempty combination of Kalshi demo, Kalshi production, and
+Polymarket US production targets, including a single-venue batch. It excludes
+international Polymarket. Every batch contains 1 through 64 targets and is
+attempted sequentially in caller order. Every target receives exactly one
+logical attempt and at most one dispatch. There is no automatic splitting,
+upgrading, discovery, retry, or synchronization. Existing duplicate-target
+rejection and continuation after ordinary target failure remain unchanged.
+
+The complete specification and all authentication bindings must validate
+before any signing or dispatch. An invalid later target invalidates the entire
+specification. A validated specification selects its batch and attempt result
+version. A completed batch must have matching specification, batch-result, and
+attempt versions; mixed-version attempts and version mutation are rejected.
+
+Inputs that fail specification validation retain the existing sanitized v1
+`SPECIFICATION_INVALID` outer-failure envelope: no specification,
+fingerprint, attempts, or provenance is published. This is a version-neutral
+rejection, not acceptance or conversion of the rejected input. After
+successful specification validation, an outer authentication or integrity
+failure uses the selected result version while preserving the existing
+sanitized outer-failure shape.
+
+Versions are bound into the existing fingerprints, identities, and
+process-local trust commitments. Exact v1 bytes and identities must remain
+unchanged for identical valid v1 inputs, response bytes, clock values, and
+signing outputs. No implicit conversion or trust transfer is permitted.
+
+The bounded implementation must:
+
+- for Polymarket US targets, use only the production public gateway and exact
+  GET operation above;
+- for Polymarket US targets, send no credentials or authentication headers and
+  provide no authentication fallback;
 - preserve the accepted finite, serial, caller-ordered logical-attempt model,
   with at most one dispatch per target and no retry;
 - reuse the accepted direct standard-library transport, TLS verification,
@@ -2282,7 +2347,8 @@ The future bounded implementation would:
 - preserve native bids and offers, currency, exact numeric representations,
   received order, duplicate levels, raw response evidence, and ordered
   provenance;
-- require exact response-identity matching as a local safety policy;
+- require exact response-identity matching as a local safety policy after
+  required structure and numeric validation;
 - fail closed for unknown versions, unsupported venue/environment/origin
   combinations, malformed or missing locally required structure, numeric JSON
   where strings are required, unknown currency treatment, identifier
@@ -2291,35 +2357,32 @@ The future bounded implementation would:
   relationships, constraints, evaluations, opportunities, strategy
   validation, simulation, risk, execution, orders, and trades.
 
-The proposed identity decision is a new exact enum value such as
-`Venue.POLYMARKET_US = "polymarket_us"`; the existing
-`Venue.POLYMARKET = "polymarket"` would continue to mean the international
-CLOB interface only. No parser, target, order book, provenance record, or
-serialized value may alias the two. The proposed model decision is a new
-`PolymarketUSOrderBook` and US-specific level or amount model where needed,
-not reuse of `PolymarketOrderBook`, because market slugs, bids/offers, amount
-currency, and response metadata differ materially from international CLOB
-token books.
+These Polymarket US-specific gateway and no-authentication restrictions do not
+alter signed Kalshi demo and production support in mixed v2 batches.
 
-The proposed schema compatibility policy is to retain accepted v1
-specification and result handling unchanged for international Polymarket and
-Kalshi and introduce an explicitly reviewed v2 specification/result contract
-for US-capable batches. A v1 specification could not contain a US target. V2
-would support explicitly enumerated existing targets plus the US target; old
-target behavior and serialized material would remain semantically unchanged,
-and existing v1 output must remain byte-stable. There would be no implicit v1
-upgrade, down-conversion, venue alias, or unsupported-venue fallthrough. The
-exact v2 model fields, mixed-batch rules, schema constants, and version routing
-must be approved in the future activation contract and tested before
-implementation acceptance.
+No parser, target, order book, provenance record, or serialized value may
+alias international Polymarket and Polymarket US. No transport redesign is
+authorized. Reuse the accepted transport and every body,
+initial/informational-header, trailer, confidentiality, deadline, acquisition,
+retention, digest, and safe-error rule. This includes the 1 MiB body limit,
+bounded reads, strict JSON, 20-second engine-controlled elapsed budget,
+5-second operation limits, and documented system-DNS and external-signer
+deadline limitations.
 
-No transport redesign is proposed. The existing request-validation branch
-would be extended to recognize both public venues explicitly as requiring an
-empty authentication-header set and empty confidentiality-value set, while
-retaining the exact Kalshi authenticated branch and rejecting every other
-venue. Request-path construction would gain one explicit US branch; it must
-not rely on the current fallback from international Polymarket to the Kalshi
-path.
+Capture paths must dispatch explicitly by supported venue. Remove reliance on
+“not international Polymarket therefore Kalshi” fallthrough. The current
+standalone transport validation constructs a synthetic v1 specification; its
+US validation must instead use a valid US-capable contract without weakening
+actual batch version validation or changing the public transport signature.
+
+US requests receive no authentication headers, signer, or confidentiality
+values. Supplied authentication material is rejected at the US transport
+boundary. Batch authentication bindings must exactly cover the Kalshi
+environments present, as in v1. A US-only batch requires no bindings. A mixed
+batch must never transmit Kalshi authentication material to a US target.
+Missing, extra, duplicate, or misbound bindings fail before requests. Existing
+signing bytes, redacted representations, detached caller exceptions, and
+confidentiality protections remain unchanged.
 
 Explicit exclusions are WebSockets; account or portfolio access; credential,
 secret, private-key, or signer implementation; institutional Exchange or
@@ -2329,12 +2392,14 @@ retries; polling; concurrency; redirects; failover; analytics; replay
 promotion; historical normalization; simulation; orders; trading; deployment;
 and any Milestone 6 or later behavior.
 
-### Exact candidate paths for a future implementation
+### Exact future implementation allowance
 
-The following are proposed paths only. They confer no implementation authority
-or continuing path exception.
+The following paths become writable only after the complete activation gate.
+They confer no authority while this draft is uncommitted or before that gate
+is complete, and they confer no continuing exception after this extension is
+closed.
 
-Candidate implementation paths:
+Authorized source paths after activation:
 
 - `src/invariant_engine/domain/ids.py`: add the distinct Polymarket US venue
   identity without changing the meaning of existing identities.
@@ -2355,7 +2420,7 @@ Candidate implementation paths:
 - `src/invariant_engine/capture/__init__.py`: export only the approved public US
   models, origin, and schema symbols.
 
-Candidate test paths:
+Authorized test paths after activation:
 
 - `tests/unit/test_domain.py`: prove that international Polymarket and
   Polymarket US identities are distinct and serialize distinctly.
@@ -2387,7 +2452,7 @@ Candidate test paths:
 - `tests/unit/test_no_network.py`: retain and, only if needed, extend ordinary-
   test proof that no test performs network access.
 
-Candidate fixture paths:
+Authorized fixture paths after activation:
 
 - `fixtures/capture/README.md`: document the synthetic US case and deny live,
   credential, replay, and venue-guarantee status.
@@ -2395,47 +2460,100 @@ Candidate fixture paths:
   exercises native market-slug identity, bids/offers, string values and
   quantities, currency, received order, and duplicates.
 
-No change is proposed to `src/invariant_engine/venues/polymarket/`, replay,
-relationships, constraints, opportunities, diagnostics, authentication,
-stable serialization, dependencies, environment files, or another fixture or
-test path. If implementation review finds a required path outside the exact
-future activation allowance, work must stop for a governance amendment rather
-than expanding scope implicitly.
+No dependency addition is authorized. `pyproject.toml`, environment files,
+`src/invariant_engine/capture/authentication.py`,
+`src/invariant_engine/capture/serialization.py`, shared serializers,
+historical venue and replay code, relationship and evaluation code, and every
+other source, test, or fixture path remain protected. Adding the new venue enum
+must not enable US capture material to enter a historical trust path; that
+boundary must be tested without expanding historical support. If a necessary
+correction requires an excluded path, implementation must stop and report the
+concrete reason for a governance amendment rather than expand scope implicitly.
 
-### Gates before and after implementation
+### Activation, acceptance, operational, and closure gates
 
-Before any implementation, all of the following are required:
+Capture v2 becomes the prospective sole active implementation work only after
+this complete mandatory sequence:
 
-1. Independent review and explicit acceptance of this proposal, including the
-   unresolved local slug, decimal grammar, currency, normalized metadata,
-   schema-version, and mixed-batch policy decisions.
-2. A consistent `AGENTS.md` and `PLAN.md` activation contract naming the sole
-   active work and preserving all accepted Milestones 1–5 guarantees.
-3. Exact approved paths, compatibility rules, validation requirements, and a
-   sole-active-work designation.
-4. User commit and push of the accepted governance transition followed by
-   planner verification of commit, tree, accepted-content identity, local
-   `HEAD` and local `origin/main` alignment, and complete manifests.
-5. A separate bounded implementation prompt.
+1. An independent reviewer reads the exact uncommitted `AGENTS.md` and
+   `PLAN.md` content and complete HEAD-relative governance diff, records both
+   document SHA-256 values and the full binary governance-diff SHA-256 as the
+   accepted-content identity, and explicitly accepts or rejects that exact
+   content.
+2. After acceptance, the user—not the reviewer or documentation agent—commits
+   and pushes only `AGENTS.md` and `PLAN.md`. This draft need not and cannot
+   contain its eventual commit hash or tree.
+3. The planner verifies the resulting commit with expected parent
+   `8a18f40ec74be348d59832282ac12650d5cd15a6`, its tree, the committed document
+   blobs and parent-to-commit governance diff against the accepted-content
+   identity, local `HEAD` and local `origin/main` alignment, and complete
+   manifests establishing a clean tracked worktree and index, no unexpected
+   untracked or ignored artifacts, and exactly one permitted ignored pathname,
+   `.env`, whose contents must not be read or hashed.
+4. The user supplies a separate bounded implementation prompt.
 
-Proposed implementation acceptance must include:
+Comparison to local `origin/main` is offline inspection of the local
+remote-tracking ref. It is not a fetch, remote API call, live remote query, or
+proof of server state. Until every step is complete, no implementation
+milestone is active and this draft grants no authority.
 
-- US parsing, exact identity-mismatch, exact-type, and malformed-input
-  coverage;
-- exact native representation, currency, duplicate, received-order, raw
-  evidence, and provenance preservation;
-- no credentials and no network in ordinary tests;
-- no historical trust transfer, replay promotion, or unsupported-venue
-  fallthrough;
-- v1 compatibility and deterministic v2 identity, ordering, and stable
-  serialization under the approved compatibility rules;
-- preservation of every accepted Milestones 1–5 behavior and permanent
-  regression guarantee; and
-- independent exact-tree review and the finalized validation matrix.
+Implementation acceptance requires deterministic offline coverage of:
 
-After implementation acceptance, a separately authorized successful
-engine-based Polymarket US live capture is required before researcher handoff.
-The 2026-09-15 independent diagnostic does not replace that engine-based gate.
+- v1 success and every failure as byte- and identity-compatible golden cases;
+- v2 US-only, Kalshi-only, and mixed caller-order batches;
+- both Kalshi environments with correctly bound authentication;
+- v1 rejection of US targets and v2 rejection of international targets;
+- invalid complete-specification rejection before signer or network activity;
+- version, identity, model-type, and positional binding;
+- currency, numeric grammar, missing fields, malformed JSON, exact strings,
+  received ordering, duplicate levels, raw bytes, and digest preservation;
+- the production transport through mocked lower-level I/O;
+- absence of credentials, authentication fallback, discovery, and live network
+  activity in tests;
+- mutation, copy, reconstruction, pickle, and JSON trust-transfer rejection;
+  and
+- every protected Milestones 1–5 regression.
+
+The future validation matrix is:
+
+```text
+python -m pytest -p no:cacheprovider tests/capture
+python -m pytest -p no:cacheprovider
+python -m pytest -p no:cacheprovider tests/unit tests/replay tests/relationships tests/discovery tests/constraints tests/opportunities tests/diagnostics
+python -m pytest -p no:cacheprovider tests/unit/test_no_network.py
+python -m ruff check --no-cache src tests
+python -m ruff format --check --no-cache src tests
+python -m mypy --strict src/invariant_engine
+python -m compileall -q src tests
+python -m json.tool fixtures/capture/cases.json
+git diff --check
+```
+
+Acceptance also requires parsing every fixture JSON file; capture-suite repeats
+with `PYTHONHASHSEED=1`, `2`, and `random`; package and import boundaries; and
+artifact checks. Caches and bytecode must be disabled or redirected outside
+the repository. The historical 554-test result is a baseline record, not a new
+result or fixed future count. Existing tests must not be weakened to obtain a
+pass.
+
+An independent reviewer must verify the baseline; record complete manifests
+and content hashes before validation; review every changed file completely;
+run the independent validation and materially distinct external adversarial
+probes; recheck final identity and hygiene; and explicitly accept or reject the
+exact implementation content.
+
+Implementation acceptance is not operational success. After accepted
+implementation is committed and verified, a separately authorized successful
+engine-based Polymarket US capture is required. The earlier standalone GET
+does not satisfy this gate. Offline mixed-batch tests do not imply
+synchronization. After that operational gate, Capture v2 implementation
+authority must be separately closed before the researcher handoff. Milestone 6
+remains inactive throughout.
+
+Discovery, polling, retries, concurrency, failover, WebSockets, institutional
+integration, retail sandbox assumptions, account access, credential loading,
+new signers, replay promotion, analytics, simulation, risk, orders, trading,
+and deployment remain excluded.
 
 ## Governance after Milestone 5 closure
 
@@ -2462,10 +2580,11 @@ content-manifest SHA-256
 Its accepted guarantees are permanent regressions, and its delivered capture
 paths grant no continuing authority or exception.
 
-The governance state established by the closure is that Milestone 5
-implementation authority is deactivated and no implementation milestone is
-active. Milestone 6 and every later milestone remain explicitly inactive and
-appear above only as an inactive roadmap. Any remediation, implementation,
-scope expansion, or milestone activation requires a future explicit
-`PLAN.md` governance transition. This uncommitted closure draft does not claim
-independent acceptance, commitment, push, or planner verification of closure.
+Milestone 5 implementation authority is deactivated and no implementation
+milestone is active. Milestone 6 and every later milestone remain explicitly
+inactive and appear above only as an inactive roadmap. The uncommitted Capture
+v2 draft above grants no authority and does not claim independent acceptance,
+commitment, push, or planner verification. Only its complete activation gate
+may make that separate bounded extension the sole active implementation work.
+Any other remediation, implementation, scope expansion, or milestone
+activation requires a future explicit `PLAN.md` governance transition.
