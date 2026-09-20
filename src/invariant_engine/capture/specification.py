@@ -8,6 +8,7 @@ from decimal import Decimal, DecimalException
 
 from invariant_engine.capture.models import (
     CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+    CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2,
     CaptureEnvironment,
     CaptureLimits,
     CaptureProvenance,
@@ -19,10 +20,12 @@ from invariant_engine.domain.ids import Venue
 from invariant_engine.serialization import stable_json_bytes
 
 POLYMARKET_ORIGIN = "https://clob.polymarket.com"
+POLYMARKET_US_ORIGIN = "https://gateway.polymarket.us"
 KALSHI_DEMO_ORIGIN = "https://external-api.demo.kalshi.co"
 KALSHI_PRODUCTION_ORIGIN = "https://external-api.kalshi.com"
 
 _TOKEN = re.compile(r"[0-9]{1,128}", re.ASCII)
+_SLUG = re.compile(r"[a-z0-9][a-z0-9-]{0,127}", re.ASCII)
 _TICKER = re.compile(r"[A-Z0-9][A-Z0-9._-]{0,127}", re.ASCII)
 _COMPONENT = re.compile(r"[A-Za-z0-9._:/-]{1,128}", re.ASCII)
 _FIXED_LIMITS = CaptureLimits()
@@ -35,6 +38,8 @@ class CaptureSpecificationError(DomainError):
 def expected_origin(venue: Venue, environment: CaptureEnvironment) -> str:
     if venue is Venue.POLYMARKET and environment is CaptureEnvironment.PRODUCTION:
         return POLYMARKET_ORIGIN
+    if venue is Venue.POLYMARKET_US and environment is CaptureEnvironment.PRODUCTION:
+        return POLYMARKET_US_ORIGIN
     if venue is Venue.KALSHI and environment is CaptureEnvironment.DEMO:
         return KALSHI_DEMO_ORIGIN
     if venue is Venue.KALSHI and environment is CaptureEnvironment.PRODUCTION:
@@ -45,7 +50,11 @@ def expected_origin(venue: Venue, environment: CaptureEnvironment) -> str:
 def request_path(target: CaptureTarget) -> str:
     if target.venue is Venue.POLYMARKET:
         return "/book?token_id=" + target.identifier
-    return "/trade-api/v2/markets/" + target.identifier + "/orderbook"
+    if target.venue is Venue.POLYMARKET_US:
+        return "/v1/markets/" + target.identifier + "/book"
+    if target.venue is Venue.KALSHI:
+        return "/trade-api/v2/markets/" + target.identifier + "/orderbook"
+    raise CaptureSpecificationError("unsupported capture target venue")
 
 
 def signing_path(target: CaptureTarget) -> str:
@@ -111,10 +120,10 @@ def validate_specification(value: object) -> CaptureSpecification:
 
     if type(value) is not CaptureSpecification:
         raise CaptureSpecificationError("capture specification must use the exact model type")
-    if (
-        type(value.schema_version) is not str
-        or value.schema_version != CAPTURE_SPECIFICATION_SCHEMA_VERSION
-    ):
+    if type(value.schema_version) is not str or value.schema_version not in {
+        CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+        CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2,
+    }:
         raise CaptureSpecificationError("unsupported capture specification version")
     if (
         type(value.specification_id) is not str
@@ -133,13 +142,27 @@ def validate_specification(value: object) -> CaptureSpecification:
             raise CaptureSpecificationError("target position does not match caller order")
         if type(target.venue) is not Venue or type(target.environment) is not CaptureEnvironment:
             raise CaptureSpecificationError("target venue and environment require exact enum types")
+        if value.schema_version == CAPTURE_SPECIFICATION_SCHEMA_VERSION:
+            if target.venue not in {Venue.POLYMARKET, Venue.KALSHI}:
+                raise CaptureSpecificationError(
+                    "target venue is unsupported by specification version"
+                )
+        elif target.venue not in {Venue.POLYMARKET_US, Venue.KALSHI}:
+            raise CaptureSpecificationError("target venue is unsupported by specification version")
         if type(target.origin) is not str or target.origin != expected_origin(
             target.venue, target.environment
         ):
             raise CaptureSpecificationError("target origin is not bound to venue and environment")
         if type(target.identifier) is not str:
             raise CaptureSpecificationError("target identifier must be an exact string")
-        grammar = _TOKEN if target.venue is Venue.POLYMARKET else _TICKER
+        if target.venue is Venue.POLYMARKET:
+            grammar = _TOKEN
+        elif target.venue is Venue.POLYMARKET_US:
+            grammar = _SLUG
+        elif target.venue is Venue.KALSHI:
+            grammar = _TICKER
+        else:
+            raise CaptureSpecificationError("unsupported capture target venue")
         if grammar.fullmatch(target.identifier) is None:
             raise CaptureSpecificationError("target identifier is outside the local grammar")
         limits = _validate_limits(target.limits)
@@ -180,6 +203,7 @@ __all__ = [
     "KALSHI_DEMO_ORIGIN",
     "KALSHI_PRODUCTION_ORIGIN",
     "POLYMARKET_ORIGIN",
+    "POLYMARKET_US_ORIGIN",
     "expected_origin",
     "request_path",
     "signing_path",

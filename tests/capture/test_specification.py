@@ -5,19 +5,30 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import kalshi_target, polymarket_target, specification
+from conftest import (
+    kalshi_target,
+    polymarket_target,
+    polymarket_us_target,
+    specification,
+    specification_v2,
+)
 from invariant_engine.capture import (
     CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+    CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2,
     CaptureEnvironment,
     CaptureLimits,
     CaptureProvenance,
     CaptureSpecification,
     CaptureSpecificationError,
     CaptureTarget,
+    request_path,
     specification_fingerprint,
     validate_specification,
 )
-from invariant_engine.capture.specification import KALSHI_PRODUCTION_ORIGIN
+from invariant_engine.capture.specification import (
+    KALSHI_PRODUCTION_ORIGIN,
+    POLYMARKET_US_ORIGIN,
+)
 from invariant_engine.domain.ids import Venue
 
 
@@ -299,3 +310,56 @@ def test_provenance_is_required_and_components_are_closed() -> None:
 def test_no_identifier_normalization_occurs() -> None:
     target = kalshi_target(identifier="ABC_DEF.1")
     assert validate_specification(specification(target)).targets[0].identifier == "ABC_DEF.1"
+
+
+def test_v2_constants_origin_and_exact_us_path() -> None:
+    target = polymarket_us_target(identifier="a-1")
+    assert CAPTURE_SPECIFICATION_SCHEMA_VERSION == "capture-specification-v1"
+    assert CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2 == "capture-specification-v2"
+    assert target.origin == POLYMARKET_US_ORIGIN == "https://gateway.polymarket.us"
+    assert request_path(target) == "/v1/markets/a-1/book"
+
+
+def test_version_venue_boundaries_and_v2_single_venue_batches() -> None:
+    with pytest.raises(CaptureSpecificationError):
+        validate_specification(specification(polymarket_us_target()))
+    with pytest.raises(CaptureSpecificationError):
+        validate_specification(specification_v2(polymarket_target()))
+    assert validate_specification(specification_v2(polymarket_us_target())).targets
+    assert validate_specification(specification_v2(kalshi_target())).targets
+
+
+def test_v2_accepts_caller_ordered_us_and_both_kalshi_environments() -> None:
+    demo = kalshi_target(1)
+    production = replace(
+        kalshi_target(2),
+        environment=CaptureEnvironment.PRODUCTION,
+        origin=KALSHI_PRODUCTION_ORIGIN,
+    )
+    value = specification_v2(polymarket_us_target(0), demo, production)
+    validated = validate_specification(value)
+    assert [target.venue for target in validated.targets] == [
+        Venue.POLYMARKET_US,
+        Venue.KALSHI,
+        Venue.KALSHI,
+    ]
+    assert specification_fingerprint(value) != specification_fingerprint(
+        specification(kalshi_target())
+    )
+
+
+@pytest.mark.parametrize(
+    "identifier",
+    ["", "UPPER", "-bad", "bad_underscore", "bad/slash", "bad%20slug", "a" * 129],
+)
+def test_polymarket_us_slug_grammar_rejects_without_normalization(identifier: str) -> None:
+    with pytest.raises(CaptureSpecificationError):
+        validate_specification(specification_v2(polymarket_us_target(identifier=identifier)))
+
+
+@pytest.mark.parametrize("identifier", ["a", "0", "a-1", "a" * 128])
+def test_polymarket_us_slug_grammar_accepts_exact_text(identifier: str) -> None:
+    target = validate_specification(
+        specification_v2(polymarket_us_target(identifier=identifier))
+    ).targets[0]
+    assert target.identifier == identifier

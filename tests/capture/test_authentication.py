@@ -5,7 +5,7 @@ from dataclasses import replace
 
 import pytest
 
-from conftest import SIGNATURE, kalshi_target, polymarket_target
+from conftest import SIGNATURE, kalshi_target, polymarket_target, polymarket_us_target
 from invariant_engine.capture import (
     AuthenticationBindingError,
     CaptureEnvironment,
@@ -157,6 +157,14 @@ def test_bindings_must_exactly_match_required_environments() -> None:
             validate_authentication_bindings((kalshi_target(),), bindings)
     with pytest.raises(AuthenticationBindingError):
         validate_authentication_bindings((polymarket_target(),), (binding(),))
+
+
+def test_polymarket_us_requires_no_binding_and_rejects_supplied_authentication() -> None:
+    assert validate_authentication_bindings((polymarket_us_target(),), ()) == {}
+    with pytest.raises(AuthenticationBindingError):
+        validate_authentication_bindings((polymarket_us_target(),), (binding(),))
+    with pytest.raises(AuthenticationBindingError):
+        sign_target(polymarket_us_target(), binding(), "1")
 
 
 def test_key_id_and_timestamp_boundaries_are_exact() -> None:

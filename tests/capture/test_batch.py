@@ -13,20 +13,28 @@ from conftest import (
     kalshi_target,
     polymarket_body,
     polymarket_target,
+    polymarket_us_body,
+    polymarket_us_target,
     specification,
+    specification_v2,
 )
 from invariant_engine.capture import (
+    CAPTURE_RESULT_SCHEMA_VERSION,
+    CAPTURE_RESULT_SCHEMA_VERSION_V2,
     AcquisitionOutcome,
     BatchStatus,
     CaptureEnvironment,
+    CaptureTarget,
     KalshiAuthenticationBinding,
+    PolymarketUSOrderBook,
     RetentionState,
     TargetStatus,
     TransportFailureKind,
     TransportResult,
     serialize_capture_bytes,
 )
-from invariant_engine.capture.specification import KALSHI_DEMO_ORIGIN
+from invariant_engine.capture.specification import KALSHI_DEMO_ORIGIN, KALSHI_PRODUCTION_ORIGIN
+from invariant_engine.domain.ids import Venue
 
 
 def binding(signer=lambda _: SIGNATURE) -> KalshiAuthenticationBinding:
@@ -56,6 +64,137 @@ def test_sequential_success_and_authentication_is_not_sent_to_polymarket(fixed_c
         "KALSHI-ACCESS-TIMESTAMP",
         "KALSHI-ACCESS-SIGNATURE",
     ]
+
+
+def test_v2_us_only_batch_is_anonymous_native_and_versioned(fixed_clock) -> None:
+    seen = []
+
+    def fake(target, headers=(), *, confidentiality_values=()):
+        seen.append((target, headers, confidentiality_values))
+        return complete_transport(polymarket_us_body(target.identifier))
+
+    result = capture_batch(
+        specification_v2(polymarket_us_target()),
+        transport=fake,
+        observer_clock=fixed_clock,
+    )
+    assert result.schema_version == CAPTURE_RESULT_SCHEMA_VERSION_V2
+    assert result.attempts[0].schema_version == CAPTURE_RESULT_SCHEMA_VERSION_V2
+    assert result.attempts[0].status is TargetStatus.CAPTURED
+    assert type(result.attempts[0].order_book) is PolymarketUSOrderBook
+    assert result.attempts[0].retained_body == polymarket_us_body()
+    assert seen[0][1:] == ((), ())
+
+
+def test_v2_mixed_batch_preserves_order_and_isolates_authentication(fixed_clock) -> None:
+    production_target = CaptureTarget(
+        2,
+        Venue.KALSHI,
+        CaptureEnvironment.PRODUCTION,
+        KALSHI_PRODUCTION_ORIGIN,
+        "PROD-1",
+        kalshi_target().limits,
+        kalshi_target(2).provenance,
+    )
+    signer_calls: list[tuple[str, bytes]] = []
+    bindings = (
+        binding(lambda message: signer_calls.append(("demo", message)) or SIGNATURE),
+        KalshiAuthenticationBinding(
+            CaptureEnvironment.PRODUCTION,
+            KALSHI_PRODUCTION_ORIGIN,
+            "prod-key",
+            lambda message: signer_calls.append(("production", message)) or SIGNATURE,
+        ),
+    )
+    seen = []
+
+    def fake(target, headers=(), *, confidentiality_values=()):
+        seen.append((target.venue, target.environment, headers, confidentiality_values))
+        body = (
+            polymarket_us_body(target.identifier)
+            if target.venue is Venue.POLYMARKET_US
+            else kalshi_body()
+        )
+        return complete_transport(body)
+
+    result = capture_batch(
+        specification_v2(
+            polymarket_us_target(0),
+            kalshi_target(1),
+            production_target,
+        ),
+        bindings,
+        transport=fake,
+        observer_clock=fixed_clock,
+        timestamp_factory=lambda: "123",
+    )
+    assert [attempt.target.position for attempt in result.attempts] == [0, 1, 2]
+    assert [attempt.status for attempt in result.attempts] == [TargetStatus.CAPTURED] * 3
+    assert seen[0][2:] == ((), ())
+    assert [entry[0] for entry in signer_calls] == ["demo", "production"]
+    assert all(len(entry[2]) == 3 and len(entry[3]) == 2 for entry in seen[1:])
+
+
+def test_v2_invalid_later_target_rejects_whole_spec_before_signing_or_dispatch(
+    fixed_clock,
+) -> None:
+    invalid = polymarket_us_target(1, "UPPER")
+    signer_calls = []
+    dispatches = []
+    result = capture_batch(
+        specification_v2(kalshi_target(0), invalid),
+        (binding(lambda message: signer_calls.append(message) or SIGNATURE),),
+        transport=lambda *args, **kwargs: dispatches.append((args, kwargs)),
+        observer_clock=fixed_clock,
+    )
+    assert result.status is BatchStatus.SPECIFICATION_INVALID
+    assert result.schema_version == CAPTURE_RESULT_SCHEMA_VERSION
+    assert result.specification is None
+    assert result.specification_fingerprint is None
+    assert result.attempts == ()
+    assert result.provenance == ()
+    assert signer_calls == []
+    assert dispatches == []
+
+
+def test_post_validation_v2_outer_failures_use_v2_result_version(fixed_clock) -> None:
+    authentication_failure = capture_batch(
+        specification_v2(kalshi_target()),
+        transport=lambda *args, **kwargs: complete_transport(kalshi_body()),
+        observer_clock=fixed_clock,
+    )
+    integrity_failure = capture_batch(
+        specification_v2(polymarket_us_target()),
+        transport=lambda *args, **kwargs: object(),
+        observer_clock=fixed_clock,
+    )
+    assert authentication_failure.status is BatchStatus.AUTHENTICATION_BINDING_INVALID
+    assert integrity_failure.status is BatchStatus.INTEGRITY_FAILURE
+    assert authentication_failure.schema_version == CAPTURE_RESULT_SCHEMA_VERSION_V2
+    assert integrity_failure.schema_version == CAPTURE_RESULT_SCHEMA_VERSION_V2
+
+
+def test_v2_ordinary_us_failure_continues_to_kalshi(fixed_clock) -> None:
+    calls = []
+
+    def fake(target, *args, **kwargs):
+        calls.append(target.position)
+        body = b"{}" if target.venue is Venue.POLYMARKET_US else kalshi_body()
+        return complete_transport(body)
+
+    result = capture_batch(
+        specification_v2(polymarket_us_target(0), kalshi_target(1)),
+        (binding(),),
+        transport=fake,
+        observer_clock=fixed_clock,
+        timestamp_factory=lambda: "123",
+    )
+    assert calls == [0, 1]
+    assert [attempt.status for attempt in result.attempts] == [
+        TargetStatus.SCHEMA_INVALID,
+        TargetStatus.CAPTURED,
+    ]
+    assert [attempt.dispatch_count for attempt in result.attempts] == [1, 1]
 
 
 def test_invalid_spec_or_bindings_make_zero_signer_calls_and_dispatches(fixed_clock) -> None:

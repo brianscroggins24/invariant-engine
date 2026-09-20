@@ -11,6 +11,9 @@ from invariant_engine.capture.authentication import sign_target, validate_authen
 from invariant_engine.capture.models import (
     _PRODUCER_TOKEN,
     CAPTURE_RESULT_SCHEMA_VERSION,
+    CAPTURE_RESULT_SCHEMA_VERSION_V2,
+    CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+    CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2,
     AcquisitionOutcome,
     BatchReasonCode,
     BatchStatus,
@@ -54,10 +57,22 @@ def _timestamp() -> str:
     return str(time.time_ns() // 1_000_000)
 
 
-def _outer_failure(status: BatchStatus, reason: BatchReasonCode) -> CaptureBatchResult:
+def _result_version(specification_version: str) -> str:
+    return {
+        CAPTURE_SPECIFICATION_SCHEMA_VERSION: CAPTURE_RESULT_SCHEMA_VERSION,
+        CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2: CAPTURE_RESULT_SCHEMA_VERSION_V2,
+    }[specification_version]
+
+
+def _outer_failure(
+    status: BatchStatus,
+    reason: BatchReasonCode,
+    *,
+    schema_version: str = CAPTURE_RESULT_SCHEMA_VERSION,
+) -> CaptureBatchResult:
     return _issue_batch(
         token=_PRODUCER_TOKEN,
-        schema_version=CAPTURE_RESULT_SCHEMA_VERSION,
+        schema_version=schema_version,
         status=status,
         reason_code=reason,
         specification=None,
@@ -70,6 +85,7 @@ def _outer_failure(status: BatchStatus, reason: BatchReasonCode) -> CaptureBatch
 def _attempt(
     *,
     specification_fingerprint_value: str,
+    result_schema_version: str,
     target: CaptureTarget,
     dispatch_count: int,
     status: TargetStatus,
@@ -107,7 +123,7 @@ def _attempt(
     retained = len(body) if body is not None else 0
     return _issue_attempt(
         token=_PRODUCER_TOKEN,
-        schema_version=CAPTURE_RESULT_SCHEMA_VERSION,
+        schema_version=result_schema_version,
         specification_fingerprint=specification_fingerprint_value,
         target=target,
         dispatch_count=dispatch_count,
@@ -173,12 +189,14 @@ def _run_capture_batch(
             BatchStatus.SPECIFICATION_INVALID,
             BatchReasonCode.SPECIFICATION_INVALID,
         )
+    result_schema_version = _result_version(validated.schema_version)
     try:
         bindings = validate_authentication_bindings(validated.targets, authentication_bindings)
     except Exception:
         return _outer_failure(
             BatchStatus.AUTHENTICATION_BINDING_INVALID,
             BatchReasonCode.AUTHENTICATION_BINDING_INVALID,
+            schema_version=result_schema_version,
         )
     binding_material = {
         environment: (binding.environment, binding.origin, binding.key_id, id(binding.signer))
@@ -196,6 +214,7 @@ def _run_capture_batch(
             attempts.append(
                 _attempt(
                     specification_fingerprint_value=fingerprint,
+                    result_schema_version=result_schema_version,
                     target=target,
                     dispatch_count=0,
                     status=TargetStatus.INTEGRITY_FAILURE,
@@ -224,6 +243,7 @@ def _run_capture_batch(
                 attempts.append(
                     _attempt(
                         specification_fingerprint_value=fingerprint,
+                        result_schema_version=result_schema_version,
                         target=target,
                         dispatch_count=0,
                         status=TargetStatus.INTEGRITY_FAILURE,
@@ -254,6 +274,7 @@ def _run_capture_batch(
                 attempts.append(
                     _attempt(
                         specification_fingerprint_value=fingerprint,
+                        result_schema_version=result_schema_version,
                         target=target,
                         dispatch_count=0,
                         status=failure_status,
@@ -292,6 +313,7 @@ def _run_capture_batch(
                 attempts.append(
                     _attempt(
                         specification_fingerprint_value=fingerprint,
+                        result_schema_version=result_schema_version,
                         target=target,
                         dispatch_count=0,
                         status=TargetStatus.INTEGRITY_FAILURE,
@@ -314,6 +336,7 @@ def _run_capture_batch(
             return _outer_failure(
                 BatchStatus.INTEGRITY_FAILURE,
                 BatchReasonCode.UNTRUSTED_ACQUISITION_FACTS,
+                schema_version=result_schema_version,
             )
         terminal = _transport_status(response)
         try:
@@ -334,6 +357,7 @@ def _run_capture_batch(
                 return _outer_failure(
                     BatchStatus.INTEGRITY_FAILURE,
                     BatchReasonCode.UNTRUSTED_ACQUISITION_FACTS,
+                    schema_version=result_schema_version,
                 )
             else:
                 parsed = parse_order_book(target, response.retained_body)
@@ -346,6 +370,7 @@ def _run_capture_batch(
             attempts.append(
                 _attempt(
                     specification_fingerprint_value=fingerprint,
+                    result_schema_version=result_schema_version,
                     target=target,
                     dispatch_count=1,
                     status=terminal,
@@ -359,10 +384,11 @@ def _run_capture_batch(
             return _outer_failure(
                 BatchStatus.INTEGRITY_FAILURE,
                 BatchReasonCode.UNTRUSTED_ACQUISITION_FACTS,
+                schema_version=result_schema_version,
             )
     return _issue_batch(
         token=_PRODUCER_TOKEN,
-        schema_version=CAPTURE_RESULT_SCHEMA_VERSION,
+        schema_version=result_schema_version,
         status=BatchStatus.COMPLETED,
         reason_code=BatchReasonCode.COMPLETED,
         specification=validated,

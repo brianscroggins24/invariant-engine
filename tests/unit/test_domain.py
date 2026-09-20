@@ -19,6 +19,14 @@ def test_typed_identifiers_retain_venue_and_entity_type() -> None:
     assert polymarket_market.venue is Venue.POLYMARKET
 
 
+def test_polymarket_us_is_distinct_from_international_polymarket() -> None:
+    international = MarketReference("same-value", Venue.POLYMARKET)
+    united_states = MarketReference("same-value", Venue.POLYMARKET_US)
+    assert international != united_states
+    assert Venue.POLYMARKET.value == "polymarket"
+    assert Venue.POLYMARKET_US.value == "polymarket_us"
+
+
 def test_decimal_policy_rejects_binary_float_and_preserves_scale() -> None:
     with pytest.raises(DomainError):
         parse_decimal(0.5, field="price")

@@ -1,10 +1,22 @@
 from __future__ import annotations
 
-from conftest import kalshi_body, kalshi_target, polymarket_body, polymarket_target
+from decimal import Decimal
+
+import pytest
+
+from conftest import (
+    kalshi_body,
+    kalshi_target,
+    polymarket_body,
+    polymarket_target,
+    polymarket_us_body,
+    polymarket_us_target,
+)
 from invariant_engine.capture import (
     KalshiOrderBook,
     ParseFailure,
     PolymarketOrderBook,
+    PolymarketUSOrderBook,
     parse_order_book,
 )
 
@@ -94,3 +106,76 @@ def test_level_structures_require_exact_shapes() -> None:
     polymarket = polymarket_body().replace(b'"size":"2.0"', b'"size":true', 1)
     assert parse_order_book(kalshi_target(), kalshi).failure is ParseFailure.SCHEMA_INVALID
     assert parse_order_book(polymarket_target(), polymarket).failure is ParseFailure.SCHEMA_INVALID
+
+
+def test_polymarket_us_preserves_native_order_duplicates_currency_and_text() -> None:
+    result = parse_order_book(polymarket_us_target(), polymarket_us_body())
+    assert result.failure is None
+    assert type(result.order_book) is PolymarketUSOrderBook
+    book = result.order_book
+    assert book.market_slug == "synthetic-market-1"
+    assert [level.price_text for level in book.bids] == ["0.500", "0.500"]
+    assert [level.quantity_text for level in book.bids] == ["2.00", "1.50"]
+    assert [level.currency for level in (*book.bids, *book.offers)] == ["USD"] * 3
+    assert book.bids[0].price == Decimal("0.500")
+    assert book.offers[0].quantity == Decimal("3.25")
+    assert not hasattr(book, "state")
+    assert not hasattr(book, "transact_time")
+
+
+def test_polymarket_us_allows_structurally_empty_native_sides() -> None:
+    body = b'{"marketData":{"marketSlug":"synthetic-market-1","bids":[],"offers":[]}}'
+    result = parse_order_book(polymarket_us_target(), body)
+    assert result.failure is None
+    assert result.order_book == PolymarketUSOrderBook("synthetic-market-1", (), ())
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        b"{}",
+        b'{"marketData":null}',
+        b'{"marketData":{"marketSlug":"synthetic-market-1","bids":[]}}',
+        b'{"marketData":{"marketSlug":1,"bids":[],"offers":[]}}',
+        b'{"marketData":{"marketSlug":"synthetic-market-1","bids":{},"offers":[]}}',
+        b'{"marketData":{"marketSlug":"synthetic-market-1","bids":[{}],"offers":[]}}',
+        b'{"marketData":{"marketSlug":"synthetic-market-1","bids":['
+        b'{"px":{"value":"1","currency":"EUR"},"qty":"2"}],"offers":[]}}',
+        b'{"marketData":{"marketSlug":"synthetic-market-1","bids":['
+        b'{"px":{"value":1,"currency":"USD"},"qty":"2"}],"offers":[]}}',
+        b'{"marketData":{"marketSlug":"synthetic-market-1","bids":['
+        b'{"px":{"value":"1","currency":"USD"},"qty":2}],"offers":[]}}',
+    ],
+)
+def test_polymarket_us_required_structure_types_and_currency_fail_closed(body: bytes) -> None:
+    assert parse_order_book(polymarket_us_target(), body).failure is ParseFailure.SCHEMA_INVALID
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["", "+1", "-1", " 1", "1 ", ".1", "01", "1.", "1e1", "NaN", "١", "1." + "1" * 19, "1" * 65],
+)
+def test_polymarket_us_decimal_grammar_is_exact(value: str) -> None:
+    body = (
+        '{"marketData":{"marketSlug":"synthetic-market-1","bids":['
+        '{"px":{"value":"' + value + '","currency":"USD"},"qty":"1"}],"offers":[]}}'
+    ).encode()
+    assert parse_order_book(polymarket_us_target(), body).failure is ParseFailure.SCHEMA_INVALID
+
+
+def test_polymarket_us_validates_schema_before_slug_identity() -> None:
+    mismatched = polymarket_us_body("different-market")
+    malformed = mismatched.replace(b'"qty":"2.00"', b'"qty":2', 1)
+    assert (
+        parse_order_book(polymarket_us_target(), malformed).failure is ParseFailure.SCHEMA_INVALID
+    )
+    assert (
+        parse_order_book(polymarket_us_target(), mismatched).failure
+        is ParseFailure.IDENTIFIER_MISMATCH
+    )
+
+
+def test_other_venue_parsers_do_not_reinterpret_polymarket_us_material() -> None:
+    body = polymarket_us_body()
+    assert parse_order_book(polymarket_target(), body).failure is ParseFailure.SCHEMA_INVALID
+    assert parse_order_book(kalshi_target(), body).failure is ParseFailure.SCHEMA_INVALID

@@ -8,6 +8,7 @@ from invariant_engine.domain.errors import DomainError
 
 class Venue(StrEnum):
     POLYMARKET = "polymarket"
+    POLYMARKET_US = "polymarket_us"
     KALSHI = "kalshi"
 
 

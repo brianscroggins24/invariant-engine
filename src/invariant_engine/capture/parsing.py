@@ -13,6 +13,8 @@ from invariant_engine.capture.models import (
     CaptureTarget,
     KalshiOrderBook,
     PolymarketOrderBook,
+    PolymarketUSOrderBook,
+    PolymarketUSPriceLevel,
     PriceLevel,
 )
 from invariant_engine.domain.ids import Venue
@@ -32,7 +34,7 @@ class ParseFailure(StrEnum):
 @dataclass(frozen=True, slots=True)
 class ParseResult:
     failure: ParseFailure | None
-    order_book: PolymarketOrderBook | KalshiOrderBook | None
+    order_book: PolymarketOrderBook | PolymarketUSOrderBook | KalshiOrderBook | None
 
 
 class _JsonViolation(ValueError):
@@ -177,6 +179,24 @@ def _kalshi_levels(value: object) -> tuple[PriceLevel, ...]:
     return tuple(levels)
 
 
+def _polymarket_us_levels(value: object) -> tuple[PolymarketUSPriceLevel, ...]:
+    levels: list[PolymarketUSPriceLevel] = []
+    for raw_level in _array(value):
+        level = _object(raw_level)
+        if "px" not in level or "qty" not in level:
+            raise _SchemaViolation
+        amount = _object(level["px"])
+        if "value" not in amount or "currency" not in amount:
+            raise _SchemaViolation
+        price_text, price = _decimal(amount["value"])
+        currency = _string(amount["currency"])
+        quantity_text, quantity = _decimal(level["qty"])
+        if currency != "USD":
+            raise _SchemaViolation
+        levels.append(PolymarketUSPriceLevel(price_text, quantity_text, currency, price, quantity))
+    return tuple(levels)
+
+
 def parse_order_book(target: CaptureTarget, data: bytes) -> ParseResult:
     payload, failure = _decode(data)
     if failure is not None:
@@ -229,19 +249,33 @@ def parse_order_book(target: CaptureTarget, data: bytes) -> ParseResult:
                     last_value,
                 ),
             )
-        if "orderbook_fp" not in record:
-            raise _SchemaViolation
-        orderbook = _object(record["orderbook_fp"])
-        if "yes_dollars" not in orderbook or "no_dollars" not in orderbook:
-            raise _SchemaViolation
-        return ParseResult(
-            None,
-            KalshiOrderBook(
-                ticker=target.identifier,
-                yes_dollars=_kalshi_levels(orderbook["yes_dollars"]),
-                no_dollars=_kalshi_levels(orderbook["no_dollars"]),
-            ),
-        )
+        if target.venue is Venue.POLYMARKET_US:
+            if "marketData" not in record:
+                raise _SchemaViolation
+            market_data = _object(record["marketData"])
+            if not {"marketSlug", "bids", "offers"}.issubset(market_data):
+                raise _SchemaViolation
+            market_slug = _string(market_data["marketSlug"])
+            us_bids = _polymarket_us_levels(market_data["bids"])
+            us_offers = _polymarket_us_levels(market_data["offers"])
+            if market_slug != target.identifier:
+                return ParseResult(ParseFailure.IDENTIFIER_MISMATCH, None)
+            return ParseResult(None, PolymarketUSOrderBook(market_slug, us_bids, us_offers))
+        if target.venue is Venue.KALSHI:
+            if "orderbook_fp" not in record:
+                raise _SchemaViolation
+            orderbook = _object(record["orderbook_fp"])
+            if "yes_dollars" not in orderbook or "no_dollars" not in orderbook:
+                raise _SchemaViolation
+            return ParseResult(
+                None,
+                KalshiOrderBook(
+                    ticker=target.identifier,
+                    yes_dollars=_kalshi_levels(orderbook["yes_dollars"]),
+                    no_dollars=_kalshi_levels(orderbook["no_dollars"]),
+                ),
+            )
+        raise _SchemaViolation
     except _SchemaViolation:
         return ParseResult(ParseFailure.SCHEMA_INVALID, None)
 

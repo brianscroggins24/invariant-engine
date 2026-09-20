@@ -205,6 +205,27 @@ def test_missing_optional_polymarket_fields_remain_none() -> None:
     assert parsed.last_trade_price is None
 
 
+def test_historical_polymarket_parser_rejects_polymarket_us_material() -> None:
+    envelope = RawEnvelope.from_payload(
+        venue=Venue.POLYMARKET_US,
+        fixture=FixtureReference("synthetic-us-book", Venue.POLYMARKET_US),
+        payload={
+            "event_type": "book",
+            "asset_id": "synthetic-asset",
+            "market": "synthetic-market",
+            "timestamp": "1700000000000",
+            "bids": [],
+            "asks": [],
+        },
+        source_type=SourceType.FIXTURE_WEBSOCKET,
+        endpoint_or_channel="fixture://polymarket-us",
+        capture_timestamp=UTC_CAPTURE,
+        schema_version=POLYMARKET_DIRECT_SCHEMA_VERSION,
+    )
+    with pytest.raises(PayloadError, match="non-Polymarket"):
+        parse_polymarket_snapshot(envelope)
+
+
 def test_incomplete_payloads_are_rejected() -> None:
     with pytest.raises(PayloadError):
         parse_polymarket_snapshot(

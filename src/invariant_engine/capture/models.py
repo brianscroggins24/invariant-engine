@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 import weakref
 from dataclasses import dataclass
 from datetime import datetime
@@ -16,7 +17,10 @@ from invariant_engine.serialization import stable_json_bytes
 
 CAPTURE_SPECIFICATION_SCHEMA_VERSION = "capture-specification-v1"
 CAPTURE_RESULT_SCHEMA_VERSION = "capture-result-v1"
+CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2 = "capture-specification-v2"
+CAPTURE_RESULT_SCHEMA_VERSION_V2 = "capture-result-v2"
 MAX_BODY_BYTES = 1_048_576
+_CAPTURE_DECIMAL = re.compile(r"(?:0|[1-9][0-9]*)(?:\.[0-9]{1,18})?", re.ASCII)
 
 
 class CaptureEnvironment(StrEnum):
@@ -160,13 +164,29 @@ class PolymarketOrderBook:
 
 
 @dataclass(frozen=True, slots=True)
+class PolymarketUSPriceLevel:
+    price_text: str
+    quantity_text: str
+    currency: str
+    price: Decimal
+    quantity: Decimal
+
+
+@dataclass(frozen=True, slots=True)
+class PolymarketUSOrderBook:
+    market_slug: str
+    bids: tuple[PolymarketUSPriceLevel, ...]
+    offers: tuple[PolymarketUSPriceLevel, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class KalshiOrderBook:
     ticker: str
     yes_dollars: tuple[PriceLevel, ...]
     no_dollars: tuple[PriceLevel, ...]
 
 
-CapturedOrderBook = PolymarketOrderBook | KalshiOrderBook
+CapturedOrderBook = PolymarketOrderBook | PolymarketUSOrderBook | KalshiOrderBook
 
 
 @dataclass(frozen=True, slots=True, init=False, weakref_slot=True)
@@ -274,8 +294,47 @@ def _batch_content(batch: CaptureBatchResult) -> dict[str, object]:
     }
 
 
+def _validate_polymarket_us_order_book(
+    target: CaptureTarget,
+    order_book: PolymarketUSOrderBook,
+) -> None:
+    if type(order_book.market_slug) is not str or order_book.market_slug != target.identifier:
+        raise DomainError("Polymarket US order book identity mismatch")
+    for ladder in (order_book.bids, order_book.offers):
+        if type(ladder) is not tuple:
+            raise DomainError("Polymarket US ladders must use exact tuples")
+        for level in ladder:
+            if type(level) is not PolymarketUSPriceLevel:
+                raise DomainError("Polymarket US ladders require exact native levels")
+            if (
+                type(level.price_text) is not str
+                or type(level.quantity_text) is not str
+                or type(level.currency) is not str
+            ):
+                raise DomainError("Polymarket US native level text must use exact strings")
+            if (
+                len(level.price_text) > 64
+                or len(level.quantity_text) > 64
+                or _CAPTURE_DECIMAL.fullmatch(level.price_text) is None
+                or _CAPTURE_DECIMAL.fullmatch(level.quantity_text) is None
+            ):
+                raise DomainError("Polymarket US native level text is outside the local grammar")
+            if level.currency != "USD":
+                raise DomainError("Polymarket US native level currency must be USD")
+            if type(level.price) is not Decimal or type(level.quantity) is not Decimal:
+                raise DomainError("Polymarket US native values must use exact Decimal types")
+            if (
+                Decimal(level.price_text).as_tuple() != level.price.as_tuple()
+                or Decimal(level.quantity_text).as_tuple() != level.quantity.as_tuple()
+            ):
+                raise DomainError("Polymarket US native text and Decimal values must agree exactly")
+
+
 def _validate_attempt_state(attempt: TargetAttempt) -> None:
-    if attempt.schema_version != CAPTURE_RESULT_SCHEMA_VERSION:
+    if attempt.schema_version not in {
+        CAPTURE_RESULT_SCHEMA_VERSION,
+        CAPTURE_RESULT_SCHEMA_VERSION_V2,
+    }:
         raise DomainError("unsupported capture attempt version")
     if (
         type(attempt.status) is not TargetStatus
@@ -286,6 +345,14 @@ def _validate_attempt_state(attempt: TargetAttempt) -> None:
         raise DomainError("attempt status and reason contradict")
     if type(attempt.target) is not CaptureTarget:
         raise DomainError("attempt target must use the exact target type")
+    if (
+        attempt.schema_version == CAPTURE_RESULT_SCHEMA_VERSION
+        and attempt.target.venue is Venue.POLYMARKET_US
+    ) or (
+        attempt.schema_version == CAPTURE_RESULT_SCHEMA_VERSION_V2
+        and attempt.target.venue is Venue.POLYMARKET
+    ):
+        raise DomainError("attempt target is incompatible with result version")
     if (
         type(attempt.specification_fingerprint) is not str
         or len(attempt.specification_fingerprint) != 64
@@ -450,6 +517,10 @@ def _validate_attempt_state(attempt: TargetAttempt) -> None:
             and type(attempt.order_book) is not PolymarketOrderBook
         ):
             raise DomainError("captured Polymarket target requires its venue-native model")
+        if attempt.target.venue is Venue.POLYMARKET_US:
+            if type(attempt.order_book) is not PolymarketUSOrderBook:
+                raise DomainError("captured Polymarket US target requires its venue-native model")
+            _validate_polymarket_us_order_book(attempt.target, attempt.order_book)
         if attempt.target.venue is Venue.KALSHI and type(attempt.order_book) is not KalshiOrderBook:
             raise DomainError("captured Kalshi target requires its venue-native model")
     elif attempt.order_book is not None:
@@ -553,7 +624,10 @@ def _issue_batch(*, token: object, **fields: object) -> CaptureBatchResult:
 
 
 def _validate_batch_state(value: CaptureBatchResult) -> None:
-    if value.schema_version != CAPTURE_RESULT_SCHEMA_VERSION:
+    if value.schema_version not in {
+        CAPTURE_RESULT_SCHEMA_VERSION,
+        CAPTURE_RESULT_SCHEMA_VERSION_V2,
+    }:
         raise DomainError("unsupported capture batch version")
     if type(value.status) is not BatchStatus or type(value.reason_code) is not BatchReasonCode:
         raise DomainError("batch status and reason must use closed enums")
@@ -566,6 +640,11 @@ def _validate_batch_state(value: CaptureBatchResult) -> None:
     }[value.status]
     if value.reason_code is not expected_reason:
         raise DomainError("batch status and reason contradict")
+    if (
+        value.status is BatchStatus.SPECIFICATION_INVALID
+        and value.schema_version != CAPTURE_RESULT_SCHEMA_VERSION
+    ):
+        raise DomainError("specification-invalid envelope must use the v1 result version")
     if value.status is BatchStatus.COMPLETED:
         if (
             type(value.specification) is not CaptureSpecification
@@ -575,6 +654,14 @@ def _validate_batch_state(value: CaptureBatchResult) -> None:
             or value.provenance != value.specification.provenance
         ):
             raise DomainError("completed batch requires specification identity")
+        expected_specification_version = {
+            CAPTURE_RESULT_SCHEMA_VERSION: CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+            CAPTURE_RESULT_SCHEMA_VERSION_V2: CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2,
+        }[value.schema_version]
+        if value.specification.schema_version != expected_specification_version or any(
+            attempt.schema_version != value.schema_version for attempt in value.attempts
+        ):
+            raise DomainError("completed batch versions must match")
     elif (
         value.specification is not None
         or value.specification_fingerprint is not None
@@ -668,7 +755,9 @@ __all__ = [
     "BatchReasonCode",
     "BatchStatus",
     "CAPTURE_RESULT_SCHEMA_VERSION",
+    "CAPTURE_RESULT_SCHEMA_VERSION_V2",
     "CAPTURE_SPECIFICATION_SCHEMA_VERSION",
+    "CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2",
     "CaptureBatchResult",
     "CaptureEnvironment",
     "CaptureLimits",
@@ -678,6 +767,8 @@ __all__ = [
     "KalshiOrderBook",
     "MAX_BODY_BYTES",
     "PolymarketOrderBook",
+    "PolymarketUSOrderBook",
+    "PolymarketUSPriceLevel",
     "PriceLevel",
     "RetentionState",
     "SuppressionSource",

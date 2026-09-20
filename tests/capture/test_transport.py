@@ -7,7 +7,7 @@ import socket
 import pytest
 
 import invariant_engine.capture.transport as transport_module
-from conftest import SIGNATURE, kalshi_target, polymarket_target
+from conftest import SIGNATURE, kalshi_target, polymarket_target, polymarket_us_target
 from invariant_engine.capture import AcquisitionOutcome, RetentionState, TransportFailureKind
 
 
@@ -265,6 +265,26 @@ def test_exact_request_headers_and_tls_policy(monkeypatch) -> None:
     sent = [call[1] for call in connection.calls if call[0] == "header"]
     assert sent == [
         ("Host", "clob.polymarket.com"),
+        ("Accept", "application/json"),
+        ("Accept-Encoding", "identity"),
+        ("Connection", "close"),
+    ]
+    assert connection.context.check_hostname is True
+
+
+def test_polymarket_us_exact_anonymous_request_and_tls_policy(monkeypatch) -> None:
+    result = run(monkeypatch, FakeResponse(b"{}"), target=polymarket_us_target())
+    connection = FakeConnection.instances[0]
+    assert result.acquisition_outcome is AcquisitionOutcome.COMPLETED
+    assert connection.host == "gateway.polymarket.us"
+    assert (
+        "request",
+        ("GET", "/v1/markets/synthetic-market-1/book"),
+        {"skip_host": True, "skip_accept_encoding": True},
+    ) in connection.calls
+    sent = [call[1] for call in connection.calls if call[0] == "header"]
+    assert sent == [
+        ("Host", "gateway.polymarket.us"),
         ("Accept", "application/json"),
         ("Accept-Encoding", "identity"),
         ("Connection", "close"),
@@ -1135,6 +1155,18 @@ def test_anonymous_kalshi_and_polymarket_authentication_are_rejected_before_disp
         confidentiality_values=("key-1", SIGNATURE),
     )
     assert anonymous.failure is TransportFailureKind.TRANSPORT
+    assert injected.failure is TransportFailureKind.TRANSPORT
+    assert FakeConnection.instances == []
+
+
+def test_polymarket_us_rejects_any_authentication_material_before_dispatch(monkeypatch) -> None:
+    FakeConnection.instances = []
+    monkeypatch.setattr(transport_module, "_DirectHTTPSConnection", FakeConnection)
+    injected = transport_module.dispatch(
+        polymarket_us_target(),
+        (("KALSHI-ACCESS-KEY", "key"),),
+        confidentiality_values=("key",),
+    )
     assert injected.failure is TransportFailureKind.TRANSPORT
     assert FakeConnection.instances == []
 

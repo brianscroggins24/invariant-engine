@@ -37,6 +37,28 @@
                     "no_dollars": [["0.59", "3.00"]]
                 }
             }
+        },
+        {
+            "case_id": "polymarket-us-native-sides",
+            "synthetic": true,
+            "venue": "polymarket_us",
+            "environment": "production",
+            "identifier": "synthetic-market-1",
+            "response": {
+                "marketData": {
+                    "marketSlug": "synthetic-market-1",
+                    "bids": [
+                        {"px": {"value": "0.500", "currency": "USD"}, "qty": "2.00"},
+                        {"px": {"value": "0.500", "currency": "USD"}, "qty": "1.50"}
+                    ],
+                    "offers": [
+                        {"px": {"value": "0.510", "currency": "USD"}, "qty": "3.25"}
+                    ],
+                    "state": "SYNTHETIC",
+                    "stats": {"synthetic": true},
+                    "transactTime": "opaque-synthetic-time"
+                }
+            }
         }
     ]
 }

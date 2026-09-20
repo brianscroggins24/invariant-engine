@@ -1,4 +1,4 @@
-"""Direct bounded HTTPS transport for the three allowlisted capture operations."""
+"""Direct bounded HTTPS transport for the four allowlisted capture operations."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from urllib.parse import urlsplit
 
 from invariant_engine.capture.models import (
     CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+    CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2,
     AcquisitionOutcome,
     CaptureSpecification,
     CaptureTarget,
@@ -690,9 +691,14 @@ def _request_material_is_valid(
             limits=target.limits,
             provenance=target.provenance,
         )
+        schema_version = (
+            CAPTURE_SPECIFICATION_SCHEMA_VERSION_V2
+            if target.venue is Venue.POLYMARKET_US
+            else CAPTURE_SPECIFICATION_SCHEMA_VERSION
+        )
         validate_specification(
             CaptureSpecification(
-                CAPTURE_SPECIFICATION_SCHEMA_VERSION,
+                schema_version,
                 "transport/validation",
                 (probe_target,),
                 target.provenance,
@@ -702,8 +708,10 @@ def _request_material_is_valid(
         return False
     if type(authentication_headers) is not tuple or type(confidentiality_values) is not tuple:
         return False
-    if target.venue is Venue.POLYMARKET:
+    if target.venue in {Venue.POLYMARKET, Venue.POLYMARKET_US}:
         return authentication_headers == () and confidentiality_values == ()
+    if target.venue is not Venue.KALSHI:
+        return False
     if len(authentication_headers) != 3 or len(confidentiality_values) != 2:
         return False
     if any(type(item) is not tuple or len(item) != 2 for item in authentication_headers):
