@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestones 1–5 are accepted and closed. Capture v2 was independently accepted, its required engine-based US operational trial succeeded, and its documentation closure is recorded at `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Its implementation and operational authority are deactivated. This uncommitted documentation-only draft proposes a bounded Milestone 6 slice for independent review. All implementation remains inactive pending the verified activation commit and separate implementation prompt described below.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestones 1–5 are accepted and closed. Capture v2 was independently accepted, its required engine-based US operational trial succeeded, and its documentation closure is recorded at `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Its implementation and operational authority are deactivated. The bounded Milestone 6 synthetic execution scenarios slice was independently accepted and commit-verified at `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`. Its implementation authority is deactivated. This uncommitted documentation-only closure draft awaits independent review and the user's commit and push. The broader Milestone 6 roadmap remains open and inactive.
 
 ## Central system thesis
 
@@ -45,7 +45,7 @@ The following distinctions are mandatory:
 - Historical validation is not proof of future profitability, executability, capital suitability, or authorization.
 - No LLM may authorize trades or bypass deterministic validation.
 
-No earlier object may impersonate a later one. Milestone 2, Milestone 3, and Milestone 4 outputs remain non-actionable. The proposed Milestone 6 synthetic scenario evaluator is independent of this pipeline. Its results confer no `simulation supported` status or other trust promotion.
+No earlier object may impersonate a later one. Milestone 2, Milestone 3, and Milestone 4 outputs remain non-actionable. The accepted Milestone 6 synthetic scenario evaluator is independent of this pipeline. Its results confer no `simulation supported` status or other trust promotion.
 
 ## Governing architecture principles
 
@@ -616,8 +616,8 @@ The following paths record the accepted Milestone 4 delivery:
 
 The corresponding diagnostics-recognition change in
 `tests/relationships/test_relationships.py` is also part of the historical
-Milestone 4 delivery and retains every prohibition for simulation, risk,
-execution, and reconciliation. These delivered paths and that former
+Milestone 4 delivery. At delivery the test still prohibited simulation, risk,
+execution, and reconciliation packages. These delivered paths and that former
 exception confer no current implementation authority or continuing path
 exception. Milestone 4 remediation or changes within those paths require a
 future explicit governance transition.
@@ -627,10 +627,10 @@ permanent regression guarantees must not regress. No unrelated package or
 later-milestone package is authorized. The exact Milestone 5 read-only capture
 connection and narrow caller-owned Kalshi signing adapter described below are
 historical delivered behavior and confer no continuing implementation
-authority. The proposed synthetic simulation slice below remains inactive
-under this draft. Model connections, risk, execution, reconciliation,
-wallets, private-key handling, orders, venue cancellation, routing, and other
-live provider integration remain prohibited.
+authority. The accepted synthetic simulation slice below also confers no
+continuing implementation authority. Model connections, risk, execution,
+reconciliation, wallets, private-key handling, orders, venue cancellation,
+routing, and other live provider integration remain prohibited.
 
 ## Milestone 2 non-goals
 
@@ -985,11 +985,12 @@ These metrics must be reported as unavailable or not evaluated. Milestone 4
 must not silently use zero, full-fill, immediate-fill, equal-capital,
 Kelly-sizing, or another inferred assumption. Per-opportunity counterfactual
 purchase cost is permitted, but it must not be described as portfolio capital
-usage. Latency, queue, partial-fill, cancellation, and sequencing simulation
-remain Milestone 6 work. Risk limits and capital authorization remain Milestone
-7 work. A false-relationship statistic requires a separately governed labeled
-benchmark and must not be inferred from certificate outcomes or discovery
-rejections.
+usage. The accepted Milestone 6 slice accounts for standalone synthetic
+partial fills and cancellations. Empirical latency, queue position, fill
+probability, and live sequencing remain deferred. Risk limits and capital
+authorization remain Milestone 7 work. A false-relationship statistic requires
+a separately governed labeled benchmark and must not be inferred from
+certificate outcomes or discovery rejections.
 
 The output must be a deterministic, versioned, explicitly non-actionable
 historical strategy-validation result that:
@@ -1016,10 +1017,11 @@ The historical Milestone 4 delivered paths are:
 - `fixtures/diagnostics/`.
 
 The delivered diagnostics-recognition change in
-`tests/relationships/test_relationships.py` is also historical and retains
-the prohibitions for simulation, risk, execution, and reconciliation. These
-paths and that former exception grant no continuing authority. Any remediation
-or implementation change requires a future explicit governance transition.
+`tests/relationships/test_relationships.py` is also historical. At delivery the
+test still prohibited simulation, risk, execution, and reconciliation
+packages. These paths and that former exception grant no continuing authority.
+Any remediation or implementation change requires a future explicit
+governance transition.
 
 The accepted Milestone 4 boundary permanently excludes:
 
@@ -2015,38 +2017,23 @@ Milestone 5 closure intact.
 
 Model latency, queue assumptions, partial fills, failed legs, cancellations, and residual exposure without sending orders.
 
-#### Synthetic execution scenarios — activation draft
+#### Synthetic execution scenarios — accepted implementation
 
-This uncommitted documentation-only draft proposes a bounded slice for
-independent review. Milestone 6 and every later milestone remain inactive.
-The draft grants no implementation or operational authority. Acceptance of
-the eventual synthetic slice leaves the full Milestone 6 roadmap open.
+The bounded slice was independently accepted and commit-verified. Its
+implementation authority is deactivated. The broader Milestone 6 roadmap
+remains open and inactive, and every later milestone remains inactive.
 
-The offline pre-draft baseline is `40edb4eae7538a6a4ea0f964d5312cf37650624d`
-at `HEAD`, `main`, and local `origin/main`, with a clean tracked worktree and
-index and 102 tracked files. The full tracked-content manifest SHA-256 is
+The historical pre-activation baseline was Capture v2 closure commit
+`40edb4eae7538a6a4ea0f964d5312cf37650624d`, with 102 tracked files and
+tracked-content manifest SHA-256
 `7407ce55851e88ebc65ad4e00a3dd034ecb664da34883d2bd9be62ba6d10be18`.
-The manifest uses bytewise-sorted relative paths and one lowercase SHA-256,
-two spaces, the pathname, and a newline per tracked file. The comparison to
-local `origin/main` is offline. Keep the ignored `.env` and the caller's
-private key untouched and outside the manifest.
+The activation draft underwent one governance revision before acceptance.
+The verified activation commit `6b8a528c216e9643932b2d41f994be35fd7cf1da`
+has that baseline as its parent. A separate explicit prompt tied to the
+verified activation commit authorized the bounded implementation and its
+temporary path allowance.
 
-1. An independent reviewer examines the exact unstaged `AGENTS.md` and
-   `PLAN.md` and their full revised binary diff against the baseline, records both
-   document SHA-256 values and the governance-diff SHA-256, and explicitly
-   accepts or rejects the draft. The draft stops at this review gate.
-2. After independent acceptance, the user commits and pushes only the
-   accepted `AGENTS.md` and `PLAN.md`.
-3. The reviewer verifies the activation commit against the accepted content
-   and expected parent `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Verify
-   the commit tree, committed document hashes, parent-to-commit binary diff
-   digest, changed paths, and full tracked-content manifest. Record the
-   verified commit and manifest as the baseline for implementation review.
-4. A separate explicit implementation prompt identifying that verified
-   activation commit is required to begin the bounded implementation. The
-   prompt may authorize only the explicitly verified slice and path allowance.
-
-#### Public contract
+#### Permanent public contract
 
 `invariant_engine.simulation.evaluate_scenario(spec)` accepts one deeply
 immutable, in-memory synthetic specification and returns an immutable result
@@ -2056,7 +2043,10 @@ quantity. The caller supplies up to 64 events in their evaluation order and
 explicitly states the extent of knowledge at cutoff for each leg, including
 fill completeness and, where applicable, whether cancellation completion is
 known. The evaluator preserves the supplied order, including interleaving of
-the legs.
+the legs. The five approved scenario families are both legs filling, both
+legs open with zero confirmed fills through cutoff, either single leg filling
+with rejection of the other, uneven partial fills, and cancellation after a
+partial fill with or without further fills before cancellation completes.
 
 Every input quantity, fill price, and per-unit payout is a finite,
 nonnegative exact `Decimal` with at most 12 integer digits and 8 fractional
@@ -2094,6 +2084,12 @@ fills. When fill knowledge is complete but cancellation completion is
 unknown, the acquired quantity and gross cost can be exact while the split
 between open and closed unfilled remains unknown.
 
+Completed cancellation fixes open quantity at zero. If the recorded canceled
+remainder is the minimum positive fill quantity (`0.00000001`), an additional
+valid fill would have closed the leg as filled and prevented completion of
+the cancellation. In that case the remainder, acquired quantity, and gross
+cost are exact even when the caller marks fill knowledge incomplete.
+
 Calculate gross USD cost from exact individual fill quantity × price
 products and their exact sums. Report confirmed fill costs and exact gross
 cost totals wherever established, per leg and across both legs. Arithmetic
@@ -2105,7 +2101,8 @@ context intact.
 An optional table may supply up to 16 uniquely named hypothetical settlement
 states with a USD payout per acquired unit for each leg. Calculate exact
 gross USD payout from known acquired positions and the supplied per-unit
-payouts. Identify unavailable payout totals where positions are unknown.
+payouts. Identify unavailable payout totals where unknown positions affect
+the calculation. A leg with zero per-unit payout contributes exactly zero.
 Every result is explicitly conditional on caller-supplied assumptions and
 non-actionable. The table establishes neither real-market equivalence nor
 exhaustive settlement coverage.
@@ -2116,8 +2113,8 @@ library and its own simulation package. Exclude venue adapters, live or
 historical inputs, capture promotion, fee and net-profit calculations,
 liquidation and cash-reuse assumptions, risk decisions, orders, and trading.
 Synthetic inputs and results carry no authority into historical,
-relationship, opportunity, risk, or execution paths. Latency calibration,
-queue position, fill probability, and live sequencing advice remain deferred.
+relationship, opportunity, risk, or execution paths. Empirical latency,
+queue position, fill probability, and live sequencing remain deferred.
 
 #### Planner-supplied reviewed evidence
 
@@ -2133,14 +2130,13 @@ The findings support representing cancellation requests, fills, and
 cancellation completion separately. The caller supplies their order. The
 planner consulted reviewed Polymarket US, Kalshi, and prediction-market
 mechanics synthesis (`PLATFORM-0003`, `PLATFORM-0002`, and `CONCEPT-0002`).
-A6 and A7 are addressed solely for the proposed synthetic accounting scope.
+A6 and A7 are addressed solely for the accepted synthetic accounting scope.
 B3, C2, and C3 remain deferred. Keep `invariant-research` outside this work and
 return any new source as a candidate only.
 
-#### Future implementation paths and narrow test update
+#### Delivered implementation paths
 
-Exactly these five new files are in the proposed implementation allowance.
-They are outside the write scope of this draft.
+The accepted implementation added exactly five files.
 
 - `src/invariant_engine/simulation/__init__.py`
 - `src/invariant_engine/simulation/models.py`
@@ -2148,15 +2144,14 @@ They are outside the write scope of this draft.
 - `tests/simulation/test_scenarios.py`
 - `tests/simulation/test_boundaries.py`
 
-The future builder may also update `test_only_approved_milestone_2_packages_exist`
-in `tests/relationships/test_relationships.py` to require that the `simulation`
-directory exists. Remove `simulation` from the prohibited-package list in
-that test and add the affirmative directory check. Preserve the existing
-checks that `opportunities` and `diagnostics` exist and that `risk`,
-`execution`, and `reconciliation` are absent. This is the sole allowance for
-an existing path. All other assertions, tests, source, fixtures,
-configuration, and dependencies remain protected. The test file is outside
-the write scope of this documentation pass.
+The sole existing-path change was in
+`test_only_approved_milestone_2_packages_exist` in
+`tests/relationships/test_relationships.py`. It requires the `simulation`
+directory and retains the checks that `opportunities` and `diagnostics` exist
+and `risk`, `execution`, and `reconciliation` are absent. All other source,
+tests, fixtures, configuration, and dependencies remained protected. These
+delivered paths confer no continuing authority or path exception. Any future
+implementation change requires an explicit governance transition.
 
 #### Acceptance examples
 
@@ -2176,31 +2171,50 @@ assume the stated events and complete cutoff knowledge.
 
 #### Independent implementation acceptance
 
-The future reviewer must inspect the exact candidate tree against its verified
-activation baseline. Record and compare full tracked-content manifests,
-authorized paths, and worktree and index inventories before and after review.
-Verify that the candidate's changes from the activation baseline are confined
-to the authorized paths, inspect imports and runtime dependency boundaries,
-and reproduce all seven examples through the public entry point. Review
-must leave the exact candidate content intact and record which exact content
-was accepted or rejected.
+Independent review accepted the exact candidate after one implementation
+remediation pass for the minimum-fill cancellation case. The original
+implementation marked exact cutoff totals unavailable when the leg's
+completed cancellation and minimum-size remainder ruled out an additional
+fill. The unchanged external probe reproduced the original defect and passed
+on the fix. The earlier governance-draft revision is counted separately from
+the implementation remediation.
 
-Run materially distinct probes outside the engine worktree for fractional
-fills at different prices, full fill during pending cancellation, incomplete
-fill knowledge, uncertain cancellation completion, optional payouts,
-invalid transitions, numeric and size limits, nested immutability, and an
-altered caller decimal context. Verify deterministic results and errors and
-the evaluator's offline and in-memory boundaries.
+The accepted implementation was commit-verified at
+`ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`, with activation parent
+`6b8a528c216e9643932b2d41f994be35fd7cf1da` and tree
+`0a2dccb2360a360943745a03436662cad6b0a9d8`. The 107-file implementation
+manifest SHA-256 is
+`cf60dd53a23f4ef877de3c0b752298a3420386025ec09b676a1a9dd94929bc74`.
+The six-file change manifest SHA-256 is
+`1460d8aa8d759bb849015d54d963bf7912c93f5e46add6cbf7a96661f5379a9d`.
+Both manifests use the accepted implementation bytes for their respective
+path sets. Each bytewise-sorted relative path has a line containing the
+file's lowercase SHA-256, two spaces, the pathname, and a newline.
 
-Run the full suite, including all protected Milestones 1–5 and Capture v2
-tests, and audit network attempts across the run with zero attempts required.
-Run Ruff lint and format checks, strict mypy, compilation, every fixture JSON
-parse, and `git diff --check`. Repeat deterministic scenario and protected
-hash-seed checks with `PYTHONHASHSEED=1`, `2`, and `random`. Check package and
-artifact boundaries with caches and probe outputs outside the worktree. The
-627-test result below is the historical Capture v2 acceptance record. Record
-fresh results at the implementation gate. Acceptance covers only this
-synthetic slice and leaves the rest of Milestone 6 open.
+Independent implementation review recorded 690 passing tests under each of
+`PYTHONHASHSEED=1`, `2`, and `random`, including the protected Milestones 1–5
+and Capture v2 suites. The network audit observed zero attempts across 30
+Python processes. Ruff lint and formatting, strict mypy, compilation, and
+all 15 fixture JSON parses passed. These results belong to implementation
+review. This documentation pass uses document-level checks.
+
+#### Documentation closure gate
+
+This unstaged and uncommitted draft is limited to `AGENTS.md` and `PLAN.md`.
+It grants no implementation or operational authority. Keep
+`invariant-research`, credentials, and live services outside the closure work.
+
+1. The independent reviewer examines the exact documents and full binary
+   diff against `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`, records both
+   document SHA-256 values and the diff SHA-256, and accepts or rejects that
+   exact content.
+2. After independent acceptance, the user commits and pushes only the
+   accepted `AGENTS.md` and `PLAN.md`.
+3. The reviewer records the closure commit and tree, verifies the expected
+   parent `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`, and compares the
+   committed documents and parent-to-commit binary diff with the accepted
+   identities. Verify that only those two paths changed. The closure commit
+   and its tree are pending.
 
 ### Milestone 7 — Deterministic risk gateway
 
@@ -2216,8 +2230,8 @@ Add cross-venue execution only after venue-local execution and reconciliation ar
 
 ## Evidence dependencies and deferred research
 
-These items identify evidence and design dependencies. The bounded synthetic
-accounting decisions for A6 and A7 are recorded in the Milestone 6 draft.
+These items identify evidence and design dependencies. The accepted bounded
+Milestone 6 slice records the synthetic accounting decisions for A6 and A7.
 Wider decisions remain open. Reclassification alone grants no authority to
 make assumptions, change milestone scope, or satisfy acceptance criteria.
 Excluding a required capability requires an explicit governance decision.
@@ -2280,8 +2294,8 @@ a universal natural-language proof system.
 | A3 | Certificate versioning after amended venue rules; certificate identity and lifecycle. | A venue amends rules material to a supported certificate. | Decide how amended rules produce, supersede, or retire certificate versions while preserving time-scoped provenance. | Unresolved decision. |
 | A4 | Safe asynchronous cross-venue observations; cross-venue analytics. | A supported analytical or later execution capability uses observations that are not exactly synchronized. | Decide the bounded safety policy and supporting evidence for acceptable timing, staleness, and failure handling. | Unresolved decision. |
 | A5 | Inventory and collateral requirements; supported strategy economics, simulation, risk, and execution. | A selected supported strategy or venue operation consumes inventory or collateral. | Establish the exact, time-scoped requirements and how available inventory and collateral are represented and checked. | Unresolved decision. |
-| A6 | Partial-fill economics; execution simulation. | A supported simulation capability models less than complete fills. | Decide the exact economic accounting across supported partial-fill states without inventing fill behavior. | Addressed only for caller-supplied synthetic fills and gross accounting in the draft. Wider economics remain open. |
-| A7 | Safe execution sequencing; multi-leg execution simulation and later execution. | A supported strategy requires multiple non-atomic operations. | Decide which sequences are permitted and how failures, cancellations, exposure, and venue constraints are evaluated. | Addressed only for validating caller-supplied synthetic event order and cancellation accounting in the draft. Live sequencing remains open. |
+| A6 | Partial-fill economics; execution simulation. | A supported simulation capability models less than complete fills. | Decide the exact economic accounting across supported partial-fill states without inventing fill behavior. | The accepted slice covers caller-supplied synthetic fills and gross accounting. Wider economics remain open. |
+| A7 | Safe execution sequencing; multi-leg execution simulation and later execution. | A supported strategy requires multiple non-atomic operations. | Decide which sequences are permitted and how failures, cancellations, exposure, and venue constraints are evaluated. | The accepted slice covers validation of caller-supplied synthetic event order and cancellation accounting. Live sequencing remains deferred. |
 | A8 | Cross-venue settlement differences; cross-venue strategy economics, risk, and reconciliation. | A supported strategy spans venues with distinct settlement processes. | Establish the applicable settlement rules, timing, failure states, and reconciliation treatment for the selected markets and operations. | Unresolved decision. |
 | A9 | Economic finality and cash availability; settlement, reconciliation, and reusable-capital accounting. | A supported capability relies on a result being economically final or funds being available for reuse. | Decide the exact, venue- and operation-specific evidence for finality and cash availability. | Unresolved decision. |
 
@@ -2332,8 +2346,8 @@ and successful required operational trial for the separate bounded extension
 named Capture v2. It is not Milestone 6 and does not reopen or renumber
 Milestone 5. Capture v2 implementation and operational authority are
 deactivated. Milestones 1–5 remain accepted and closed. The historical
-Capture v2 closure grants no implementation or operational authority for
-the separately proposed Milestone 6 slice.
+Capture v2 closure granted no implementation or operational authority for
+the separate Milestone 6 synthetic slice.
 
 Every Capture v2 restriction below is a local engineering policy under
 uncertainty, not a universal Polymarket US, international Polymarket, or Kalshi
@@ -2841,10 +2855,16 @@ as recorded above. Capture v2 is not Milestone 6, did not reopen Milestone 5,
 and grants no continuing implementation, operational, or path authority. Its
 accepted contract and trust boundaries are permanent regression guarantees.
 
-Milestones 1–5 remain accepted and closed. Capture v2 documentation closure
-is the baseline for the separate Milestone 6 draft. No implementation
-milestone or extension is active. This draft is uncommitted and stops at
-independent review. The bounded synthetic slice requires a future verified
-activation commit and a separate explicit implementation prompt. All other
-implementation, remediation, live requests, and scope expansion require
-their own explicit governance transition.
+Milestones 1–5 and Capture v2 remain accepted and closed. Independent review
+accepted and commit-verified the bounded Milestone 6 synthetic execution
+scenarios slice at `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`. Its contract
+is a permanent regression boundary and its implementation authority is
+deactivated. The broader Milestone 6 roadmap remains open and inactive.
+Empirical latency, queue position, fill probability, and live sequencing
+remain deferred. No implementation milestone or extension is active.
+
+This documentation-only closure draft is unstaged and uncommitted. It awaits
+independent review, the user's commit and push of the two accepted documents,
+and closure commit verification. It grants no implementation or operational
+authority. Further implementation, remediation, live requests, and scope
+expansion require their own explicit governance transition.
