@@ -637,8 +637,8 @@ def test_only_approved_milestone_2_packages_exist() -> None:
     root = Path(__file__).resolve().parents[2] / "src" / "invariant_engine"
     assert (root / "opportunities").exists()
     assert (root / "diagnostics").exists()
+    assert (root / "simulation").is_dir()
     for prohibited in (
-        "simulation",
         "risk",
         "execution",
         "reconciliation",
