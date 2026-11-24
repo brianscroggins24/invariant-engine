@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestones 1–5 are accepted and closed. Capture v2 was independently accepted, its required engine-based US operational trial succeeded, and its documentation closure is recorded at `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Its implementation and operational authority are deactivated. The bounded Milestone 6 synthetic execution scenarios slice was independently accepted and commit-verified at `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`. Its implementation authority is deactivated. This uncommitted documentation-only closure draft awaits independent review and the user's commit and push. The broader Milestone 6 roadmap remains open and inactive.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestones 1–5 are accepted and closed. Capture v2 was independently accepted, its required engine-based US operational trial succeeded, and its documentation closure is recorded at `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Its implementation and operational authority are deactivated. The bounded Milestone 6 synthetic execution scenarios slice was independently accepted and commit-verified at `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`. Its implementation authority is deactivated. Its verified documentation closure is the baseline for the final Milestone 6 activation draft, offline delay and queue comparison. Milestone 6 remains open with implementation inactive.
 
 ## Central system thesis
 
@@ -2131,7 +2131,7 @@ cancellation completion separately. The caller supplies their order. The
 planner consulted reviewed Polymarket US, Kalshi, and prediction-market
 mechanics synthesis (`PLATFORM-0003`, `PLATFORM-0002`, and `CONCEPT-0002`).
 A6 and A7 are addressed solely for the accepted synthetic accounting scope.
-B3, C2, and C3 remain deferred. Keep `invariant-research` outside this work and
+The first slice deferred B3, C2, and C3. Keep `invariant-research` outside this work and
 return any new source as a candidate only.
 
 #### Delivered implementation paths
@@ -2198,23 +2198,169 @@ Python processes. Ruff lint and formatting, strict mypy, compilation, and
 all 15 fixture JSON parses passed. These results belong to implementation
 review. This documentation pass uses document-level checks.
 
-#### Documentation closure gate
+#### Verified documentation closure of the first slice
 
-This unstaged and uncommitted draft is limited to `AGENTS.md` and `PLAN.md`.
-It grants no implementation or operational authority. Keep
-`invariant-research`, credentials, and live services outside the closure work.
+The historical gate required independent review of the two documents and
+their binary diff, user commit and push of the accepted documents, and
+verification against their accepted identities. The verified closure commit
+`8eacb5f7ac5b795c2e4634d24fa8efebfceb6587` has parent
+`ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b` and tree
+`46f5246530a291bfac886d24a496a8523c79cf13`. Only the two documents changed.
 
-1. The independent reviewer examines the exact documents and full binary
-   diff against `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`, records both
-   document SHA-256 values and the diff SHA-256, and accepts or rejects that
-   exact content.
-2. After independent acceptance, the user commits and pushes only the
-   accepted `AGENTS.md` and `PLAN.md`.
-3. The reviewer records the closure commit and tree, verifies the expected
-   parent `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`, and compares the
-   committed documents and parent-to-commit binary diff with the accepted
-   identities. Verify that only those two paths changed. The closure commit
-   and its tree are pending.
+| Closure material | SHA-256 |
+|---|---|
+| `AGENTS.md` | `1091f158598a488195a33674d02a1ade69506b5723431224c47f04f5107c0dc0` |
+| `PLAN.md` | `2ac6e2a8bc6d637f449f1cd238651e45b87d536f6a1080850bb35cea7af9b165` |
+| Parent-to-closure binary diff | `1b9d9aded9e03a52e0764ef896543aec1de57dceeff5454773b8dc31b974b583` |
+
+#### Final slice activation draft — Offline delay and queue comparison
+
+Compare conditional outcomes by varying caller assumptions across runs of
+`invariant_engine.simulation.queue.evaluate_queue_scenario(spec)`. Each
+call evaluates one in-memory synthetic scenario. The verified first-slice
+closure on engine `main` is the draft baseline. Its 107-file tracked-content
+manifest SHA-256 is
+`48873a67c1b8045c8d0b25f7f44f9e018f67db5c87767d443b3ccf8e26f08ae5`.
+
+**Inputs and time.** Buy legs A and B start with zero holdings. Each has
+its own queue, fixed USD price per unit, positive intended quantity,
+submission time, processing delay and opening or rejection outcome. That
+outcome takes effect at submission time plus processing delay. For an
+opening, the caller supplies the volume ahead at entry. Each leg permits
+up to 29 timed incoming sell-volume events and at most one cancellation
+request with its own request time and assumed processing delay. Completion
+is due at request time plus that delay. All times and delays are nonnegative
+integer milliseconds. Both legs share one inclusive cutoff. Process events
+at the cutoff in their specified order. Later events have no effect on the
+cutoff state.
+
+Apply the accepted evaluator's input limits to quantity, volume and price.
+Use finite nonnegative exact `Decimal` values with at most 12 integer digits
+and 8 fractional digits. Preserve exact intermediate quantities, products
+and totals independently of the caller's decimal context.
+
+**Matching and ordering.** Process events chronologically. At the same
+millisecond on one leg, the caller must explicitly order the events,
+including processing outcomes, sell arrivals, requests and completions.
+Reject unresolved ties and impossible sequences as a whole. At a shared
+millisecond display A's events before B's, preserving each leg's order.
+
+- Sell volume arriving before opening passes unused. At opening initialize
+  the queue ahead to its supplied entry value. A rejected leg acquires zero.
+- While open or pending cancellation, subtract the lesser of incoming
+  volume and remaining volume ahead from both. Use any excess to fill up to
+  the leg's remaining quantity at its fixed price. Carry the reduced queue
+  ahead and order remainder into the next event. Excess after a full fill
+  passes unused. Volume after closure also passes unused. Each unit belongs
+  to one arrival on one leg and is accounted for exactly once.
+- A cancellation request requires an open leg. It leaves the unfilled
+  quantity eligible until completion closes the remainder. A full fill
+  while pending closes the leg as filled and supersedes the scheduled
+  completion. A request made by cutoff remains pending at cutoff if the leg
+  still has a remainder and completion is due later.
+
+**Trace and accounting.** Return an immutable trace. For each incoming
+event through cutoff, identify its time and leg and account for its volume
+as the exact sum consumed ahead, filled and unused. Include the ordered
+derived accounting events and the immutable result of passing them to
+`invariant_engine.simulation.evaluate_scenario` with the intended quantities
+and complete knowledge of the modeled fills through cutoff. For a pending
+request, report that completion is known to be outstanding. Emit at most one
+positive fill per arrival. Each leg contributes at most 29 fills, one
+opening or rejection, one request and one effective completion. Together
+these fit the accepted 64-event bound. Submission, unused volume and
+queue consumption alone do not generate accounting events.
+
+The result is deterministic, offline, explicitly conditional on caller
+assumptions and non-actionable. Runtime dependencies are the standard
+library, the two new modules and the accepted public simulation API.
+Exclude file, environment, clock, random and network access, venue APIs,
+capture and historical inputs, credentials, empirical fill probabilities,
+risk authorization, orders and trading. Synthetic traces and results carry
+no authority into protected trust paths.
+
+**Evidence.** The planner consulted `PLATFORM-0003`, `PLATFORM-0002` and
+`CONCEPT-0002`. Reviewed Polymarket US material distinguishes pending
+cancellation from completed processing (`SRC-0053` / `CLM-0217`–`CLM-0218`,
+`SRC-0054` / `CLM-0220`). Reviewed Kalshi material distinguishes immediate
+fills from the remainder canceled at processing (`SRC-0057` / `CLM-0228`,
+`SRC-0059` / `CLM-0234`). These findings support distinct request, fill and
+completion events. Entry queue, queue priority and processing delays are
+explicit synthetic assumptions. C2 empirical calibration remains deferred.
+C3 is addressed only for this selected synthetic queue rule. Keep
+`invariant-research` outside builder access.
+
+**Acceptance comparisons.** B opens for 5 units. A single sell event of
+6 units arrives on B at 20 ms. The cutoff follows all listed events.
+
+| Units ahead at entry | Cancellation effective | B fills | B canceled |
+|---:|---:|---:|---:|
+| 3 | 10 ms | 0 | 5 |
+| 3 | 30 ms | 3 | 2 |
+| 8 | 30 ms | 0 | 5 |
+
+For the middle case, a request at 25 ms with a 5 ms delay permits moving
+only the opening from before the sale to 21 ms. The 6 units then pass
+unused, B fills zero and all 5 units are canceled. For the tie comparison,
+B is open with 3 units ahead and cancellation pending at 20 ms. Completion
+then sale yields 0 filled and 5 canceled. Sale then completion yields
+3 filled and 2 canceled.
+
+**Independent implementation review.** Check the comparisons above, repeated
+and fractional arrivals, exact queue exhaustion, surplus after full fill,
+full fill while pending, rejection, unresolved ties, impossible sequences,
+cross-leg ordering and independence, and events immediately before, at and
+after cutoff. Check both the maximum-size scenario and rejection of excess
+inputs. Independently replay the derived events through the accepted public
+accounting API and compare the complete result, including states, quantities
+and gross USD costs. Check per-arrival conservation and cumulative totals
+under altered decimal precision, rounding and traps. Verify the caller's
+decimal context is preserved.
+
+Review the exact implementation candidate against the verified activation
+commit. Record separate SHA-256 manifests for the complete 110-file candidate
+(107 baseline paths plus three additions) and the three added files alone.
+Include the new files even before staging. Exclude ignored files and leave
+`.env` unread.
+For each set use bytewise-sorted relative paths, one lowercase file SHA-256,
+two spaces, the pathname and a newline per entry. Hash the manifest bytes.
+Verify protected files against the activation tree. Run the new tests and
+every protected suite, including first-slice simulation, Milestones 1–5 and
+Capture v2. Repeat the full suite with `PYTHONHASHSEED=1`, `2` and `random`
+and compare deterministic traces and results. Audit network attempts across
+the test processes and their Python children and require zero attempts.
+Carry forward Ruff lint and format checks, strict mypy, compilation, fixture
+JSON parsing, whitespace and artifact checks. Record observed results with
+the exact candidate and verify the accepted manifests against the resulting
+implementation commit, parent and tree.
+
+**Delivery and activation gate.**
+
+1. Independently review the unstaged, uncommitted `AGENTS.md` and `PLAN.md`
+   against baseline `8eacb5f7ac5b795c2e4634d24fa8efebfceb6587`. Examine the
+   full binary diff and changed paths and run `git diff --check`. Accept
+   or reject the exact content. On acceptance record both document SHA-256
+   values and the SHA-256 of the raw `git diff --binary` output against
+   that baseline for those two paths.
+2. After independent acceptance, the user commits and pushes only the two
+   accepted documents.
+3. Verify the activation commit and tree on engine `main`, its exact baseline
+   parent, the two changed paths, committed document hashes and
+   parent-to-commit binary diff digest against the reviewed identities.
+4. A separate implementation prompt naming the verified activation commit
+   may then authorize exactly three new files:
+
+   - `src/invariant_engine/simulation/queue.py`
+   - `src/invariant_engine/simulation/queue_models.py`
+   - `tests/simulation/test_queue.py`
+
+   Every existing implementation file and test is protected, including the
+   simulation package exports, models, evaluator and boundary tests. The
+   allowance excludes changes to fixtures, dependencies and configuration.
+5. Independent implementation acceptance, commit verification and subsequent
+   documentation closure of this final slice complete Milestone 6 at the
+   agreed scope. Implementation and operational authority remain inactive
+   during this draft. Later milestones require separate governance.
 
 ### Milestone 7 — Deterministic risk gateway
 
@@ -2317,8 +2463,8 @@ These dependencies do not choose a design or authorize implementation.
 | # | Topic and affected capability | Trigger | Required evidence or decision | Status |
 |---:|---|---|---|---|
 | C1 | WebSocket gap recovery; streaming market-data capture and state reconstruction. | Streaming market data is selected. | Define the venue- and channel-specific sequence, gap detection, recovery, replay-validity, and fail-closed semantics. | Conditional dependency. |
-| C2 | Latency distributions; calibrated latency analysis or simulation. | The design makes calibrated latency claims. | Supply empirical, scope-matched evidence for the claimed distributions. Explicit scenario assumptions must be labeled and are not empirical estimates. | Deferred for this slice. Conditional dependency. |
-| C3 | Queue position and fill probability; execution simulation. | The selected simulation design models queue position or fill probability. | Define the selected simulation model and the evidence needed for any empirical or predictive claim; do not silently assume full fills or a queue model. | Deferred for this slice. Conditional dependency. |
+| C2 | Latency distributions; calibrated latency analysis or simulation. | The design makes calibrated latency claims. | Supply empirical, scope-matched evidence for the claimed distributions. Explicit scenario assumptions must be labeled and are not empirical estimates. | Empirical calibration deferred. Final-slice processing delays are caller assumptions. |
+| C3 | Queue position and fill probability; execution simulation. | The selected simulation design models queue position or fill probability. | Define the selected simulation model and the evidence needed for any empirical or predictive claim; do not silently assume full fills or a queue model. | Addressed only for the selected final-slice synthetic queue rule. Empirical queue position and fill probability remain deferred. |
 | C4 | Borrowing and short-sale mechanics; strategy economics, simulation, risk, and execution. | An authorized strategy depends on borrowing or shorting. | Verify the exact permitted mechanics, availability, costs, collateral, lifecycle, and failure handling for the supported venue operations. | Conditional dependency. |
 | C5 | Complement conversion; strategy economics, simulation, risk, and execution. | An authorized strategy depends on conversion. | Verify the exact conversion eligibility, mechanics, timing, costs, identifiers, settlement effects, and failure handling. | Conditional dependency. |
 | C6 | Capital-transfer constraints; available-capital accounting and cross-venue strategy operation. | The design relies on capital movement. | Define transfer timing, limits, costs, failure and finality semantics, and accounting. Cross-venue execution does not inherently require transfers during execution; prefunded venues still require separate available-capital accounting. | Conditional dependency. |
@@ -2859,12 +3005,13 @@ Milestones 1–5 and Capture v2 remain accepted and closed. Independent review
 accepted and commit-verified the bounded Milestone 6 synthetic execution
 scenarios slice at `ac9c512ebcd96d2ce11a9c7bb93a2097fb74e61b`. Its contract
 is a permanent regression boundary and its implementation authority is
-deactivated. The broader Milestone 6 roadmap remains open and inactive.
-Empirical latency, queue position, fill probability, and live sequencing
-remain deferred. No implementation milestone or extension is active.
+deactivated. Its verified documentation closure is recorded at
+`8eacb5f7ac5b795c2e4634d24fa8efebfceb6587`.
 
-This documentation-only closure draft is unstaged and uncommitted. It awaits
-independent review, the user's commit and push of the two accepted documents,
-and closure commit verification. It grants no implementation or operational
-authority. Further implementation, remediation, live requests, and scope
-expansion require their own explicit governance transition.
+Milestone 6 remains open. The only current work is the two-document
+activation draft for offline delay and queue comparison. Independent draft
+acceptance, the user's commit and push, activation commit verification and a
+separate implementation prompt precede implementation. Acceptance and
+closure of the final slice complete Milestone 6 at the agreed scope.
+Empirical calibration, fill probability and live sequencing remain deferred.
+No implementation milestone, extension or operational trial is active.
