@@ -638,8 +638,8 @@ def test_only_approved_milestone_2_packages_exist() -> None:
     assert (root / "opportunities").exists()
     assert (root / "diagnostics").exists()
     assert (root / "simulation").is_dir()
+    assert (root / "risk").is_dir()
     for prohibited in (
-        "risk",
         "execution",
         "reconciliation",
     ):
