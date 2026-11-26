@@ -13,7 +13,7 @@ Build an automated prediction-market system whose primary objective is relations
 7. Simulate execution.
 8. Eventually trade only through deterministic risk controls.
 
-The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestones 1–5 are accepted and closed. Capture v2 was independently accepted, its required engine-based US operational trial succeeded, and its documentation closure is recorded at `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Its implementation and operational authority are deactivated. Both Milestone 6 slices have been delivered and independently accepted. Their implementation allowances are retired. Verified documentation closure completes Milestone 6 at the agreed offline, synthetic scope. The final closure draft awaits independent review. Later milestones remain inactive.
+The eventual system must support both intra-venue and cross-venue relationships involving Polymarket and Kalshi. Analytics, replay, provenance, and monitoring are supporting capabilities for that trustworthy path. The accepted Milestone 3 and Milestone 4 deliveries are fully local, historical, read-only, fixture-driven, deterministic, network-free, diagnostic, and non-actionable. Milestones 1–6 are accepted and closed. Capture v2 was independently accepted, its required engine-based US operational trial succeeded, and its documentation closure is recorded at `40edb4eae7538a6a4ea0f964d5312cf37650624d`. Its implementation and operational authority are deactivated. Both Milestone 6 slices were independently accepted, and their implementation allowances are retired. The user approved the bounded offline risk-checking scope for Milestone 7. Its activation draft is pending independent review, and no implementation milestone, extension or operational trial is active.
 
 ## Central system thesis
 
@@ -628,9 +628,11 @@ later-milestone package is authorized. The exact Milestone 5 read-only capture
 connection and narrow caller-owned Kalshi signing adapter described below are
 historical delivered behavior and confer no continuing implementation
 authority. The accepted synthetic simulation slice below also confers no
-continuing implementation authority. Model connections, risk, execution,
-reconciliation, wallets, private-key handling, orders, venue cancellation,
-routing, and other live provider integration remain prohibited.
+continuing implementation authority. The offline Milestone 7 risk package is
+proposed below but remains unauthorized until its activation gates are met.
+Model connections, execution, reconciliation, wallets, private-key handling,
+orders, venue cancellation, routing, and other live provider integration
+remain prohibited.
 
 ## Milestone 2 non-goals
 
@@ -2322,7 +2324,7 @@ Independent implementation review accepted the first submission. It recorded
 753 passing tests and 184 independent scenarios per seed under
 `PYTHONHASHSEED=1`, `2`, and `random`. The network audit recorded zero
 attempts across 30 Python processes. These are the implementation review
-results. The final closure draft uses document-level checks.
+results. The final closure pass used document-level checks.
 
 | Accepted implementation material | Identity |
 |---|---|
@@ -2349,22 +2351,201 @@ explicit governance transition.
 
 #### Final Milestone 6 documentation closure
 
-Independent review covers only the unstaged `AGENTS.md` and `PLAN.md` and
-their full binary diff against `791b3c29c928c8e14c394543d24ffa3bcdea1606`.
-Review the changed paths and `git diff --check` result, and bind acceptance
-to each document's SHA-256 and the SHA-256 of the raw two-path
-`git diff --binary` against that commit. After acceptance, the user commits
-and pushes only those documents. Verify the closure commit and tree, the
+The historical independent review gate covered only the unstaged `AGENTS.md`
+and `PLAN.md` and their full binary diff against
+`791b3c29c928c8e14c394543d24ffa3bcdea1606`. It required review of the
+changed paths and `git diff --check` result and bound acceptance to each
+document's SHA-256 and the SHA-256 of the raw two-path `git diff --binary`
+against that commit. After acceptance, the user was to commit and push only
+those documents, with verification of the closure commit and tree, the
 accepted implementation as its parent, the two changed paths, the committed
 document hashes and the parent-to-commit diff digest.
 
-Verified documentation closure completes Milestone 6 at the agreed offline,
-synthetic scope. Empirical venue calibration stays deferred. Later
-milestones remain inactive.
+Final closure is recorded at `df7cc1887d5b65c27aa9a539a72d7296cbf4d629`,
+parent `791b3c29c928c8e14c394543d24ffa3bcdea1606`, tree
+`96e01696a5cbb276491ca87e43968509fbde646b`. Only `AGENTS.md` and `PLAN.md`
+changed. The local committed content has these identities.
 
-### Milestone 7 — Deterministic risk gateway
+| Closure material | SHA-256 |
+|---|---|
+| `AGENTS.md` | `dd1a10a58bfeda7a090f9f99aa7b29c590c6d6f48cb769947b8e054466a83de3` |
+| `PLAN.md` | `04339b0dcf85d8b93ce8e30f93b39ecb4c4e9fdf5631a9b94d01bb7ec015ba3c` |
+| Parent-to-closure binary diff | `b712da70aa77145bae2a45a2a44550ad71cb6f8e4ad8b166529f6b5c195075af` |
 
-Add independent limits, stale-data rejection, minimum-edge requirements, exposure controls, strategy enablement, and kill switches.
+Milestone 6 remains closed at the agreed offline, synthetic scope. Empirical
+venue calibration stays deferred. Neither slice grants continuing authority.
+
+### Milestone 7 — Deterministic risk gateway — offline activation draft
+
+#### Status and reviewed basis
+
+The user approved the offline risk-checking scope. The following decision
+rules are proposed engineering policies for independent review. This draft
+starts at engine `main` commit `2fb67f434c501353ef4c504e28e6509fb0ab1ba3`.
+It changes only `AGENTS.md` and `PLAN.md`, preserves `TERMS.md` and the
+Milestone 6 closure, and does not activate implementation.
+
+The supplied reviewed basis is that failed-leg exposure and applicable costs
+must be explicit. Relevant references are `STRATEGY-0001`, `CONCEPT-0002`,
+and the cost-policy boundaries in `SRC-0055` / `CLM-0221`–`CLM-0224` and
+`SRC-0058` / `CLM-0231`–`CLM-0232`. These references do not select limits,
+establish effective venue fees or validate the assumed fixture losses.
+Thresholds, time windows, and the comparisons below are local policy
+choices. Keep `invariant-research`, live services, credentials, and
+production configuration outside builder access.
+
+#### Proposed decision contract
+
+`invariant_engine.risk.evaluate_risk(proposal, policy, snapshot)` evaluates
+one synthetic proposal to buy two distinct, ordered legs at a supplied
+decision time. Use deeply immutable in-memory inputs with separate roles.
+
+- The proposal identifies the strategy, the ordered legs and their positive
+  quantities in leg units, and the decision scope and time. It carries no
+  policy overrides or observation values.
+- The independently supplied, versioned policy owns explicit strategy
+  enablement, observation maximum age, the minimum total USD edge, per-leg
+  size caps, and the USD exposure cap. The policy applies to the named
+  strategy and decision scope, including any applicability constraints it
+  declares. A policy may apply across quantities, but a proposal cannot
+  select a more permissive limit or change policy content.
+- The independent snapshot supplies a timestamped kill-switch state, gross
+  edge lower bound, upper bound of applicable costs including fees, existing
+  exposure, and the two incremental single-leg-failure loss assumptions.
+  Bind the snapshot to the same strategy, ordered legs, exact proposed
+  quantities, and decision scope and time as applicable. Proposal-specific
+  economics and failed-leg values must match the full proposed quantities
+  and leg identities. Do not scale, substitute, or reuse a mismatched value.
+
+Validate scope, types, units and ranges before evaluation. Reject malformed
+or mismatched inputs with an explicit validation error, including ambiguous
+or duplicated leg/case identity, conflicting bindings, invalid timestamps,
+unsupported units, and non-finite or non-`Decimal` financial and quantity
+values. Well-formed missing or unknown evidence instead yields a block
+report. It must not be replaced with a permissive default. Cost bounds,
+exposures and incremental loss amounts are nonnegative magnitudes in USD.
+Gross edge and net edge are signed USD amounts. Use unambiguous timestamps
+on the same time basis and no implicit clock.
+
+| Check | Proposed rule |
+|---|---|
+| Strategy enablement | The independent policy must explicitly enable the named strategy. Disabled, absent or unknown enablement blocks. |
+| Kill switch | The independent snapshot must explicitly say the kill switch is clear. Active, missing or unknown state blocks, irrespective of economics. |
+| Freshness | Check each required observation independently using decision time minus its timestamp. Ages from zero through the policy maximum pass, inclusive. Missing timestamp or observation, future dates and older observations block. |
+| Minimum edge | Subtract the upper bound of all applicable costs from the lower bound of gross edge for the full proposal. The resulting conservative total USD edge must be at least the policy's minimum total USD edge. An unknown fee or other required cost blocks and cannot become zero. |
+| Per-leg size | Each proposed quantity must be at or below its corresponding policy cap in leg units. Evaluate both legs separately. |
+| Exposure | Add existing USD exposure to the larger of the incremental losses in the cases where A alone fails and where B alone fails. Either missing or unknown case, or missing or unknown existing exposure, blocks. The resulting USD amount must be at or below the policy cap. The losses are labeled fixture assumptions, not empirical estimates. |
+
+Return a deeply immutable, explicitly non-actionable `PASS` or `BLOCK`
+report bound to the evaluated scope and quantities, policy identity and
+version, and supplied decision time. Give a stable ordered result for each
+check, including each required observation's freshness and both leg sizes.
+Report what was tested, its outcome, observed value and unit when known,
+applicable limit or required state, and reason. Report simultaneous failures
+without short-circuiting on the first block. If required evidence is
+unavailable or unusable, identify it rather than reporting a fabricated
+derived value or a pass for a dependent check. Every required check must pass
+for overall `PASS`. Arithmetic and comparisons must be exact under different
+ambient decimal precision, rounding and traps, without mutating the caller's
+decimal context. Do not use floating-point conversion or rounding to cross a
+decision boundary.
+
+#### Proposed acceptance and boundary tests
+
+Use an all-pass in-memory fixture and single-input variations that isolate
+each block. For example, at a 10-second maximum age, use observations one
+second old, quantities of 2 and 3 units under caps of 3 and 4, a USD 1.50
+gross lower bound and USD 0.20 cost upper bound against a USD 1.00 minimum,
+and USD 3.00 existing exposure plus assumed incremental losses of USD 0.40
+and USD 0.70 against a USD 4.00 cap. Enable the strategy and explicitly
+clear the kill switch. These numbers are fixture values, not defaults.
+
+- Exercise equality and an exact step beyond each numeric limit, including
+  both size caps, the net edge floor, the exposure cap and every required
+  observation's maximum age. Exercise zero age, stale, future and missing
+  timestamps. When varying the evaluated quantity, keep fixture bindings
+  consistent so a size test is not just a mismatch test.
+- Cover disabled and unknown strategy enablement, missing and unknown kill
+  switch state, and an active kill switch even with attractive economics.
+  Cover unknown fees, missing gross or exposure evidence, and each missing
+  failed-leg case. Exercise each loss case as the larger one so the result
+  cannot be implemented by selecting one leg, summing both or averaging.
+- Exercise multiple simultaneous failures and verify all applicable check
+  results, units, limits, and reasons. Reject malformed inputs and, separately,
+  valid-looking cross-strategy, cross-leg, quantity or decision-scope
+  substitutions. Independently verify that proposal changes cannot loosen or
+  bypass unchanged policy limits or substitute proposal-provided state.
+- Verify repeatable decisions and complete reports, deep immutability, exact
+  arithmetic at decision boundaries under varied decimal contexts, and
+  no promotion of input or report material across protected trust boundaries.
+
+#### Proposed implementation allowance and exclusions
+
+Only after the activation gate, the bounded implementation may add exactly
+these four files. Keep synthetic fixtures in the new test file.
+
+- `src/invariant_engine/risk/__init__.py`
+- `src/invariant_engine/risk/models.py`
+- `src/invariant_engine/risk/gateway.py`
+- `tests/risk/test_gateway.py`
+
+The sole existing-file edit is to
+`test_only_approved_milestone_2_packages_exist` in
+`tests/relationships/test_relationships.py`. Move `risk` from the prohibited
+list to a positive directory assertion. Keep the execution and reconciliation
+prohibitions and all other assertions unchanged, including opportunities,
+diagnostics and simulation. No other path, dependency, project configuration,
+shared serializer or prior implementation changes are allowed. Runtime is
+limited to the standard library and the new package. No file, environment,
+system clock, random or network access is part of evaluation.
+
+Discovery, opportunity, historical-validation, capture and simulation objects
+retain their trust boundaries. They are not accepted risk inputs, and a risk
+report cannot enter their protected paths. The report grants no trading
+permission, reserves no capital, and sends no order. No live inputs, account
+state, venue adapters, current fee lookup, credentials, execution,
+reconciliation, capital allocation or deployment are in scope. A future
+executable gateway requires separate governance to authenticate policy and
+state, bind decisions to orders, and handle exposure changes between the
+check and submission. Milestones 8 and 9 remain inactive.
+
+#### Separate activation and implementation gates
+
+1. **Activation review.** An independent reviewer reads both exact unstaged
+   documents and the complete baseline-relative binary diff, verifies the
+   two changed paths and whitespace, records the SHA-256 of each document
+   and of the raw two-path `git diff --binary`, and explicitly accepts or
+   rejects that content. This documentation pass stops at the review draft.
+2. **Activation verification and builder instruction.** After acceptance,
+   the user commits and pushes only the two accepted documents. Verify the
+   activation commit, its expected parent
+   `2fb67f434c501353ef4c504e28e6509fb0ab1ba3`, its tree and two changed
+   paths, the committed document and parent-to-commit diff hashes against
+   the accepted identities, local `HEAD` and local `origin/main` alignment,
+   and worktree and index hygiene. Local ref comparison is not a remote
+   query. Only a separate explicit implementation instruction tied to that
+   verified commit takes the proposed allowance into effect.
+3. **Implementation review.** Independently inventory tracked, staged,
+   unstaged, untracked and ignored paths against the verified activation
+   baseline. Read every candidate file completely. Record exact per-file
+   hashes and bytewise-sorted tracked-content and change manifests. Verify
+   the exact four additions, one narrow test edit, authorized imports, and
+   unchanged dependencies and configuration. Run the full suite including
+   protected Milestones 1–6 and Capture v2 regressions, lint and formatting,
+   strict mypy, compilation, fixture JSON parsing and whitespace checks.
+   Run independent decision probes outside the worktree, not just copies
+   of builder tests, and repeat the suite and probes under `PYTHONHASHSEED=1`,
+   `2`, and `random`. Check report determinism, precision, rounding, traps,
+   and caller decimal-context preservation. Audit the full validation and
+   probes for network attempts and require zero. Keep caches and probe
+   artifacts outside the worktree and do not read or hash ignored `.env`
+   contents. Recheck content identities and hygiene after validation and
+   explicitly accept or reject the exact reviewed candidate.
+4. **Implementation commit verification.** After independent acceptance,
+   the user commits and pushes only the accepted implementation paths.
+   Verify the commit, activation parent, tree, authorized paths and exact
+   committed content against the reviewed manifests. Implementation
+   acceptance is not operational authorization or a Milestone 8 transition.
 
 ### Milestone 8 — Restricted venue-local execution
 
@@ -3011,8 +3192,12 @@ deactivated. Its verified documentation closure is recorded at
 
 Independent review accepted the final offline delay and queue comparison
 slice at `791b3c29c928c8e14c394543d24ffa3bcdea1606` on its first submission.
-Its implementation allowance is retired. The two-document closure draft
-awaits independent review. Verification of the accepted documentation closure
-completes Milestone 6 at the agreed offline, synthetic scope. Empirical
-venue calibration, fill probability and live sequencing remain deferred.
-No implementation milestone, extension or operational trial is active.
+Its implementation allowance is retired. Final documentation closure is
+recorded at `df7cc1887d5b65c27aa9a539a72d7296cbf4d629`. Milestone 6 remains
+closed at the agreed offline, synthetic scope. Empirical venue calibration,
+fill probability and live sequencing remain deferred.
+
+The Milestone 7 offline risk-checking activation draft awaits independent
+review. Approval of the bounded scope does not accept these proposed rules or
+activate implementation. Milestones 8 and 9 remain inactive. No
+implementation milestone, extension or operational trial is active.
